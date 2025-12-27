@@ -4,7 +4,7 @@ using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     [Header("Interaction Settings")]
-    public string interactionText = "Press E to interact"; // Optional per object
+    public string interactionText = ""; // Optional per object
 
     /// <summary>
     /// Called when the player interacts

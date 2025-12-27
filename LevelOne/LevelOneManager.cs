@@ -11,6 +11,9 @@ public class LevelOneManager : MonoBehaviour
     [SerializeField] private GameObject bedPlayer;   // The bed/bedPlayer GameObject
     [SerializeField] private TextMeshProUGUI interactionText; // The interaction UI text
 
+    [Header("Pause Reference")]
+    [SerializeField] private PauseMenuController pauseMenu; // Assign in Inspector
+
     private void Awake()
     {
         inputActions = new PlayerInputActions();
@@ -30,10 +33,15 @@ public class LevelOneManager : MonoBehaviour
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        // Switch objects as requested
+        if (pauseMenu != null && pauseMenu.IsPaused)
+            return;
+
+        // Switch objects
         player.SetActive(true);
         bedPlayer.SetActive(false);
+
         // Clear interaction text
-        interactionText.text = "";
+        if (interactionText != null)
+            interactionText.text = "";
     }
 }

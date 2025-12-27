@@ -13,7 +13,8 @@ public class PauseMenuController : MonoBehaviour
     [SerializeField] private FirstPersonController playerController;
 
     private PlayerInputActions inputActions;
-    private bool isPaused;
+
+    public bool IsPaused { get; private set; }  // ? single source of truth
 
     private void Awake()
     {
@@ -34,7 +35,7 @@ public class PauseMenuController : MonoBehaviour
 
     private void TogglePause(InputAction.CallbackContext context)
     {
-        if (isPaused)
+        if (IsPaused)
             Resume();
         else
             Pause();
@@ -42,6 +43,8 @@ public class PauseMenuController : MonoBehaviour
 
     private void Pause()
     {
+        IsPaused = true;
+
         pauseMenuUI.SetActive(true);
         ShowMainMenu();
 
@@ -53,13 +56,12 @@ public class PauseMenuController : MonoBehaviour
 
         if (playerController != null)
             playerController.SetPaused(true);
-
-        isPaused = true;
     }
-
 
     public void Resume()
     {
+        IsPaused = false;
+
         pauseMenuUI.SetActive(false);
 
         Time.timeScale = 1f;
@@ -70,10 +72,7 @@ public class PauseMenuController : MonoBehaviour
 
         if (playerController != null)
             playerController.SetPaused(false);
-
-        isPaused = false;
     }
-
 
     private void ShowMainMenu()
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class TriggerShowInstruction : MonoBehaviour
 {
     [Header("Instruction")]
-    [SerializeField] private string instructionMessage = "I need to take a shower";
+    [SerializeField] private string instructionMessage = "";
     [SerializeField] private float delayBeforeShow = 4f;
 
     [Header("Objectives (optional)")]

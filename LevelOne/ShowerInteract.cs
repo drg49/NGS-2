@@ -7,12 +7,6 @@ public class ShowerInteract : Interactable
     [SerializeField] private PauseMenuObjectivesController objectivesController;
     [SerializeField] private Animator fadeAnimator; // assign via inspector
 
-
-    private void Awake()
-    {
-        interactionText = "Turn on the shower";
-    }
-
     public override void Interact()
     {
         TurnOnShower();
@@ -22,10 +16,10 @@ public class ShowerInteract : Interactable
             objectivesController.SetObjectives(
                 new List<string>
                 {
-                    "",                 // completed objective (grayed out)
-                    "Take a shower"     // next active objective
+                    "Wash up", // completed objective (grayed out)
+                    "" // next active objective
                 },
-                0
+                1
             );
         }
     }
