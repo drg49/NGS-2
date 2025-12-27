@@ -10,7 +10,7 @@ public class DebugManager : MonoBehaviour
     {
         bedPlayer.SetActive(false);
         player.SetActive(true);
-        fader.SetActive(false);
+        //fader.SetActive(false);
     }
 
     // Update is called once per frame
