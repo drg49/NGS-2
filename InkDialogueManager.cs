@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using Ink.Runtime;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class InkDialogueManager : MonoBehaviour
 {
@@ -18,7 +19,13 @@ public class InkDialogueManager : MonoBehaviour
     [SerializeField] private float textSpeed = 0.05f;
 
     [Header("Pause")]
-    [SerializeField] private PauseMenuController pauseMenu; // Assign in Inspector
+    [SerializeField] private PauseMenuController pauseMenu;
+
+    [Header("Selection Feedback")]
+    [SerializeField] private AudioSource uiAudioSource;
+    [SerializeField] private Color normalButtonColor = Color.white;
+    [SerializeField] private Color selectedButtonColor = new(1f, 0.6f, 0.2f);
+    [SerializeField] private float selectionFlashDuration = 0.15f;
 
     public System.Action OnDialogueFinished;
 
@@ -27,6 +34,10 @@ public class InkDialogueManager : MonoBehaviour
 
     private bool isTyping;
     private bool awaitingFinalContinue;
+    private bool isSelecting;
+
+    private Image optionOneImage;
+    private Image optionTwoImage;
 
     // -------------------- Unity Lifecycle --------------------
 
@@ -34,6 +45,9 @@ public class InkDialogueManager : MonoBehaviour
     {
         inputActions = new PlayerInputActions();
         inputActions.Dialogue.Submit.performed += OnSubmitOption;
+
+        optionOneImage = optionOneGO.GetComponent<Image>();
+        optionTwoImage = optionTwoGO.GetComponent<Image>();
     }
 
     private void OnDestroy()
@@ -53,6 +67,7 @@ public class InkDialogueManager : MonoBehaviour
     public void StartStory(TextAsset inkJSON)
     {
         awaitingFinalContinue = false;
+        isSelecting = false;
 
         inputActions.Player.Disable();
         inputActions.Dialogue.Enable();
@@ -98,19 +113,17 @@ public class InkDialogueManager : MonoBehaviour
         isTyping = false;
 
         if (currentStory.currentChoices.Count > 0)
-        {
             DisplayChoices();
-        }
         else if (!currentStory.canContinue)
-        {
             ShowFinalContinue();
-        }
     }
 
     // -------------------- Choices --------------------
 
     private void DisplayChoices()
     {
+        ResetButtonVisuals();
+
         int count = currentStory.currentChoices.Count;
 
         optionOneGO.SetActive(count >= 1);
@@ -123,11 +136,18 @@ public class InkDialogueManager : MonoBehaviour
             optionTwoText.text = currentStory.currentChoices[1].text;
     }
 
+    private void ResetButtonVisuals()
+    {
+        if (optionOneImage) optionOneImage.color = normalButtonColor;
+        if (optionTwoImage) optionTwoImage.color = normalButtonColor;
+    }
+
     // -------------------- Final Continue --------------------
 
     private void ShowFinalContinue()
     {
         awaitingFinalContinue = true;
+        ResetButtonVisuals();
 
         optionOneGO.SetActive(true);
         optionTwoGO.SetActive(false);
@@ -138,32 +158,58 @@ public class InkDialogueManager : MonoBehaviour
 
     private void OnSubmitOption(InputAction.CallbackContext context)
     {
-        if (pauseMenu.IsPaused)
-            return;
-
-        if (isTyping)
+        if (pauseMenu.IsPaused || isTyping || isSelecting)
             return;
 
         if (awaitingFinalContinue)
         {
-            EndStory();
+            StartCoroutine(PlaySelectionFeedback(optionOneImage, EndStory));
             return;
         }
 
         int choiceIndex = -1;
+        Image targetImage = null;
 
         if (context.control.name == "1" || context.control.name == "buttonSouth")
+        {
             choiceIndex = 0;
+            targetImage = optionOneImage;
+        }
         else if (context.control.name == "2" || context.control.name == "buttonEast")
+        {
             choiceIndex = 1;
+            targetImage = optionTwoImage;
+        }
 
         if (choiceIndex >= 0 && choiceIndex < currentStory.currentChoices.Count)
         {
-            currentStory.ChooseChoiceIndex(choiceIndex);
-            optionOneGO.SetActive(false);
-            optionTwoGO.SetActive(false);
-            ContinueStory();
+            StartCoroutine(PlaySelectionFeedback(targetImage, () =>
+            {
+                currentStory.ChooseChoiceIndex(choiceIndex);
+                optionOneGO.SetActive(false);
+                optionTwoGO.SetActive(false);
+                ContinueStory();
+            }));
         }
+    }
+
+    // -------------------- Selection Feedback --------------------
+
+    private IEnumerator PlaySelectionFeedback(Image target, System.Action onComplete)
+    {
+        isSelecting = true;
+
+        uiAudioSource.Play();
+
+        if (target)
+            target.color = selectedButtonColor;
+
+        yield return new WaitForSeconds(selectionFlashDuration);
+
+        ResetButtonVisuals();
+        isSelecting = false;
+
+        onComplete?.Invoke();
     }
 
     // -------------------- End Dialogue --------------------
