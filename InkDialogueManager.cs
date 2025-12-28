@@ -106,8 +106,15 @@ public class InkDialogueManager : MonoBehaviour
         foreach (char c in line)
         {
             dialogueText.text += c;
+
+            if (!char.IsWhiteSpace(c))
+            {
+                GetComponent<ProceduralTypingSound>().PlaySound();
+            }
+
             yield return new WaitForSeconds(textSpeed);
         }
+
 
         isTyping = false;
 
