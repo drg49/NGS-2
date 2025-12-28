@@ -57,7 +57,6 @@ public class InkDialogueManager : MonoBehaviour
 
     private void Start()
     {
-        dialoguePanel.SetActive(false);
         optionOneGO.SetActive(false);
         optionTwoGO.SetActive(false);
     }
@@ -130,16 +129,52 @@ public class InkDialogueManager : MonoBehaviour
         optionTwoGO.SetActive(count == 2);
 
         if (count >= 1)
-            optionOneText.text = currentStory.currentChoices[0].text;
+            optionOneText.text = $"[{GetOptionDisplayKey(0)}] {currentStory.currentChoices[0].text}";
 
         if (count == 2)
-            optionTwoText.text = currentStory.currentChoices[1].text;
+            optionTwoText.text = $"[{GetOptionDisplayKey(1)}] {currentStory.currentChoices[1].text}";
     }
 
     private void ResetButtonVisuals()
     {
         if (optionOneImage) optionOneImage.color = normalButtonColor;
         if (optionTwoImage) optionTwoImage.color = normalButtonColor;
+    }
+
+    // -------------------- Cross-Platform Button/Key Labels --------------------
+
+    private string GetOptionDisplayKey(int index)
+    {
+        // Keyboard
+        if (Keyboard.current != null)
+        {
+            if (index == 0) return "1";
+            if (index == 1) return "2";
+        }
+
+        // Gamepad
+        if (Gamepad.current != null)
+        {
+            string layout = Gamepad.current.layout;
+
+            if (layout.Contains("DualShock") || layout.Contains("DualSense")) // PlayStation
+            {
+                if (index == 0) return "×"; // Cross
+                if (index == 1) return "?"; // Circle
+            }
+            else if (layout.Contains("Switch")) // Nintendo Switch
+            {
+                if (index == 0) return "B";
+                if (index == 1) return "A";
+            }
+            else // Xbox / default
+            {
+                if (index == 0) return "A";
+                if (index == 1) return "B";
+            }
+        }
+
+        return "?";
     }
 
     // -------------------- Final Continue --------------------
@@ -151,7 +186,7 @@ public class InkDialogueManager : MonoBehaviour
 
         optionOneGO.SetActive(true);
         optionTwoGO.SetActive(false);
-        optionOneText.text = "Continue";
+        optionOneText.text = $"[{GetOptionDisplayKey(0)}] Continue";
     }
 
     // -------------------- Input --------------------
