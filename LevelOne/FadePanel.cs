@@ -10,14 +10,17 @@ public class FadePanel : MonoBehaviour
     [Header("Input")]
     [SerializeField] private PlayerInputActions inputActions;
 
-    [Header("Players")]
+    [Header("Game Objects")]
     [SerializeField] private GameObject mainPlayer;
     [SerializeField] private GameObject showerPlayer;
     [SerializeField] private GameObject bathWater;
+    [SerializeField] private GameObject cellphoneOff;
+    [SerializeField] private GameObject cellphoneOn;
 
     [Header("Audio & Particles")]
-    [SerializeField] private AudioSource showerAudio; // Your audio source
-    [SerializeField] private ParticleSystem[] showerParticles; // Array for multiple particle systems
+    [SerializeField] private AudioSource showerAudio;
+    [SerializeField] private ParticleSystem[] showerParticles;
+    [SerializeField] private AudioSource ringtone;
 
     private void Awake()
     {
@@ -35,6 +38,7 @@ public class FadePanel : MonoBehaviour
         mainPlayer.SetActive(false);
         showerPlayer.SetActive(true);
         bathWater.SetActive(true);
+        cellphoneOff.SetActive(true);
 
         // Activate and play all shower particle systems
         foreach (var ps in showerParticles)
@@ -44,11 +48,9 @@ public class FadePanel : MonoBehaviour
         }
 
         // Play audio and stop particles after audio
-        if (showerAudio != null)
-        {
-            showerAudio.Play();
-            StartCoroutine(StopParticlesAfterAudio(showerAudio, showerParticles));
-        }
+        
+        showerAudio.Play();
+        StartCoroutine(StopParticlesAfterAudio(showerAudio, showerParticles));
     }
 
     private IEnumerator StopParticlesAfterAudio(AudioSource audio, ParticleSystem[] particles)
@@ -79,5 +81,12 @@ public class FadePanel : MonoBehaviour
 
         InstructionTextAlphaFader fader = FindFirstObjectByType<InstructionTextAlphaFader>();
         fader.Show($"You can press [{pauseButton}] at any time to view objectives in the pause menu.", 6.5f);
+
+        // A few seconds after the fade duration finishes
+        yield return new WaitForSeconds(8f);
+
+        cellphoneOff.SetActive(false);
+        cellphoneOn.SetActive(true);
+        ringtone.Play();
     }
 }
