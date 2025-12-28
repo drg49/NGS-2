@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -12,39 +13,60 @@ public class PauseMenuController : MonoBehaviour
     [Header("Player Reference")]
     [SerializeField] private FirstPersonController playerController;
 
-    [Header("Settings")]
-    [SerializeField] private bool dialogueSoundEnabled = true;
-    [SerializeField] private float lookSensitivity = 1f;
+    [Header("Settings UI")]
+    [SerializeField] private Slider lookSensitivitySlider;
+    [SerializeField] private Toggle dialogueSoundToggle;
 
     private PlayerInputActions inputActions;
 
     public bool IsPaused { get; private set; }
-    public bool IsDialogueSoundEnabled => dialogueSoundEnabled;
-    public float LookSensitivity => lookSensitivity;
+    public bool IsDialogueSoundEnabled => dialogueSoundToggle.isOn;
+    public float LookSensitivity => lookSensitivitySlider.value;
 
     private void Awake()
     {
         inputActions = new PlayerInputActions();
 
-        // Load saved settings or default
-        dialogueSoundEnabled = PlayerPrefs.GetInt("DialogueSoundEnabled", 1) == 1;
-        lookSensitivity = PlayerPrefs.GetFloat("LookSensitivity", 1f);
+        // Load saved settings or defaults
+        float savedLookSensitivity = PlayerPrefs.GetFloat("LookSensitivity", 0.1f);
+        bool savedDialogueSound = PlayerPrefs.GetInt("DialogueSoundEnabled", 1) == 1;
 
-        // Apply to player immediately if available
+        // Apply to UI
+        if (lookSensitivitySlider != null)
+            lookSensitivitySlider.value = savedLookSensitivity;
+
+        if (dialogueSoundToggle != null)
+            dialogueSoundToggle.isOn = savedDialogueSound;
+
+        // Apply to player immediately
         if (playerController != null)
-            playerController.lookSensitivity = lookSensitivity;
+            playerController.lookSensitivity = savedLookSensitivity;
     }
 
     private void OnEnable()
     {
         inputActions.UI.Enable();
         inputActions.UI.Pause.performed += TogglePause;
+
+        // Hook UI events
+        if (lookSensitivitySlider != null)
+            lookSensitivitySlider.onValueChanged.AddListener(OnLookSensitivityChanged);
+
+        if (dialogueSoundToggle != null)
+            dialogueSoundToggle.onValueChanged.AddListener(OnDialogueSoundChanged);
     }
 
     private void OnDisable()
     {
         inputActions.UI.Pause.performed -= TogglePause;
         inputActions.UI.Disable();
+
+        // Unhook UI events
+        if (lookSensitivitySlider != null)
+            lookSensitivitySlider.onValueChanged.RemoveListener(OnLookSensitivityChanged);
+
+        if (dialogueSoundToggle != null)
+            dialogueSoundToggle.onValueChanged.RemoveListener(OnDialogueSoundChanged);
     }
 
     private void TogglePause(InputAction.CallbackContext context)
@@ -56,7 +78,6 @@ public class PauseMenuController : MonoBehaviour
     private void Pause()
     {
         IsPaused = true;
-
         pauseMenuUI.SetActive(true);
         ShowMainMenu();
 
@@ -73,7 +94,6 @@ public class PauseMenuController : MonoBehaviour
     public void Resume()
     {
         IsPaused = false;
-
         pauseMenuUI.SetActive(false);
 
         Time.timeScale = 1f;
@@ -107,35 +127,23 @@ public class PauseMenuController : MonoBehaviour
         controlsPanel.SetActive(true);
     }
 
-    public void BackToMenu()
-    {
-        ShowMainMenu();
-    }
+    public void BackToMenu() => ShowMainMenu();
+    public void QuitGame() => Application.Quit();
 
-    public void QuitGame()
-    {
-        Application.Quit();
-    }
+    // -------------------- Settings Callbacks --------------------
 
-    // -------------------- Dialogue Sound Setting --------------------
-
-    public void SetDialogueSoundEnabled(bool enabled)
+    private void OnLookSensitivityChanged(float newValue)
     {
-        dialogueSoundEnabled = enabled;
-        PlayerPrefs.SetInt("DialogueSoundEnabled", enabled ? 1 : 0);
+        if (playerController != null)
+            playerController.lookSensitivity = newValue;
+
+        PlayerPrefs.SetFloat("LookSensitivity", newValue);
         PlayerPrefs.Save();
     }
 
-    // -------------------- Look Sensitivity Setting --------------------
-
-    public void SetLookSensitivity(float sensitivity)
+    private void OnDialogueSoundChanged(bool enabled)
     {
-        lookSensitivity = sensitivity;
-
-        if (playerController != null)
-            playerController.lookSensitivity = lookSensitivity;
-
-        PlayerPrefs.SetFloat("LookSensitivity", lookSensitivity);
+        PlayerPrefs.SetInt("DialogueSoundEnabled", enabled ? 1 : 0);
         PlayerPrefs.Save();
     }
 }

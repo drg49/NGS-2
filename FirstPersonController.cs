@@ -10,7 +10,7 @@ public class FirstPersonController : MonoBehaviour
     public float gravity = -9.81f;
 
     [Header("Look Settings")]
-    public float lookSensitivity = 1f;
+    public float lookSensitivity = 0.1f;
     public bool invertY = false;
     public Transform playerCamera;
     public float cameraClamp = 90f;

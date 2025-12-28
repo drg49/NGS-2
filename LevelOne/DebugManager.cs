@@ -11,6 +11,10 @@ public class DebugManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Delete settings
+        PlayerPrefs.DeleteKey("LookSensitivity");
+        PlayerPrefs.DeleteKey("DialogueSoundEnabled");
+        PlayerPrefs.Save();
         bedPlayer.SetActive(false);
         player.SetActive(true);
         //player.SetActive(false);
