@@ -72,5 +72,12 @@ public class FadePanel : MonoBehaviour
         // Destroy all particle system GameObjects
         foreach (var ps in particles)
             Destroy(ps.gameObject);
+
+        // Wait 2 seconds before showing the instruction text
+        yield return new WaitForSeconds(2f);
+        string pauseButton = inputActions.UI.Pause.bindings[0].ToDisplayString();
+
+        InstructionTextAlphaFader fader = FindFirstObjectByType<InstructionTextAlphaFader>();
+        fader.Show($"You can press [{pauseButton}] at any time to view objectives in the pause menu.", 6.5f);
     }
 }

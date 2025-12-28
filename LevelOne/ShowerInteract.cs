@@ -1,11 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class ShowerInteract : Interactable
 {
     [Header("Objectives")]
     [SerializeField] private PauseMenuObjectivesController objectivesController;
-    [SerializeField] private Animator fadeAnimator; // assign via inspector
+    [SerializeField] private Animator fadeAnimator;
+    [SerializeField] private TextMeshProUGUI instructionalText;
 
     public override void Interact()
     {
@@ -26,6 +28,7 @@ public class ShowerInteract : Interactable
 
     private void TurnOnShower()
     {
+        instructionalText.text = ""; // Clear instructional text
         fadeAnimator.SetTrigger("FadeInOut");
         Destroy(gameObject);
     }

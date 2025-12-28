@@ -7,7 +7,7 @@ public class InstructionTextAlphaFader : MonoBehaviour
 {
     [Header("Timing")]
     [SerializeField] private float fadeInDuration = 0.5f;
-    [SerializeField] private float visibleDuration = 5f;
+    [SerializeField] private float visibleDuration = 5f; // default duration
     [SerializeField] private float fadeOutDuration = 0.5f;
 
     private TextMeshProUGUI instructionText;
@@ -19,20 +19,24 @@ public class InstructionTextAlphaFader : MonoBehaviour
         SetAlpha(0f);
     }
 
-    public void Show(string message)
+    /// <summary>
+    /// Show the instruction text. Optional visibleDuration overrides the default.
+    /// </summary>
+    public void Show(string message, float? overrideVisibleDuration = null)
     {
         instructionText.text = message;
 
         if (fadeRoutine != null)
             StopCoroutine(fadeRoutine);
 
-        fadeRoutine = StartCoroutine(FadeSequence());
+        float duration = overrideVisibleDuration ?? visibleDuration; // use override if provided
+        fadeRoutine = StartCoroutine(FadeSequence(duration));
     }
 
-    private IEnumerator FadeSequence()
+    private IEnumerator FadeSequence(float visibleDurationOverride)
     {
         yield return Fade(0f, 1f, fadeInDuration);
-        yield return new WaitForSeconds(visibleDuration);
+        yield return new WaitForSeconds(visibleDurationOverride);
         yield return Fade(1f, 0f, fadeOutDuration);
     }
 
