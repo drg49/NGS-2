@@ -53,6 +53,13 @@ public class FadePanel : MonoBehaviour
         StartCoroutine(StopParticlesAfterAudio(showerAudio, showerParticles));
     }
 
+    public void ExitBathtub()
+    {
+        showerPlayer.SetActive(false);
+        mainPlayer.SetActive(true);
+        Destroy(bathWater);
+    }
+
     private IEnumerator StopParticlesAfterAudio(AudioSource audio, ParticleSystem[] particles)
     {
         // Wait until audio finishes

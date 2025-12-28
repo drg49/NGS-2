@@ -1,4 +1,7 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
+using static FadePanel;
 
 public class CellphoneInteract : Interactable
 {
@@ -7,6 +10,20 @@ public class CellphoneInteract : Interactable
     [SerializeField] private AudioSource phonePickup;
     [SerializeField] private InkDialogueManager dialogueManager;
     [SerializeField] private TextAsset marcusInkJSON;
+    [SerializeField] private GameObject cellphoneInteractionText;
+    [SerializeField] private float interactionTextDuration = 10f;
+    [SerializeField] private Animator fadeAnimator;
+
+
+    private IEnumerator ShowInteractionText()
+    {
+        // Short delay before text displays
+        yield return new WaitForSeconds(2.7f);
+        cellphoneInteractionText.SetActive(true);
+        yield return new WaitForSeconds(interactionTextDuration);
+        Destroy(cellphoneInteractionText);
+    }
+
 
     public override void Interact()
     {
@@ -23,14 +40,15 @@ public class CellphoneInteract : Interactable
 
         var collider = GetComponent<Collider>();
         collider.enabled = false;
+
+        // Show instructional text
+        StartCoroutine(ShowInteractionText());
     }
 
     private void OnPhoneCallFinished()
     {
-        // Anything you want:
-        // play animation
-        // enable new interactables
-        // trigger jump scare
-        Debug.Log("Phone call ended");
+        phonePickup.Play();
+        marcusPhoneCall.SetActive(false);
+        fadeAnimator.SetTrigger("FadeInOutPostBath");
     }
 }

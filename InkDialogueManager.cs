@@ -14,6 +14,8 @@ public class InkDialogueManager : MonoBehaviour
     [SerializeField] private GameObject optionTwoGO;
     [SerializeField] private TextMeshProUGUI optionOneText;
     [SerializeField] private TextMeshProUGUI optionTwoText;
+    [SerializeField] private GameObject reticle;
+
 
     [Header("Typewriter Settings")]
     [SerializeField] private float textSpeed = 0.05f;
@@ -65,6 +67,7 @@ public class InkDialogueManager : MonoBehaviour
 
     public void StartStory(TextAsset inkJSON)
     {
+        reticle.SetActive(false);
         awaitingFinalContinue = false;
         isSelecting = false;
 
@@ -255,6 +258,8 @@ public class InkDialogueManager : MonoBehaviour
 
         inputActions.Dialogue.Disable();
         inputActions.Player.Enable();
+
+        reticle.SetActive(true);
 
         OnDialogueFinished?.Invoke();
     }
