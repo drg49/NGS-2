@@ -6,6 +6,8 @@ public class DebugManager : MonoBehaviour
     public GameObject player;
     public GameObject fader;
     public GameObject showerPlayer;
+    [SerializeField] private InkDialogueManager dialogueManager; // assign in inspector
+    [SerializeField] private TextAsset marcusInkJSON;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -13,7 +15,9 @@ public class DebugManager : MonoBehaviour
         player.SetActive(true);
         //player.SetActive(false);
         //showerPlayer.SetActive(true);
-        //fader.SetActive(false);
+        // Start the Ink dialogue
+        dialogueManager.StartStory(marcusInkJSON);
+        fader.SetActive(false);
     }
 
     // Update is called once per frame
