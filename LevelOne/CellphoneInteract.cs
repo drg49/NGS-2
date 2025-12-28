@@ -18,7 +18,11 @@ public class CellphoneInteract : Interactable
         // Start the Ink dialogue
         dialogueManager.StartStory(marcusInkJSON);
 
-        //gameObject.SetActive(false);
+        var renderer = GetComponent<MeshRenderer>();
+        renderer.enabled = false;
+
+        var collider = GetComponent<Collider>();
+        collider.enabled = false;
     }
 
     private void OnPhoneCallFinished()

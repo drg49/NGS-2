@@ -1,95 +1,62 @@
 ﻿-> start
 
 === start ===
-"Hello? This is Marcus."
-    + [Who is this?]
-        -> whoIsThis("It's me, your friend. Are you coming to the party?")
-    + [Hello Marcus.]
-        -> helloMarcus("Hey! Good to hear from you.")
+Hey sorry, did I call too early?
+    + [Hey Marcus, nope I just woke up.]
+        -> justWoke("Figured. You always sleep in on your days off. Anyway, David and I were talking about grabbing lunch today.")
+    + [Hello Marcus, I am a bit tired.]
+        -> helloMarcus("Heard. I won't talk for long. Did you want to meet for lunch still with David and I.")
 
-=== whoIsThis(response) ===
+=== justWoke(response) ===
 {response}
-    + [Yes, I'll be there.]
-        -> goingParty("Awesome! It's going to be a blast.")
-    + [No, I can't make it.]
-        -> notGoingParty("Oh, that's a shame. Maybe next time.")
+    + [Yeah, lunch sounds good.]
+        -> goingLunch("Knew you'd be up for it. David's already hungry.")
+    + [Honestly, I was planning to stay in.]
+        -> hesitantLunch("Come on, you can't bail. We already counted you in.")
+
+=== hesitantLunch(response) ===
+{response}
+    + [Alright, fine.]
+        -> goingLunch("There we go. I knew you'd cave.")
+    + [I really don't feel like going out.]
+        -> noChoiceLunch("I get it, but you kinda don't have a choice this time.")
+
+=== noChoiceLunch(response) ===
+{response}
+    + [What do you mean?]
+        -> explainLunch("David already made the reservation. And he'll be pissed if you don't show.")
+    + [Seriously?]
+        -> explainLunch("Seriously. Just trust me on this.")
+
+=== explainLunch(response) ===
+{response}
+    + [Alright, I'll come.]
+        -> goingLunch("Good. You won't regret it.")
+    + [You guys owe me.]
+        -> goingLunch("Fair. Lunch is on David.")
 
 === helloMarcus(response) ===
 {response}
-    + [What's up?]
-        -> whatsUp("Just checking in. Wanted to see if you got my message.")
-    + [Not much.]
-        -> notMuch("Alright, talk to you later.")
+    + [Yeah, I remember.]
+        -> goingLunch("Good. Same place as usual - Lucca's Pizza Shop.")
+    + [I was thinking about skipping.]
+        -> hesitantLunch("Not today. We need you there.")
 
-=== goingParty(response) ===
+=== goingLunch(response) ===
 {response}
-    + [What time does it start?]
-        -> partyTime("It starts around 8 PM. Don't be late!")
-    + [Should I bring anything?]
-        -> bringSomething("If you can, bring some snacks or drinks. Thanks!")
+    + [What time are we meeting?]
+        -> lunchTime("About an hour. Gives you time to wake up.")
+    + [Where again?]
+        -> lunchTime("Lucca's Pizza Shop, the best in town.")
 
-=== notGoingParty(response) ===
+=== lunchTime(response) ===
 {response}
-    + [Maybe next time, then.]
-        -> last("Yeah, we’ll catch up soon.")
-    + [Want to hang out another day instead?]
-        -> hangOut("Sure! How about tomorrow afternoon?")
+    + [Alright, I'll head out soon.]
+        -> final("Perfect. I'll see you at Lucca's.")
+    + [Give me a minute to get ready.]
+        -> final("Take your time. Just don't be late - we'll be at Lucca's.")
 
-=== whatsUp(response) ===
-{response}
-    + [Did you get my message?]
-        -> messageReceived("Yes! I got it, thanks for checking.")
-    + [Just calling to chat.]
-        -> justChat("Nice! It's always good to hear from you.")
-
-=== notMuch(response) ===
-{response}
-    + [Want to grab a coffee later?]
-        -> coffee("Sounds good! Where should we meet?")
-    + [Talk to you later, then.]
-        -> last("Alright, catch you later!")
-
-=== partyTime(response) ===
-{response}
-    + [See you there!]
-        -> last("Can't wait! See you tonight.")
-    + [Might be a little late.]
-        -> last("No worries, just come when you can.")
-
-=== bringSomething(response) ===
-{response}
-    + [Got it, see you!]
-        -> last("Thanks! See you tonight.")
-    + [I might forget, sorry!]
-        -> last("No problem! Just come and have fun.")
-
-=== hangOut(response) ===
-{response}
-    + [Tomorrow works for me.]
-        -> last("Great! Looking forward to it.")
-    + [I might be busy, let's plan later.]
-        -> last("Okay, we'll figure something out.")
-
-=== messageReceived(response) ===
-{response}
-    + [Good to hear!]
-        -> last("Yep, all good!")
-
-=== justChat(response) ===
-{response}
-    + [Cool, how's everything?]
-        -> last("Things are good, just keeping busy.")
-    + [Nice talking to you!]
-        -> last("You too! Talk soon.")
-
-=== coffee(response) ===
-{response}
-    + [Let's meet at the cafe downtown.]
-        -> last("Perfect! See you there.")
-    + [Maybe another time?]
-        -> last("Alright, we’ll plan later then.")
-
-=== last(response) ===
+=== final(response) ===
 {response}
 
 -> END
