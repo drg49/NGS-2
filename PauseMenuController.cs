@@ -127,6 +127,31 @@ public class PauseMenuController : MonoBehaviour
         controlsPanel.SetActive(true);
     }
 
+    // -------------------- Reset Controls --------------------
+    public void ResetControlsToDefault()
+    {
+        // Default values
+        float defaultLookSensitivity = 0.1f;
+        bool defaultDialogueSound = true;
+
+        // Apply to UI
+        if (lookSensitivitySlider != null)
+            lookSensitivitySlider.value = defaultLookSensitivity;
+
+        if (dialogueSoundToggle != null)
+            dialogueSoundToggle.isOn = defaultDialogueSound;
+
+        // Apply to player
+        if (playerController != null)
+            playerController.lookSensitivity = defaultLookSensitivity;
+
+        // Save to PlayerPrefs
+        PlayerPrefs.SetFloat("LookSensitivity", defaultLookSensitivity);
+        PlayerPrefs.SetInt("DialogueSoundEnabled", defaultDialogueSound ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+
     public void BackToMenu() => ShowMainMenu();
     public void QuitGame() => Application.Quit();
 
