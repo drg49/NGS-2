@@ -17,8 +17,27 @@ public class InkDialogueManager : MonoBehaviour
     [Header("Typewriter Settings")]
     [SerializeField] private float textSpeed = 0.05f;
 
+    [Header("Input Actions")]
+    [SerializeField] private PlayerInputActions inputActions; // Your PlayerInputActions asset
+
     private Story currentStory;
     private bool isTyping = false;
+
+    private void Awake()
+    {
+        // Instantiate the PlayerInputActions class
+        inputActions = new PlayerInputActions();
+
+        // Enable the Dialogue map so we can subscribe to the Submit action
+        inputActions.Dialogue.Enable();
+        inputActions.Dialogue.Submit.performed += OnSubmitOption;
+    }
+
+
+    private void OnDestroy()
+    {
+        inputActions.Dialogue.Submit.performed -= OnSubmitOption;
+    }
 
     private void Start()
     {
@@ -27,13 +46,19 @@ public class InkDialogueManager : MonoBehaviour
         optionTwoGO.SetActive(false);
     }
 
+    // -------------------- Start Dialogue --------------------
     public void StartStory(TextAsset inkJSON)
     {
+        // Switch maps
+        inputActions.Player.Disable();
+        inputActions.Dialogue.Enable();
+
         dialoguePanel.SetActive(true);
         currentStory = new Story(inkJSON.text);
         ContinueStory();
     }
 
+    // -------------------- Continue Story --------------------
     private void ContinueStory()
     {
         if (currentStory.canContinue)
@@ -52,6 +77,7 @@ public class InkDialogueManager : MonoBehaviour
         }
     }
 
+    // -------------------- Typewriter Effect --------------------
     private IEnumerator TypeText(string line)
     {
         isTyping = true;
@@ -64,11 +90,10 @@ public class InkDialogueManager : MonoBehaviour
         isTyping = false;
 
         if (currentStory.currentChoices.Count > 0)
-        {
             DisplayChoices();
-        }
     }
 
+    // -------------------- Display Choices --------------------
     private void DisplayChoices()
     {
         int choiceCount = currentStory.currentChoices.Count;
@@ -83,33 +108,44 @@ public class InkDialogueManager : MonoBehaviour
             optionTwoText.text = currentStory.currentChoices[1].text;
     }
 
-    public void OnSubmitOption(InputAction.CallbackContext context)
+    // -------------------- Handle Submit --------------------
+    private void OnSubmitOption(InputAction.CallbackContext context)
     {
-        if (context.performed && !isTyping)
+        if (isTyping)
         {
-            int choiceIndex = -1;
+            return;
+        }
 
-            if (Keyboard.current.digit1Key.wasPressedThisFrame || Gamepad.current.buttonSouth.wasPressedThisFrame)
-                choiceIndex = 0;
-            else if (Keyboard.current.digit2Key.wasPressedThisFrame || Gamepad.current.buttonEast.wasPressedThisFrame)
-                choiceIndex = 1;
+        int choiceIndex = -1;
 
-            if (choiceIndex >= 0 && choiceIndex < currentStory.currentChoices.Count)
-            {
-                currentStory.ChooseChoiceIndex(choiceIndex);
-                optionOneGO.SetActive(false);
-                optionTwoGO.SetActive(false);
-                ContinueStory();
-            }
+        // Corrected checks
+        if (context.control.name == "1" || context.control.name == "buttonSouth")
+            choiceIndex = 0;
+        else if (context.control.name == "2" || context.control.name == "buttonEast")
+            choiceIndex = 1;
+
+
+        if (choiceIndex >= 0 && choiceIndex < currentStory.currentChoices.Count)
+        {
+            currentStory.ChooseChoiceIndex(choiceIndex);
+            optionOneGO.SetActive(false);
+            optionTwoGO.SetActive(false);
+            ContinueStory();
         }
     }
 
+
+
+    // -------------------- End Dialogue --------------------
     private void EndStory()
     {
         dialogueText.text = "";
         optionOneGO.SetActive(false);
         optionTwoGO.SetActive(false);
         dialoguePanel.SetActive(false);
-        Debug.Log("Dialogue finished");
+
+        // Switch back to Player map
+        inputActions.Dialogue.Disable();
+        inputActions.Player.Enable();
     }
 }
