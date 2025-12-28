@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 public class InkDialogueManager : MonoBehaviour
 {
     [Header("UI References")]
-    [SerializeField] private GameObject dialoguePanel; // DialoguePanel GameObject
+    [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
     [SerializeField] private GameObject optionOneGO;
     [SerializeField] private GameObject optionTwoGO;
@@ -17,22 +17,21 @@ public class InkDialogueManager : MonoBehaviour
     [Header("Typewriter Settings")]
     [SerializeField] private float textSpeed = 0.05f;
 
-    [Header("Input Actions")]
-    [SerializeField] private PlayerInputActions inputActions; // Your PlayerInputActions asset
+    public System.Action OnDialogueFinished;
 
+    private PlayerInputActions inputActions;
     private Story currentStory;
-    private bool isTyping = false;
+
+    private bool isTyping;
+    private bool awaitingFinalContinue;
+
+    // -------------------- Unity Lifecycle --------------------
 
     private void Awake()
     {
-        // Instantiate the PlayerInputActions class
         inputActions = new PlayerInputActions();
-
-        // Enable the Dialogue map so we can subscribe to the Submit action
-        inputActions.Dialogue.Enable();
         inputActions.Dialogue.Submit.performed += OnSubmitOption;
     }
-
 
     private void OnDestroy()
     {
@@ -47,25 +46,28 @@ public class InkDialogueManager : MonoBehaviour
     }
 
     // -------------------- Start Dialogue --------------------
+
     public void StartStory(TextAsset inkJSON)
     {
-        // Switch maps
+        awaitingFinalContinue = false;
+
         inputActions.Player.Disable();
         inputActions.Dialogue.Enable();
 
         dialoguePanel.SetActive(true);
         currentStory = new Story(inkJSON.text);
+
         ContinueStory();
     }
 
-    // -------------------- Continue Story --------------------
+    // -------------------- Story Flow --------------------
+
     private void ContinueStory()
     {
         if (currentStory.canContinue)
         {
-            string nextLine = currentStory.Continue().Trim();
             StopAllCoroutines();
-            StartCoroutine(TypeText(nextLine));
+            StartCoroutine(TypeText(currentStory.Continue().Trim()));
         }
         else if (currentStory.currentChoices.Count > 0)
         {
@@ -73,57 +75,82 @@ public class InkDialogueManager : MonoBehaviour
         }
         else
         {
-            EndStory();
+            ShowFinalContinue();
         }
     }
 
-    // -------------------- Typewriter Effect --------------------
+    // -------------------- Typewriter --------------------
+
     private IEnumerator TypeText(string line)
     {
         isTyping = true;
         dialogueText.text = "";
+
         foreach (char c in line)
         {
             dialogueText.text += c;
             yield return new WaitForSeconds(textSpeed);
         }
+
         isTyping = false;
 
+        // ?? THIS IS THE IMPORTANT FIX ??
         if (currentStory.currentChoices.Count > 0)
+        {
             DisplayChoices();
+        }
+        else if (!currentStory.canContinue)
+        {
+            ShowFinalContinue();
+        }
     }
 
-    // -------------------- Display Choices --------------------
+    // -------------------- Choices --------------------
+
     private void DisplayChoices()
     {
-        int choiceCount = currentStory.currentChoices.Count;
+        int count = currentStory.currentChoices.Count;
 
-        optionOneGO.SetActive(choiceCount >= 1);
-        optionTwoGO.SetActive(choiceCount == 2);
+        optionOneGO.SetActive(count >= 1);
+        optionTwoGO.SetActive(count == 2);
 
-        if (choiceCount >= 1)
+        if (count >= 1)
             optionOneText.text = currentStory.currentChoices[0].text;
 
-        if (choiceCount == 2)
+        if (count == 2)
             optionTwoText.text = currentStory.currentChoices[1].text;
     }
 
-    // -------------------- Handle Submit --------------------
+    // -------------------- Final Continue --------------------
+
+    private void ShowFinalContinue()
+    {
+        awaitingFinalContinue = true;
+
+        optionOneGO.SetActive(true);
+        optionTwoGO.SetActive(false);
+        optionOneText.text = "Continue";
+    }
+
+    // -------------------- Input --------------------
+
     private void OnSubmitOption(InputAction.CallbackContext context)
     {
         if (isTyping)
+            return;
+
+        if (awaitingFinalContinue)
         {
+            EndStory();
             return;
         }
 
         int choiceIndex = -1;
 
-        // Corrected checks
         if (context.control.name == "1" || context.control.name == "buttonSouth")
             choiceIndex = 0;
         else if (context.control.name == "2" || context.control.name == "buttonEast")
             choiceIndex = 1;
-
 
         if (choiceIndex >= 0 && choiceIndex < currentStory.currentChoices.Count)
         {
@@ -134,18 +161,19 @@ public class InkDialogueManager : MonoBehaviour
         }
     }
 
-
-
     // -------------------- End Dialogue --------------------
+
     private void EndStory()
     {
         dialogueText.text = "";
-        optionOneGO.SetActive(false);
-        optionTwoGO.SetActive(false);
         dialoguePanel.SetActive(false);
 
-        // Switch back to Player map
+        optionOneGO.SetActive(false);
+        optionTwoGO.SetActive(false);
+
         inputActions.Dialogue.Disable();
         inputActions.Player.Enable();
+
+        OnDialogueFinished?.Invoke();
     }
 }

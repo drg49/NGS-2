@@ -16,6 +16,7 @@ public class DebugManager : MonoBehaviour
         //player.SetActive(false);
         //showerPlayer.SetActive(true);
         // Start the Ink dialogue
+        dialogueManager.OnDialogueFinished = ConvoDone;
         dialogueManager.StartStory(marcusInkJSON);
         fader.SetActive(false);
     }
@@ -24,5 +25,14 @@ public class DebugManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void ConvoDone()
+    {
+        // Anything you want:
+        // play animation
+        // enable new interactables
+        // trigger jump scare
+        Debug.Log("Phone call ended");
     }
 }

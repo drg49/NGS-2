@@ -14,9 +14,19 @@ public class CellphoneInteract : Interactable
         ringtone.SetActive(false);
         phonePickup.Play();
         marcusPhoneCall.SetActive(true);
+        dialogueManager.OnDialogueFinished = OnPhoneCallFinished;
         // Start the Ink dialogue
         dialogueManager.StartStory(marcusInkJSON);
 
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
+    }
+
+    private void OnPhoneCallFinished()
+    {
+        // Anything you want:
+        // play animation
+        // enable new interactables
+        // trigger jump scare
+        Debug.Log("Phone call ended");
     }
 }
