@@ -12,13 +12,27 @@ public class PauseMenuController : MonoBehaviour
     [Header("Player Reference")]
     [SerializeField] private FirstPersonController playerController;
 
+    [Header("Settings")]
+    [SerializeField] private bool dialogueSoundEnabled = true;
+    [SerializeField] private float lookSensitivity = 1f;
+
     private PlayerInputActions inputActions;
 
-    public bool IsPaused { get; private set; }  // ? single source of truth
+    public bool IsPaused { get; private set; }
+    public bool IsDialogueSoundEnabled => dialogueSoundEnabled;
+    public float LookSensitivity => lookSensitivity;
 
     private void Awake()
     {
         inputActions = new PlayerInputActions();
+
+        // Load saved settings or default
+        dialogueSoundEnabled = PlayerPrefs.GetInt("DialogueSoundEnabled", 1) == 1;
+        lookSensitivity = PlayerPrefs.GetFloat("LookSensitivity", 1f);
+
+        // Apply to player immediately if available
+        if (playerController != null)
+            playerController.lookSensitivity = lookSensitivity;
     }
 
     private void OnEnable()
@@ -35,10 +49,8 @@ public class PauseMenuController : MonoBehaviour
 
     private void TogglePause(InputAction.CallbackContext context)
     {
-        if (IsPaused)
-            Resume();
-        else
-            Pause();
+        if (IsPaused) Resume();
+        else Pause();
     }
 
     private void Pause()
@@ -103,5 +115,27 @@ public class PauseMenuController : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    // -------------------- Dialogue Sound Setting --------------------
+
+    public void SetDialogueSoundEnabled(bool enabled)
+    {
+        dialogueSoundEnabled = enabled;
+        PlayerPrefs.SetInt("DialogueSoundEnabled", enabled ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    // -------------------- Look Sensitivity Setting --------------------
+
+    public void SetLookSensitivity(float sensitivity)
+    {
+        lookSensitivity = sensitivity;
+
+        if (playerController != null)
+            playerController.lookSensitivity = lookSensitivity;
+
+        PlayerPrefs.SetFloat("LookSensitivity", lookSensitivity);
+        PlayerPrefs.Save();
     }
 }

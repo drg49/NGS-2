@@ -103,18 +103,20 @@ public class InkDialogueManager : MonoBehaviour
         isTyping = true;
         dialogueText.text = "";
 
+        var typingSound = GetComponent<ProceduralTypingSound>();
+
         foreach (char c in line)
         {
             dialogueText.text += c;
 
-            if (!char.IsWhiteSpace(c))
+            // Play typing sound if enabled in pause menu
+            if (!char.IsWhiteSpace(c) && pauseMenu != null && pauseMenu.IsDialogueSoundEnabled)
             {
-                GetComponent<ProceduralTypingSound>().PlaySound();
+                typingSound?.PlaySound();
             }
 
             yield return new WaitForSeconds(textSpeed);
         }
-
 
         isTyping = false;
 
@@ -152,36 +154,23 @@ public class InkDialogueManager : MonoBehaviour
 
     private string GetOptionDisplayKey(int index)
     {
-        // Keyboard
         if (Keyboard.current != null)
         {
-            if (index == 0) return "1";
-            if (index == 1) return "2";
+            return (index == 0) ? "1" : "2";
         }
 
-        // Gamepad
         if (Gamepad.current != null)
         {
             string layout = Gamepad.current.layout;
-
-            if (layout.Contains("DualShock") || layout.Contains("DualSense")) // PlayStation
-            {
-                if (index == 0) return "×"; // Cross
-                if (index == 1) return "?"; // Circle
-            }
-            else if (layout.Contains("Switch")) // Nintendo Switch
-            {
-                if (index == 0) return "B";
-                if (index == 1) return "A";
-            }
+            if (layout.Contains("DualShock") || layout.Contains("DualSense"))
+                return (index == 0) ? "×" : "?";
+            else if (layout.Contains("Switch"))
+                return (index == 0) ? "B" : "A";
             else // Xbox / default
-            {
-                if (index == 0) return "A";
-                if (index == 1) return "B";
-            }
+                return (index == 0) ? "A" : "B";
         }
 
-        return "?";
+        return (index == 0) ? "1" : "2";
     }
 
     // -------------------- Final Continue --------------------

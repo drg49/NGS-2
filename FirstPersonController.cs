@@ -36,18 +36,20 @@ public class FirstPersonController : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-
         inputActions = new PlayerInputActions();
 
-        // Movement
+        // Load saved sensitivity
+        lookSensitivity = PlayerPrefs.GetFloat("LookSensitivity", lookSensitivity);
+
+        // Movement input
         inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += _ => moveInput = Vector2.zero;
 
-        // Look
+        // Look input
         inputActions.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Look.canceled += _ => lookInput = Vector2.zero;
 
-        // Sprint
+        // Sprint input
         inputActions.Player.Sprint.performed += _ => isSprinting = true;
         inputActions.Player.Sprint.canceled += _ => isSprinting = false;
     }
@@ -137,5 +139,12 @@ public class FirstPersonController : MonoBehaviour
     public void SetPaused(bool paused)
     {
         enabled = !paused;
+    }
+
+    // Public method to set look sensitivity from UI
+    public void SetLookSensitivity(float newSensitivity)
+    {
+        lookSensitivity = newSensitivity;
+        PlayerPrefs.SetFloat("LookSensitivity", newSensitivity);
     }
 }

@@ -3,9 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class ProceduralTypingSound : MonoBehaviour
 {
-    public float duration = 0.05f;     // Length of each blip
-    public float baseFrequency = 200f; // Lower pitch for deeper sound
-    public float volume = 0.2f;
+    public float duration = 0.05f;
+    public float baseFrequency = 180f; // Slightly lower for smoother tone
+    public float volume = 0.1f;       // Lower volume to reduce harshness
     private AudioSource audioSource;
     private bool playSound = false;
     private int sampleCountRemaining;
@@ -15,7 +15,7 @@ public class ProceduralTypingSound : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
         audioSource.playOnAwake = false;
-        audioSource.spatialBlend = 0f; // 2D sound
+        audioSource.spatialBlend = 0f;
         sampleRate = AudioSettings.outputSampleRate;
     }
 
@@ -39,10 +39,12 @@ public class ProceduralTypingSound : MonoBehaviour
                 break;
             }
 
-            // Generate a deeper sine wave
             float t = sampleCountRemaining / sampleRate;
-            // Short exponential decay to make it “pluck-like”
-            float envelope = Mathf.Exp(-20f * (1f - t / duration));
+
+            // Smooth fade-in and fade-out using Hanning window
+            float envelope = Mathf.Sin(Mathf.PI * (1f - t / duration) * 0.5f);
+            envelope *= envelope; // sin² curve for smooth attack/release
+
             float sample = Mathf.Sin(2f * Mathf.PI * baseFrequency * t) * envelope;
 
             for (int c = 0; c < channels; c++)
