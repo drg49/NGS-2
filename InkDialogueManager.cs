@@ -17,6 +17,9 @@ public class InkDialogueManager : MonoBehaviour
     [Header("Typewriter Settings")]
     [SerializeField] private float textSpeed = 0.05f;
 
+    [Header("Pause")]
+    [SerializeField] private PauseMenuController pauseMenu; // Assign in Inspector
+
     public System.Action OnDialogueFinished;
 
     private PlayerInputActions inputActions;
@@ -94,7 +97,6 @@ public class InkDialogueManager : MonoBehaviour
 
         isTyping = false;
 
-        // ?? THIS IS THE IMPORTANT FIX ??
         if (currentStory.currentChoices.Count > 0)
         {
             DisplayChoices();
@@ -136,6 +138,9 @@ public class InkDialogueManager : MonoBehaviour
 
     private void OnSubmitOption(InputAction.CallbackContext context)
     {
+        if (pauseMenu.IsPaused)
+            return;
+
         if (isTyping)
             return;
 

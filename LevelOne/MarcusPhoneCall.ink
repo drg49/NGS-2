@@ -1,32 +1,27 @@
 ﻿-> start
 
 === start ===
-Hello? This is Marcus.
-+ "Who is this?" -> who_is_this
-+ "Hello Marcus." -> hello_marcus
+"Hello? This is Marcus."
+    + [Who is this?]
+        -> whoIsThis("It's me, your friend. Are you coming to the party?")
+    + [Hello Marcus.]
+        -> helloMarcus("Hey! Good to hear from you.")
 
-=== who_is_this ===
-It's me, your friend. Are you coming to the party?
-+ "Yes, I'll be there." -> yes_party
-+ "No, I can't make it." -> no_party
+=== whoIsThis(response) ===
+{response}
+    + [Yes, I'll be there.]
+        -> last("Great! See you there.")
+    + [No, I can't make it.]
+        -> last("Oh, that's a shame. Maybe next time.")
 
-=== hello_marcus ===
-Hey! Good to hear from you.
-+ "What's up?" -> whats_up
-+ "Not much." -> not_much
+=== helloMarcus(response) ===
+{response}
+    + [What's up?]
+        -> last("Just checking in. Wanted to see if you got my message.")
+    + [Not much.]
+        -> last("Alright, talk to you later.")
 
-=== yes_party ===
-Great! See you there.
--> END
+=== last(response) ===
+{response}
 
-=== no_party ===
-Oh, that's a shame. Maybe next time.
--> END
-
-=== whats_up ===
-Just checking in. Wanted to see if you got my message.
--> END
-
-=== not_much ===
-Alright, talk to you later.
 -> END
