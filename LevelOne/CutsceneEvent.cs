@@ -7,6 +7,7 @@ public class CutsceneEvent : MonoBehaviour
     [SerializeField] private GameObject handRemote;
     [SerializeField] private GameObject tableRemote;
     [SerializeField] private AudioSource tvSwitchAudio;
+    [SerializeField] private AudioSource song;
     [SerializeField] private InkDialogueManager dialogueManager;
     [SerializeField] private TextAsset newsInkJSON;
 
@@ -17,6 +18,7 @@ public class CutsceneEvent : MonoBehaviour
         dialogueManager.OnDialogueFinished = OnCutsceneEnd;
         // Start the Ink dialogue
         dialogueManager.StartStory(newsInkJSON);
+        song.Play();
     }
 
     public void GrabRemote()

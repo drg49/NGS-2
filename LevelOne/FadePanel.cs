@@ -57,7 +57,7 @@ public class FadePanel : MonoBehaviour
     {
         showerPlayer.SetActive(false);
         mainPlayer.SetActive(true);
-        Destroy(bathWater);
+        bathWater.SetActive(false);
     }
 
     private IEnumerator StopParticlesAfterAudio(AudioSource audio, ParticleSystem[] particles)

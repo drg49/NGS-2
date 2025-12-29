@@ -15,12 +15,10 @@ public class PauseMenuController : MonoBehaviour
 
     [Header("Settings UI")]
     [SerializeField] private Slider lookSensitivitySlider;
-    [SerializeField] private Toggle dialogueSoundToggle;
 
     private PlayerInputActions inputActions;
 
     public bool IsPaused { get; private set; }
-    public bool IsDialogueSoundEnabled => dialogueSoundToggle.isOn;
     public float LookSensitivity => lookSensitivitySlider.value;
 
     private void Awake()
@@ -29,14 +27,10 @@ public class PauseMenuController : MonoBehaviour
 
         // Load saved settings or defaults
         float savedLookSensitivity = PlayerPrefs.GetFloat("LookSensitivity", 0.1f);
-        bool savedDialogueSound = PlayerPrefs.GetInt("DialogueSoundEnabled", 1) == 1;
 
         // Apply to UI
         if (lookSensitivitySlider != null)
             lookSensitivitySlider.value = savedLookSensitivity;
-
-        if (dialogueSoundToggle != null)
-            dialogueSoundToggle.isOn = savedDialogueSound;
 
         // Apply to player immediately
         if (playerController != null)
@@ -48,12 +42,8 @@ public class PauseMenuController : MonoBehaviour
         inputActions.UI.Enable();
         inputActions.UI.Pause.performed += TogglePause;
 
-        // Hook UI events
         if (lookSensitivitySlider != null)
             lookSensitivitySlider.onValueChanged.AddListener(OnLookSensitivityChanged);
-
-        if (dialogueSoundToggle != null)
-            dialogueSoundToggle.onValueChanged.AddListener(OnDialogueSoundChanged);
     }
 
     private void OnDisable()
@@ -61,12 +51,8 @@ public class PauseMenuController : MonoBehaviour
         inputActions.UI.Pause.performed -= TogglePause;
         inputActions.UI.Disable();
 
-        // Unhook UI events
         if (lookSensitivitySlider != null)
             lookSensitivitySlider.onValueChanged.RemoveListener(OnLookSensitivityChanged);
-
-        if (dialogueSoundToggle != null)
-            dialogueSoundToggle.onValueChanged.RemoveListener(OnDialogueSoundChanged);
     }
 
     private void TogglePause(InputAction.CallbackContext context)
@@ -130,45 +116,28 @@ public class PauseMenuController : MonoBehaviour
     // -------------------- Reset Controls --------------------
     public void ResetControlsToDefault()
     {
-        // Default values
         float defaultLookSensitivity = 0.1f;
-        bool defaultDialogueSound = true;
 
-        // Apply to UI
         if (lookSensitivitySlider != null)
             lookSensitivitySlider.value = defaultLookSensitivity;
 
-        if (dialogueSoundToggle != null)
-            dialogueSoundToggle.isOn = defaultDialogueSound;
-
-        // Apply to player
         if (playerController != null)
             playerController.lookSensitivity = defaultLookSensitivity;
 
-        // Save to PlayerPrefs
         PlayerPrefs.SetFloat("LookSensitivity", defaultLookSensitivity);
-        PlayerPrefs.SetInt("DialogueSoundEnabled", defaultDialogueSound ? 1 : 0);
         PlayerPrefs.Save();
     }
-
 
     public void BackToMenu() => ShowMainMenu();
     public void QuitGame() => Application.Quit();
 
     // -------------------- Settings Callbacks --------------------
-
     private void OnLookSensitivityChanged(float newValue)
     {
         if (playerController != null)
             playerController.lookSensitivity = newValue;
 
         PlayerPrefs.SetFloat("LookSensitivity", newValue);
-        PlayerPrefs.Save();
-    }
-
-    private void OnDialogueSoundChanged(bool enabled)
-    {
-        PlayerPrefs.SetInt("DialogueSoundEnabled", enabled ? 1 : 0);
         PlayerPrefs.Save();
     }
 }

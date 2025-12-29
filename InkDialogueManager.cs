@@ -16,9 +16,8 @@ public class InkDialogueManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI optionTwoText;
     [SerializeField] private GameObject reticle;
 
-
     [Header("Typewriter Settings")]
-    [SerializeField] private float textSpeed = 0.023f;
+    [SerializeField] private float textSpeed = 0.01f;
 
     [Header("Pause")]
     [SerializeField] private PauseMenuController pauseMenu;
@@ -106,18 +105,9 @@ public class InkDialogueManager : MonoBehaviour
         isTyping = true;
         dialogueText.text = "";
 
-        var typingSound = GetComponent<ProceduralTypingSound>();
-
         foreach (char c in line)
         {
             dialogueText.text += c;
-
-            // Play typing sound if enabled in pause menu
-            if (!char.IsWhiteSpace(c) && pauseMenu != null && pauseMenu.IsDialogueSoundEnabled)
-            {
-                typingSound?.PlaySound();
-            }
-
             yield return new WaitForSeconds(textSpeed);
         }
 
