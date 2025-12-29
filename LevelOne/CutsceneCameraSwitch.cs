@@ -11,7 +11,7 @@ public class CutsceneCameraSwitch : MonoBehaviour
     {
         if (!other.CompareTag("NPC")) return;
 
-        cutsceneCameraOne.SetActive(false);
+        Destroy(cutsceneCameraOne);
         cutsceneCameraTwo.SetActive(true);
 
         GetComponent<Collider>().enabled = false;

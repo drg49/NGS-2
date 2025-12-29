@@ -23,17 +23,8 @@ public class TriggerShowInstruction : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         hasTriggered = true;
-        Invoke(nameof(Show), delayBeforeShow);
-    }
 
-    private void Show()
-    {
-        // Show instructional text
-        InstructionTextAlphaFader fader = FindFirstObjectByType<InstructionTextAlphaFader>();
-        if (fader != null)
-            fader.Show(instructionMessage);
-
-        // Show objectives if needed
+        // Set objectives immediately
         if (showObjectives && objectives.Count > 0)
         {
             if (objectivesController != null)
@@ -46,5 +37,14 @@ public class TriggerShowInstruction : MonoBehaviour
                 Debug.LogError("ObjectivesController not assigned on trigger!");
             }
         }
+
+        // Delay only the instructional text
+        Invoke(nameof(ShowInstructionText), delayBeforeShow);
+    }
+
+    private void ShowInstructionText()
+    {
+        InstructionTextAlphaFader fader = FindFirstObjectByType<InstructionTextAlphaFader>();
+        fader.Show(instructionMessage);
     }
 }

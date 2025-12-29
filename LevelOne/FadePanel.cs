@@ -12,6 +12,8 @@ public class FadePanel : MonoBehaviour
 
     [Header("Game Objects")]
     [SerializeField] private GameObject mainPlayer;
+    [SerializeField] private GameObject npc;
+    [SerializeField] private GameObject cutsceneCameraTwo;
     [SerializeField] private GameObject showerPlayer;
     [SerializeField] private GameObject bathWater;
     [SerializeField] private GameObject cellphoneOff;
@@ -57,7 +59,14 @@ public class FadePanel : MonoBehaviour
     {
         showerPlayer.SetActive(false);
         mainPlayer.SetActive(true);
-        bathWater.SetActive(false);
+        Destroy(bathWater);
+    }
+
+    public void ExitCutscene()
+    {
+        npc.SetActive(false);
+        Destroy(cutsceneCameraTwo);
+        mainPlayer.SetActive(true);
     }
 
     private IEnumerator StopParticlesAfterAudio(AudioSource audio, ParticleSystem[] particles)
