@@ -15,5 +15,6 @@ public class StartCutscene : MonoBehaviour
         reticle.SetActive(false);
         npcPlayer.SetActive(true);
         cutsceneCameraOne.SetActive(true);
+        Destroy(gameObject);
     }
 }

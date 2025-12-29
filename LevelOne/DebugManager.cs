@@ -25,7 +25,7 @@ public class DebugManager : MonoBehaviour
         // Start the Ink dialogue
         //dialogueManager.OnDialogueFinished = ConvoDone;
         //dialogueManager.StartStory(marcusInkJSON);
-        fader.SetActive(false);
+        //fader.SetActive(false);
         npc.SetActive(true);
         cutscenePath.SetActive(true);
         cutsceneCamera.SetActive(true);

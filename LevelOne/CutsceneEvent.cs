@@ -6,6 +6,7 @@ public class CutsceneEvent : MonoBehaviour
 {
     [SerializeField] private VideoPlayer tvVideoPlayer;
     [SerializeField] private GameObject handRemote;
+    [SerializeField] private GameObject reticle;
     [SerializeField] private GameObject tableRemote;
     [SerializeField] private AudioSource tvSwitchAudio;
     [SerializeField] private AudioSource song;
@@ -38,6 +39,7 @@ public class CutsceneEvent : MonoBehaviour
 
     private void OnCutsceneEnd()
     {
+        reticle.SetActive(false);
         fadeAnimator.SetTrigger("FadeInOutPostCutscene");
     }
 }

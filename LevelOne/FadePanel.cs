@@ -18,6 +18,11 @@ public class FadePanel : MonoBehaviour
     [SerializeField] private GameObject bathWater;
     [SerializeField] private GameObject cellphoneOff;
     [SerializeField] private GameObject cellphoneOn;
+    [SerializeField] private GameObject reticle;
+
+    [SerializeField] private Transform postCutsceneSpawn;
+
+    public RenderTexture renderTexture;
 
     [Header("Audio & Particles")]
     [SerializeField] private AudioSource showerAudio;
@@ -65,8 +70,20 @@ public class FadePanel : MonoBehaviour
     public void ExitCutscene()
     {
         npc.SetActive(false);
-        Destroy(cutsceneCameraTwo);
         mainPlayer.SetActive(true);
+        Destroy(cutsceneCameraTwo);
+        reticle.SetActive(true);
+        var controller = mainPlayer.GetComponent<CharacterController>();
+        controller.enabled = false;
+        mainPlayer.transform.SetPositionAndRotation(
+            postCutsceneSpawn.position,
+            postCutsceneSpawn.rotation
+        );
+        controller.enabled = true;
+        RenderTexture activeRT = RenderTexture.active;
+        RenderTexture.active = renderTexture;
+        GL.Clear(true, true, Color.black);
+        RenderTexture.active = activeRT;
     }
 
     private IEnumerator StopParticlesAfterAudio(AudioSource audio, ParticleSystem[] particles)
