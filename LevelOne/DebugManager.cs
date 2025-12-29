@@ -9,6 +9,8 @@ public class DebugManager : MonoBehaviour
     [SerializeField] private InkDialogueManager dialogueManager; // assign in inspector
     [SerializeField] private TextAsset marcusInkJSON;
     public GameObject cutsceneCamera;
+    public GameObject cutscenePath;
+    public GameObject npc;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -24,6 +26,8 @@ public class DebugManager : MonoBehaviour
         //dialogueManager.OnDialogueFinished = ConvoDone;
         //dialogueManager.StartStory(marcusInkJSON);
         fader.SetActive(false);
+        npc.SetActive(true);
+        cutscenePath.SetActive(true);
         cutsceneCamera.SetActive(true);
     }
 

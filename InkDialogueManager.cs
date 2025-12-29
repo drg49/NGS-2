@@ -18,7 +18,7 @@ public class InkDialogueManager : MonoBehaviour
 
 
     [Header("Typewriter Settings")]
-    [SerializeField] private float textSpeed = 0.05f;
+    [SerializeField] private float textSpeed = 0.023f;
 
     [Header("Pause")]
     [SerializeField] private PauseMenuController pauseMenu;
