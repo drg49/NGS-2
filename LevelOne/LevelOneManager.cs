@@ -13,10 +13,15 @@ public class LevelOneManager : MonoBehaviour
 
     [Header("Pause Reference")]
     [SerializeField] private PauseMenuController pauseMenu; // Assign in Inspector
+    public RenderTexture renderTexture;
 
     private void Awake()
     {
         inputActions = new PlayerInputActions();
+        RenderTexture activeRT = RenderTexture.active;
+        RenderTexture.active = renderTexture;
+        GL.Clear(true, true, Color.black);
+        RenderTexture.active = activeRT;
     }
 
     private void OnEnable()
