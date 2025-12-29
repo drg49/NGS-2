@@ -7,6 +7,7 @@ public class CellphoneInteract : Interactable
 {
     [SerializeField] private GameObject marcusPhoneCall;
     [SerializeField] private GameObject ringtone;
+    [SerializeField] private GameObject cutsceneTrigger;
     [SerializeField] private AudioSource phonePickup;
     [SerializeField] private InkDialogueManager dialogueManager;
     [SerializeField] private TextAsset marcusInkJSON;
@@ -27,7 +28,6 @@ public class CellphoneInteract : Interactable
 
     public override void Interact()
     {
-        Debug.Log("Phone Answered");
         ringtone.SetActive(false);
         phonePickup.Play();
         marcusPhoneCall.SetActive(true);
@@ -47,6 +47,7 @@ public class CellphoneInteract : Interactable
 
     private void OnPhoneCallFinished()
     {
+        cutsceneTrigger.SetActive(true);
         phonePickup.Play();
         marcusPhoneCall.SetActive(false);
         fadeAnimator.SetTrigger("FadeInOutPostBath");
