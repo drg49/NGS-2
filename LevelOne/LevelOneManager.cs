@@ -41,9 +41,9 @@ public class LevelOneManager : MonoBehaviour
         if (pauseMenu != null && pauseMenu.IsPaused)
             return;
 
-        // Switch objects
+        // CRITICAL, NEED TO DESTROY ACTIVE PLAYER FIRST, SINCE IT HAS ACTIVE CAMERA
+        Destroy(bedPlayer);
         player.SetActive(true);
-        bedPlayer.SetActive(false);
 
         // Clear interaction text
         if (interactionText != null)
