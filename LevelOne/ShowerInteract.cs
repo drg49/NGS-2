@@ -18,7 +18,7 @@ public class ShowerInteract : Interactable
             objectivesController.SetObjectives(
                 new List<string>
                 {
-                    "Make coffee", // completed
+                    "Make and drink coffee", // completed
                     "Wash up", // completed
                     ""
                 },
