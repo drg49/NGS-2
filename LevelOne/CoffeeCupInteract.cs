@@ -7,6 +7,9 @@ public class CoffeeCupInteract : Interactable
     public override void Interact()
     {
         Destroy(fpsCoffeePot);
+        // Disable coffee cup click
+        BoxCollider box = GetComponent<BoxCollider>();
+        box.enabled = false;
     }
 
 }

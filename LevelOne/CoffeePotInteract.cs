@@ -20,6 +20,7 @@ public class CoffeePotInteract : Interactable
             boilingWater.Play();
             steam.Play();
 
+            // Disable coffee pot click
             BoxCollider box = GetComponent<BoxCollider>();
             box.enabled = false;
 
@@ -42,6 +43,7 @@ public class CoffeePotInteract : Interactable
 
         steam.Stop();
 
+        // Add back coffee pot click
         box.enabled = true;
 
         interactionText = "Grab Coffee Pot";
