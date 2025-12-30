@@ -18,10 +18,11 @@ public class ShowerInteract : Interactable
             objectivesController.SetObjectives(
                 new List<string>
                 {
-                    "Wash up", // completed objective (grayed out)
-                    "" // next active objective
+                    "Make coffee", // completed
+                    "Wash up", // completed
+                    ""
                 },
-                1
+                2
             );
         }
     }

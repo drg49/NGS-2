@@ -19,10 +19,13 @@ public class FadePanel : MonoBehaviour
     [SerializeField] private GameObject cellphoneOff;
     [SerializeField] private GameObject cellphoneOn;
     [SerializeField] private GameObject reticle;
+    [SerializeField] private GameObject doorInteract;
+    [SerializeField] private GameObject tvOn;
+    [SerializeField] private GameObject tvOff;
 
     [SerializeField] private Transform postCutsceneSpawn;
 
-    public RenderTexture renderTexture;
+    [SerializeField] private InstructionSequence leaveHouseInstruction;
 
     [Header("Audio & Particles")]
     [SerializeField] private AudioSource showerAudio;
@@ -72,6 +75,8 @@ public class FadePanel : MonoBehaviour
         npc.SetActive(false);
         mainPlayer.SetActive(true);
         Destroy(cutsceneCameraTwo);
+        Destroy(tvOn);
+        tvOff.SetActive(true);
         reticle.SetActive(true);
         var controller = mainPlayer.GetComponent<CharacterController>();
         controller.enabled = false;
@@ -80,10 +85,16 @@ public class FadePanel : MonoBehaviour
             postCutsceneSpawn.rotation
         );
         controller.enabled = true;
-        RenderTexture activeRT = RenderTexture.active;
-        RenderTexture.active = renderTexture;
-        GL.Clear(true, true, Color.black);
-        RenderTexture.active = activeRT;
+        // Displays after 5 seconds
+        leaveHouseInstruction.Play();
+        // Activates after 5 seconds
+        StartCoroutine(ActivateDoorExit());
+    }
+
+    private IEnumerator ActivateDoorExit()
+    {
+        yield return new WaitForSeconds(5f);
+        doorInteract.SetActive(true);
     }
 
     private IEnumerator StopParticlesAfterAudio(AudioSource audio, ParticleSystem[] particles)

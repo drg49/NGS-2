@@ -1,19 +1,8 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class TriggerShowInstruction : MonoBehaviour
 {
-    [Header("Instruction")]
-    [SerializeField] private string instructionMessage = "";
-    [SerializeField] private float delayBeforeShow = 4f;
-
-    [Header("Objectives (optional)")]
-    [SerializeField] private bool showObjectives = false;
-    [SerializeField] private List<string> objectives = new List<string>();
-    [SerializeField] private int startActiveIndex = 0;
-
-    [Header("References")]
-    [SerializeField] private PauseMenuObjectivesController objectivesController;
+    [SerializeField] private InstructionSequence instructionSequence;
 
     private bool hasTriggered = false;
 
@@ -24,27 +13,13 @@ public class TriggerShowInstruction : MonoBehaviour
 
         hasTriggered = true;
 
-        // Set objectives immediately
-        if (showObjectives && objectives.Count > 0)
+        if (instructionSequence != null)
         {
-            if (objectivesController != null)
-            {
-                objectivesController.SetObjectives(objectives, startActiveIndex);
-                objectivesController.ShowPanel(true);
-            }
-            else
-            {
-                Debug.LogError("ObjectivesController not assigned on trigger!");
-            }
+            instructionSequence.Play();
         }
-
-        // Delay only the instructional text
-        Invoke(nameof(ShowInstructionText), delayBeforeShow);
-    }
-
-    private void ShowInstructionText()
-    {
-        InstructionTextAlphaFader fader = FindFirstObjectByType<InstructionTextAlphaFader>();
-        fader.Show(instructionMessage);
+        else
+        {
+            Debug.LogError("InstructionSequence not assigned on TriggerShowInstruction!");
+        }
     }
 }
