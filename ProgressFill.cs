@@ -1,9 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System;
 
 public class ProgressFill : MonoBehaviour
 {
+    public event Action OnFillStarted;
+    public event Action OnFillCanceled;
+    public event Action OnFillCompleted;
+
     [Header("Input")]
     [SerializeField] protected PlayerInputActions inputActions;
 
@@ -11,10 +16,7 @@ public class ProgressFill : MonoBehaviour
     [SerializeField] protected float duration = 10f;
 
     [Header("UI")]
-    [Tooltip("Root object of the progress bar (e.g. DrinkProgress)")]
     [SerializeField] protected GameObject progressBarRoot;
-
-    [Tooltip("Fill image inside the progress bar")]
     [SerializeField] protected Image progressFill;
 
     protected float progress;
@@ -31,21 +33,19 @@ public class ProgressFill : MonoBehaviour
     {
         ResetProgress();
 
-        // Show progress bar
         if (progressBarRoot != null)
             progressBarRoot.SetActive(true);
 
-        // Enable input
         inputActions.Player.Enable();
 
-        inputActions.Player.Interact.started += OnInteractStarted;
-        inputActions.Player.Interact.canceled += OnInteractCanceled;
+        inputActions.Player.Interact.started += HandleInteractStarted;
+        inputActions.Player.Interact.canceled += HandleInteractCanceled;
     }
 
     protected virtual void OnDisable()
     {
-        inputActions.Player.Interact.started -= OnInteractStarted;
-        inputActions.Player.Interact.canceled -= OnInteractCanceled;
+        inputActions.Player.Interact.started -= HandleInteractStarted;
+        inputActions.Player.Interact.canceled -= HandleInteractCanceled;
 
         inputActions.Player.Disable();
 
@@ -69,14 +69,22 @@ public class ProgressFill : MonoBehaviour
         }
     }
 
-    protected virtual void OnInteractStarted(InputAction.CallbackContext ctx)
+    private void HandleInteractStarted(InputAction.CallbackContext ctx)
     {
+        if (isComplete)
+            return;
+
         isHolding = true;
+        OnFillStarted?.Invoke();
     }
 
-    protected virtual void OnInteractCanceled(InputAction.CallbackContext ctx)
+    private void HandleInteractCanceled(InputAction.CallbackContext ctx)
     {
+        if (!isHolding)
+            return;
+
         isHolding = false;
+        OnFillCanceled?.Invoke();
     }
 
     protected virtual void Complete()
@@ -89,6 +97,8 @@ public class ProgressFill : MonoBehaviour
 
         if (progressBarRoot != null)
             progressBarRoot.SetActive(false);
+
+        OnFillCompleted?.Invoke();
     }
 
     protected virtual void ResetProgress()
