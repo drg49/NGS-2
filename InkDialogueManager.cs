@@ -56,6 +56,14 @@ public class InkDialogueManager : MonoBehaviour
         inputActions.Dialogue.Submit.performed -= OnSubmitOption;
     }
 
+    private void OnDisable()
+    {
+        inputActions.Player.Disable();
+        inputActions.Dialogue.Disable();
+        inputActions.Dialogue.Submit.performed -= OnSubmitOption;
+    }
+
+
     private void Start()
     {
         optionOneGO.SetActive(false);
