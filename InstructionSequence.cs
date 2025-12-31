@@ -16,7 +16,23 @@ public class InstructionSequence : MonoBehaviour
     [Header("References")]
     [SerializeField] private PauseMenuObjectivesController objectivesController;
 
+    [Header("Optional Activation")]
+    [Tooltip("Assign GameObjects to activate when the instruction shows.")]
+    [SerializeField] private GameObject[] optionalGameObjectsToActivate;
+
+    [Header("Play Settings")]
+    [Tooltip("If true, the sequence will automatically play on Awake.")]
+    [SerializeField] private bool playOnAwake = false; // default to false
+
     private bool hasPlayed = false;
+
+    private void Awake()
+    {
+        if (playOnAwake)
+        {
+            Play();
+        }
+    }
 
     /// <summary>
     /// Call this from ANY script to trigger the sequence.
@@ -48,10 +64,21 @@ public class InstructionSequence : MonoBehaviour
     {
         yield return new WaitForSeconds(delayBeforeShow);
 
+        // Show instruction text
         InstructionTextAlphaFader fader = FindFirstObjectByType<InstructionTextAlphaFader>();
         if (fader != null)
         {
             fader.Show(instructionMessage);
+        }
+
+        // Activate optional GameObjects
+        if (optionalGameObjectsToActivate != null)
+        {
+            foreach (GameObject go in optionalGameObjectsToActivate)
+            {
+                if (go != null)
+                    go.SetActive(true);
+            }
         }
     }
 
