@@ -66,9 +66,9 @@ public class FadePanel : MonoBehaviour
 
     public void ExitBathtub()
     {
-        showerPlayer.SetActive(false);
-        mainPlayer.SetActive(true);
+        Destroy(showerPlayer);
         Destroy(bathWater);
+        mainPlayer.SetActive(true);
     }
 
     public void ExitCutscene()

@@ -13,18 +13,25 @@ public class DebugManager : MonoBehaviour
     public GameObject cutsceneCamera;
     public GameObject cutscenePath;
     public GameObject npc;
+    [SerializeField] private Animator fadeAnimator;
+    public GameObject doorInteract;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        bedPlayer.SetActive(false);
+        //fadeAnimator.SetTrigger("FadeInOut");
+        //fadeAnimator.SetTrigger("FadeInOutPostBath");
+        //fadeAnimator.SetTrigger("FadeInOutPostCutscene");
+        //doorInteract.SetActive(true);
+        //bedPlayer.SetActive(false);
         player.SetActive(true);
-        //StartCoroutine(WaitAndLoad());
+        StartCoroutine(WaitAndLoad());
         //player.SetActive(false);
         //showerPlayer.SetActive(true);
         // Start the Ink dialogue
         //dialogueManager.OnDialogueFinished = ConvoDone;
         //dialogueManager.StartStory(marcusInkJSON);
-        fader.SetActive(false);
+        //fader.SetActive(false);
         //npc.SetActive(true);
         //cutscenePath.SetActive(true);
         //cutsceneCamera.SetActive(true);
