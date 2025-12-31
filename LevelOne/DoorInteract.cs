@@ -20,7 +20,7 @@ public class DoorInteract : Interactable
                 {
                     "Make and drink coffee", // completed
                     "Wash up", // completed
-                    "Leave your apartment",
+                    "Leave your apartment", // completed
                     ""
                 },
                 3
@@ -31,7 +31,7 @@ public class DoorInteract : Interactable
     private void GoOutside()
     {
         instructionalText.text = "";
-        //fadeAnimator.SetTrigger("FadeInOut");
+        fadeAnimator.SetTrigger("FadeToLevelTwo");
         Destroy(gameObject);
     }
 }

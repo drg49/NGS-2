@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class FadePanel : MonoBehaviour
 {
@@ -95,6 +96,11 @@ public class FadePanel : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         doorInteract.SetActive(true);
+    }
+
+    public void LoadLevelTwo()
+    {
+        SceneManager.LoadScene("SecondLevel_Street");
     }
 
     private IEnumerator StopParticlesAfterAudio(AudioSource audio, ParticleSystem[] particles)

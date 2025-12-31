@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DebugManager : MonoBehaviour
 {
@@ -16,6 +18,7 @@ public class DebugManager : MonoBehaviour
     {
         bedPlayer.SetActive(false);
         player.SetActive(true);
+        //StartCoroutine(WaitAndLoad());
         //player.SetActive(false);
         //showerPlayer.SetActive(true);
         // Start the Ink dialogue
@@ -25,5 +28,11 @@ public class DebugManager : MonoBehaviour
         //npc.SetActive(true);
         //cutscenePath.SetActive(true);
         //cutsceneCamera.SetActive(true);
+    }
+
+    private IEnumerator WaitAndLoad()
+    {
+        yield return new WaitForSeconds(5f);
+        SceneManager.LoadScene("SecondLevel_Street");
     }
 }
