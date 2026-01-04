@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(Rigidbody))]
 public class PathWalker : MonoBehaviour
 {
     [Header("Components")]
@@ -13,104 +12,80 @@ public class PathWalker : MonoBehaviour
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private float rotateSpeed = 5f;
     [SerializeField] private bool loopPath = false;
-    [SerializeField] private float waypointReachDistance = 0.1f;
 
     [Header("Footsteps")]
     [SerializeField] private AudioClip[] footstepAudioClips;
     [SerializeField] private float footstepInterval = 0.5f;
 
-    private Rigidbody rb;
     private int currentWaypoint = 0;
     private bool isMoving = true;
     private float footstepTimer;
 
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
-
-        // Required physics configuration
-        rb.useGravity = true;
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
-    }
-
-    void FixedUpdate()
+    void Update()
     {
         if (!isMoving || waypoints.Count == 0)
             return;
 
-        // ?? Prevent player push impulses (CRITICAL)
-        rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-
         Transform target = waypoints[currentWaypoint];
+        Vector3 targetPosition = target.position;
+        Vector3 moveDirection = (targetPosition - transform.position).normalized;
 
-        // Horizontal-only movement vector
-        Vector3 toTarget = target.position - rb.position;
-        Vector3 flatDirection = new Vector3(toTarget.x, 0f, toTarget.z);
-
-        // ===== Rotation (Y only) =====
-        if (flatDirection.sqrMagnitude > 0.001f)
+        // Rotate toward target
+        if (moveDirection != Vector3.zero)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(flatDirection.normalized);
-            rb.MoveRotation(
-                Quaternion.Slerp(
-                    rb.rotation,
-                    targetRotation,
-                    rotateSpeed * Time.fixedDeltaTime
-                )
+            Quaternion lookRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                lookRotation,
+                rotateSpeed * Time.deltaTime
             );
         }
 
-        // ===== Movement =====
-        rb.MovePosition(
-            rb.position + flatDirection.normalized * moveSpeed * Time.fixedDeltaTime
+        // Move
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPosition,
+            moveSpeed * Time.deltaTime
         );
 
-        // ===== Animation =====
-        animator.SetBool("IsMoving", true);
-
-        // ===== Footsteps =====
+        // Footsteps (only while moving)
         HandleFootsteps();
 
-        // ===== Waypoint check (XZ plane ONLY) =====
-        Vector3 flatCurrent = new Vector3(rb.position.x, 0f, rb.position.z);
-        Vector3 flatTarget = new Vector3(target.position.x, 0f, target.position.z);
-
-        if ((flatTarget - flatCurrent).sqrMagnitude <= waypointReachDistance * waypointReachDistance)
+        float distance = Vector3.Distance(transform.position, targetPosition);
+        if (distance < 0.05f)
         {
-            AdvanceWaypoint();
-        }
-    }
-
-    private void AdvanceWaypoint()
-    {
-        if (currentWaypoint < waypoints.Count - 1)
-        {
-            currentWaypoint++;
-        }
-        else if (loopPath)
-        {
-            currentWaypoint = 0;
+            if (currentWaypoint < waypoints.Count - 1)
+            {
+                currentWaypoint++;
+            }
+            else
+            {
+                if (loopPath)
+                {
+                    currentWaypoint = 0;
+                }
+                else
+                {
+                    animator.SetBool("IsMoving", false);
+                    isMoving = false;
+                    footstepTimer = 0f;
+                }
+            }
         }
         else
         {
-            animator.SetBool("IsMoving", false);
-            isMoving = false;
-            footstepTimer = 0f;
+            animator.SetBool("IsMoving", true);
         }
     }
 
     private void HandleFootsteps()
     {
-        if (!isMoving || footstepAudioClips.Length == 0)
-            return;
-
-        footstepTimer -= Time.fixedDeltaTime;
+        footstepTimer -= Time.deltaTime;
 
         if (footstepTimer <= 0f)
         {
-            audioSource.PlayOneShot(
-                footstepAudioClips[Random.Range(0, footstepAudioClips.Length)]
-            );
+            int index = Random.Range(0, footstepAudioClips.Length);
+            audioSource.PlayOneShot(footstepAudioClips[index]);
             footstepTimer = footstepInterval;
         }
     }
