@@ -38,7 +38,7 @@ Hey sorry, did I call too early?
 === helloMarcus(response) ===
 {response}
     + [Yeah, I remember.]
-        -> goingLunch("Good. Same place as usual - Lucca's Pizza Shop.")
+        -> goingLunch("Good. Same place as usual - Big Burger.")
     + [I was thinking about skipping.]
         -> hesitantLunch("Not today. We need you there.")
 
@@ -47,14 +47,14 @@ Hey sorry, did I call too early?
     + [What time are we meeting?]
         -> lunchTime("About an hour. Gives you time to wake up.")
     + [Where again?]
-        -> lunchTime("Lucca's Pizza Shop, the best in town.")
+        -> lunchTime("Big Burger restaurant, the best in town.")
 
 === lunchTime(response) ===
 {response}
     + [Alright, I'll head out soon.]
-        -> final("Perfect. I'll see you at Lucca's.")
+        -> final("Perfect. I'll see you at the Big Burger.")
     + [Give me a minute to get ready.]
-        -> final("Take your time. Just don't be late - we'll be at Lucca's.")
+        -> final("Take your time. Just don't be late - we'll be at the Big Burger.")
 
 === final(response) ===
 {response}
