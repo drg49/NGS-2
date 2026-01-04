@@ -8,7 +8,7 @@ public class PathWalker : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
 
     [Header("Path Settings")]
-    [SerializeField] private List<Transform> waypoints;
+    [SerializeField] private Transform waypointsParent; // Assign the parent object
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private float rotateSpeed = 5f;
     [SerializeField] private bool loopPath = false;
@@ -17,9 +17,23 @@ public class PathWalker : MonoBehaviour
     [SerializeField] private AudioClip[] footstepAudioClips;
     [SerializeField] private float footstepInterval = 0.5f;
 
+    private List<Transform> waypoints = new List<Transform>(); // now private
     private int currentWaypoint = 0;
     private bool isMoving = true;
     private float footstepTimer;
+
+    void Awake()
+    {
+        // Populate waypoints from children automatically
+        if (waypointsParent != null)
+        {
+            waypoints.Clear();
+            foreach (Transform child in waypointsParent)
+            {
+                waypoints.Add(child);
+            }
+        }
+    }
 
     void Update()
     {
@@ -82,7 +96,7 @@ public class PathWalker : MonoBehaviour
     {
         footstepTimer -= Time.deltaTime;
 
-        if (footstepTimer <= 0f)
+        if (footstepTimer <= 0f && footstepAudioClips.Length > 0)
         {
             int index = Random.Range(0, footstepAudioClips.Length);
             audioSource.PlayOneShot(footstepAudioClips[index]);
