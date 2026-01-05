@@ -16,6 +16,7 @@ public class NPCDialogue : Interactable
     {
         base.Interact();
 
+        player.SetActive(false);
         cameraToActivate.gameObject.SetActive(true);
 
         dialogueManager.StartStory(inkJSON);        

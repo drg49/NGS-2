@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class NPC03Dialogue : NPCDialogue
 {
+    [SerializeField] private GameObject reticle;
+
     private void OnEnable()
     {
         if (dialogueManager != null)
@@ -14,17 +16,19 @@ public class NPC03Dialogue : NPCDialogue
             dialogueManager.OnDialogueFinished -= DialogueEnded;
     }
 
+    // Any custom behavior you want right when interaction starts
     public override void Interact()
     {
         base.Interact();
-        // Any custom behavior you want right when interaction starts
+        // We only want this NPC to be interactable once
+        gameObject.layer = LayerMask.NameToLayer("Default");
     }
 
+    // Called automatically when the Ink dialogue finishes
     private void DialogueEnded()
     {
-        // Called automatically when the Ink dialogue finishes
         Debug.Log($"NPC03 Dialogue ended!");
-
-        // You can also trigger custom events, give rewards, etc.
+        // Keep reticle disabled since we are going to keep the camera active for a bit
+        reticle.SetActive(false);
     }
 }
