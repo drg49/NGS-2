@@ -3,6 +3,7 @@ using UnityEngine;
 public class NPC03Dialogue : NPCDialogue
 {
     [SerializeField] private GameObject reticle;
+    [SerializeField] private GameObject instructionTwo;
 
     private void OnEnable()
     {
@@ -22,6 +23,7 @@ public class NPC03Dialogue : NPCDialogue
         base.Interact();
         // We only want this NPC to be interactable once
         gameObject.layer = LayerMask.NameToLayer("Default");
+        Destroy(instructionTwo);
     }
 
     // Called automatically when the Ink dialogue finishes
