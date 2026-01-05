@@ -15,7 +15,13 @@ public class IndoorAmbienceZone : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
+        // Switch ambience
         ambience?.EnterIndoor();
+
+        // Switch player footsteps
+        FirstPersonController playerController = other.GetComponent<FirstPersonController>();
+        if (playerController != null)
+            playerController.SetFootsteps(true); // use secondary (indoor) footsteps
     }
 
     private void OnTriggerExit(Collider other)
@@ -23,6 +29,12 @@ public class IndoorAmbienceZone : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
+        // Switch ambience back
         ambience?.ExitIndoor();
+
+        // Switch player footsteps back
+        FirstPersonController playerController = other.GetComponent<FirstPersonController>();
+        if (playerController != null)
+            playerController.SetFootsteps(false); // revert to default (outdoor) footsteps
     }
 }

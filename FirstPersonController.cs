@@ -17,9 +17,13 @@ public class FirstPersonController : MonoBehaviour
 
     [Header("Footstep Settings")]
     public AudioSource footstepAudio;
-    public AudioClip[] walkFootstepClips;
     public float walkStepRate = 0.5f;
     public float runStepRate = 0.35f;
+
+    [Header("Footstep Surfaces")]
+    [SerializeField] private AudioClip[] defaultFootsteps;   // default outdoor
+    [SerializeField] private AudioClip[] secondaryFootsteps; // indoor / alternate
+    private AudioClip[] currentFootsteps;
 
     private CharacterController controller;
     private PlayerInputActions inputActions;
@@ -64,6 +68,9 @@ public class FirstPersonController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        // Initialize default footsteps
+        currentFootsteps = defaultFootsteps;
     }
 
     private void Update()
@@ -124,15 +131,24 @@ public class FirstPersonController : MonoBehaviour
 
     private void PlayFootstep(bool running)
     {
-        if (!footstepAudio || walkFootstepClips.Length == 0) return;
+        if (!footstepAudio || currentFootsteps == null || currentFootsteps.Length == 0) return;
 
-        AudioClip clip = walkFootstepClips[Random.Range(0, walkFootstepClips.Length)];
+        AudioClip clip = currentFootsteps[Random.Range(0, currentFootsteps.Length)];
 
         footstepAudio.pitch = running
             ? Random.Range(1.0f, 1.15f)
             : Random.Range(0.9f, 1.05f);
 
         footstepAudio.PlayOneShot(clip);
+    }
+
+    /// <summary>
+    /// Switch between default and secondary footsteps
+    /// </summary>
+    /// <param name="useSecondary">true = secondary (indoor), false = default (outdoor)</param>
+    public void SetFootsteps(bool useSecondary)
+    {
+        currentFootsteps = useSecondary ? secondaryFootsteps : defaultFootsteps;
     }
 
     // Public method to enable/disable player during pause
