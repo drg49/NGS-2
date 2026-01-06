@@ -1,7 +1,7 @@
 ﻿-> start
 
 === start ===
-"Welcome to Big Burger. What do you want?"
+Welcome to Big Burger. What do you want?
     + [Beef Burger, please.]
         -> orderBeef("Beef Burger. Alright. Do you want it plain or with the works?")
     + [Chicken Sandwich, please.]

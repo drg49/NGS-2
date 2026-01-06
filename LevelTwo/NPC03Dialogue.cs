@@ -29,8 +29,11 @@ public class NPC03Dialogue : NPCDialogue
     // Called automatically when the Ink dialogue finishes
     private void DialogueEnded()
     {
-        Debug.Log($"NPC03 Dialogue ended!");
         // Keep reticle disabled since we are going to keep the camera active for a bit
         reticle.SetActive(false);
+
+        // Enable NPC Path Walker
+        PathWalker pathWalker = GetComponent<PathWalker>();
+        pathWalker.enabled = true;
     }
 }
