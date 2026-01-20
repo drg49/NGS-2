@@ -12,11 +12,12 @@ public class LevelTwoFadePanel : MonoBehaviour
     [SerializeField] private GameObject sitDownTray;
     [SerializeField] private List<GameObject> sitDownTrayObjects;
     [SerializeField] private GameObject sitDownCamera;
-    [SerializeField] protected InkDialogueManager dialogueManager;
-    [SerializeField] protected TextAsset sitDownConvoJSON;
-    [SerializeField] protected GameObject pianoSong;
-    [SerializeField] protected GameObject ambienceManager;
-    [SerializeField] protected GameObject creep;
+    [SerializeField] private InkDialogueManager dialogueManager;
+    [SerializeField] private TextAsset sitDownConvoJSON;
+    [SerializeField] private GameObject pianoSong;
+    [SerializeField] private GameObject ambienceManager;
+    [SerializeField] private GameObject creep;
+    [SerializeField] private GameObject npcSeven;
 
     // Meet Marcus & Dave at Big Burger
     public void PlayFirstInstruction()
@@ -70,6 +71,7 @@ public class LevelTwoFadePanel : MonoBehaviour
         Destroy(sitDownCamera);
         player.SetActive(true);
         reticle.SetActive(true);
+        npcSeven.SetActive(true);
 
         // Destroy tray objects
         foreach (GameObject obj in sitDownTrayObjects)
