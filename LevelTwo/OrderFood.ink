@@ -10,7 +10,7 @@ Welcome to Big Burger. What do you want?
 === orderBeef(response) ===
 {response}
     + [Plain, thanks.]
-        -> endOrder("Plain. Fine. It'll be ready. Don’t take too long.")
+        -> endOrder("Plain. Fine. It'll be ready. Won't take too long.")
     + [With the works.]
         -> endOrder("Works. Hmph. Hope you like it messy.")
 

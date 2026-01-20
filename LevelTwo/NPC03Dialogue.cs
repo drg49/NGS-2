@@ -6,7 +6,12 @@ public class NPC03Dialogue : NPCDialogue
 {
     [SerializeField] private GameObject reticle;
     [SerializeField] private GameObject instructionTwo;
+    [SerializeField] private GameObject npcCamera;
+    [SerializeField] private GameObject fpsTray;
+    [SerializeField] private GameObject npcTray;
+    [SerializeField] private AudioSource grab;
     [SerializeField] private TextMeshProUGUI instructionalText;
+    [SerializeField] private InstructionSequence instructionThree;
 
     private PlayerInputActions input;
     private bool canListenForHold;
@@ -84,10 +89,18 @@ public class NPC03Dialogue : NPCDialogue
         hasTriggeredHold = true;
         canListenForHold = false;
 
-        Debug.Log("Player held E after animator event.");
         instructionalText.text = "";
 
         DisableHoldListener();
+
+        grab.Play();
+        GetComponent<Animator>().SetTrigger("BackToFemaleIdle");
+        Destroy(npcTray);
+        Destroy(npcCamera);
+        player.SetActive(true);
+        reticle.SetActive(true);
+        fpsTray.SetActive(true);
+        instructionThree.Play();
     }
 
     private void DisableHoldListener()

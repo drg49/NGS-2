@@ -7,17 +7,21 @@ public class LevelOneManager : MonoBehaviour
     private PlayerInputActions inputActions;
 
     [Header("References")]
-    [SerializeField] private GameObject player;      // The player GameObject
-    [SerializeField] private GameObject bedPlayer;   // The bed/bedPlayer GameObject
-    [SerializeField] private TextMeshProUGUI interactionText; // The interaction UI text
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject bedPlayer;
+    [SerializeField] private TextMeshProUGUI interactionText;
 
     [Header("Pause Reference")]
-    [SerializeField] private PauseMenuController pauseMenu; // Assign in Inspector
+    [SerializeField] private PauseMenuController pauseMenu;
     public RenderTexture renderTexture;
+
+    // one-time interaction guard to determine if player has already left the bed
+    private bool hasInteracted = false;
 
     private void Awake()
     {
         inputActions = new PlayerInputActions();
+
         RenderTexture activeRT = RenderTexture.active;
         RenderTexture.active = renderTexture;
         GL.Clear(true, true, Color.black);
@@ -38,15 +42,25 @@ public class LevelOneManager : MonoBehaviour
 
     private void OnInteract(InputAction.CallbackContext context)
     {
+        // Player has already left the bed
+        if (hasInteracted)
+            return;
+
+        // paused
         if (pauseMenu != null && pauseMenu.IsPaused)
             return;
 
-        // CRITICAL, NEED TO DESTROY ACTIVE PLAYER FIRST, SINCE IT HAS ACTIVE CAMERA
+        // mark as consumed
+        hasInteracted = true;
+
+        // CRITICAL: destroy first (active camera)
         Destroy(bedPlayer);
         player.SetActive(true);
 
-        // Clear interaction text
         if (interactionText != null)
             interactionText.text = "";
+
+        // Optional hard-disable input entirely after first use
+        // inputActions.Player.Interact.Disable();
     }
 }
