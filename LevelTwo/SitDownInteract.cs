@@ -23,7 +23,7 @@ public class SitDownInteract : Interactable
                     "Sit down with Marcus & David", // completed
                     ""
                 },
-                2
+                3
             );
         }
     }

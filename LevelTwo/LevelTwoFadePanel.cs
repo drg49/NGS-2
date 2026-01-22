@@ -18,6 +18,8 @@ public class LevelTwoFadePanel : MonoBehaviour
     [SerializeField] private GameObject ambienceManager;
     [SerializeField] private GameObject creep;
     [SerializeField] private GameObject npcSeven;
+    [SerializeField] private GameObject toiletInteract;
+    [SerializeField] private GameObject toiletPlayer;
 
     // Meet Marcus & Dave at Big Burger
     public void PlayFirstInstruction()
@@ -84,10 +86,17 @@ public class LevelTwoFadePanel : MonoBehaviour
 
         // Clear the list so you don’t keep references to destroyed objects
         sitDownTrayObjects.Clear();
+        toiletInteract.SetActive(true);
     }
 
     public void PlayRestroomInstruction()
     {
         restroomInstruction.Play();
+    }
+
+    public void LeaveToilet()
+    {
+        Destroy(toiletPlayer);
+        player.SetActive(true);
     }
 }

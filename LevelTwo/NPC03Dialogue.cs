@@ -44,7 +44,7 @@ public class NPC03Dialogue : NPCDialogue
     public override void Interact()
     {
         base.Interact();
-
+        // Prevent the NPCs capsule collider from being interactable after it is clicked
         gameObject.layer = LayerMask.NameToLayer("Default");
         Destroy(instructionTwo);
     }
