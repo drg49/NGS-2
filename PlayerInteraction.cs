@@ -6,16 +6,17 @@ using TMPro;
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Camera & Reticle")]
-    [SerializeField] private Camera cam;             // Player camera
-    [SerializeField] private Image reticle;          // UI reticle
-    [SerializeField] private TextMeshProUGUI interactionTextUI; // UI text prompt
+    [SerializeField] private Camera cam;
+    [SerializeField] private Image reticle;
+    [SerializeField] private TextMeshProUGUI interactionTextUI;
 
     [Header("Interaction Settings")]
     [SerializeField] private float maxDistance = 5f;
-    [SerializeField] private LayerMask interactableLayer; // Assign Interactable layer
+    [SerializeField] private LayerMask interactableLayer; // Interactable objects
+    [SerializeField] private LayerMask blockingLayer;     // Walls or other blockers
 
     [Header("Pause Reference")]
-    [SerializeField] private PauseMenuController pauseMenu; // Assign in Inspector
+    [SerializeField] private PauseMenuController pauseMenu;
 
     private PlayerInputActions inputActions;
 
@@ -37,7 +38,6 @@ public class PlayerInteraction : MonoBehaviour
     {
         inputActions.Player.Attack.performed -= OnAttack;
         inputActions.Player.Disable();
-
         ResetUI();
     }
 
@@ -52,20 +52,19 @@ public class PlayerInteraction : MonoBehaviour
         UpdateReticleAndInteractionText();
     }
 
-    /// <summary>
-    /// Updates reticle color and shows interaction text if hovering over an interactable
-    /// </summary>
     private void UpdateReticleAndInteractionText()
     {
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
+        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
+        // Raycast against everything
+        if (Physics.Raycast(ray, out hit, maxDistance))
         {
+            // Check if the hit object is interactable
             Interactable interactable = hit.collider.GetComponent<Interactable>();
             if (interactable != null)
             {
                 reticle.color = Color.red;
-
                 if (interactionTextUI != null)
                 {
                     interactionTextUI.text = interactable.interactionText;
@@ -78,17 +77,16 @@ public class PlayerInteraction : MonoBehaviour
         ResetUI();
     }
 
-    /// <summary>
-    /// Called when Attack input is pressed
-    /// </summary>
     private void OnAttack(InputAction.CallbackContext context)
     {
         if (pauseMenu != null && pauseMenu.IsPaused)
             return;
 
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
+        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
+        // Raycast against everything
+        if (Physics.Raycast(ray, out hit, maxDistance))
         {
             Interactable interactable = hit.collider.GetComponent<Interactable>();
             if (interactable != null)
@@ -96,9 +94,7 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Resets reticle and interaction UI
-    /// </summary>
+
     private void ResetUI()
     {
         if (reticle != null)
