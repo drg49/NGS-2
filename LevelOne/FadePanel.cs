@@ -13,6 +13,7 @@ public class FadePanel : MonoBehaviour
 
     [Header("Game Objects")]
     [SerializeField] private GameObject mainPlayer;
+    [SerializeField] private GameObject bedPlayer;
     [SerializeField] private GameObject npc;
     [SerializeField] private GameObject cutsceneCameraTwo;
     [SerializeField] private GameObject showerPlayer;
@@ -142,5 +143,11 @@ public class FadePanel : MonoBehaviour
         cellphoneOff.SetActive(false);
         cellphoneOn.SetActive(true);
         ringtone.Play();
+    }
+
+    public void LvlThreeGetInBed()
+    {
+        mainPlayer.SetActive(false);
+        bedPlayer.SetActive(true);
     }
 }

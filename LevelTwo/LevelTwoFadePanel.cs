@@ -110,8 +110,7 @@ public class LevelTwoFadePanel : MonoBehaviour
     {
         // Disable player movement
         FirstPersonController controller = player.GetComponent<FirstPersonController>();
-        if (controller != null)
-            controller.enabled = false;
+        controller.enabled = false;
 
         // Start the coroutine
         StartCoroutine(FadeTextSequence());

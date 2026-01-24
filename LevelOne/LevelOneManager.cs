@@ -55,7 +55,6 @@ public class LevelOneManager : MonoBehaviour
 
     private void SetupLevelOne()
     {
-        Debug.Log("Level 1");
         foreach (GameObject obj in objectsToDestroyOnLevelOne)
         {
             Destroy(obj);
@@ -64,7 +63,6 @@ public class LevelOneManager : MonoBehaviour
 
     private void SetupLevelThree()
     {
-        Debug.Log("Level 3");
         bedPlayer.SetActive(false);
         player.SetActive(true);
         // Level Three Spawn Point
@@ -97,7 +95,8 @@ public class LevelOneManager : MonoBehaviour
     private void OnInteract(InputAction.CallbackContext context)
     {
         // Player has already left the bed
-        if (hasInteracted)
+        // Player is in Lvl3 (can't leave bed)
+        if (hasInteracted || SceneContext.CurrentLevelMode == LevelMode.LevelThree)
             return;
 
         // paused

@@ -30,5 +30,6 @@ public class ChestAnimEvents : MonoBehaviour
     {
         grabAudio.Play();
         Destroy(matches);
+        GetComponent<InstructionSequence>().Play();
     }
 }
