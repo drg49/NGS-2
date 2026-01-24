@@ -14,10 +14,10 @@ public class Lvl2DebugManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        fadeAnimator.SetTrigger("FadeSitDown");
-        fadeAnimator.SetTrigger("FadeLeaveConvo");
-        fadeAnimator.SetTrigger("FadeLeaveToilet");
-        fadeAnimator.SetTrigger("FadeToLevelThree");
+        //fadeAnimator.SetTrigger("FadeSitDown");
+        //fadeAnimator.SetTrigger("FadeLeaveConvo");
+        //fadeAnimator.SetTrigger("FadeLeaveToilet");
+        //fadeAnimator.SetTrigger("FadeToLevelThree");
         ////player.SetActive(false);
         ////toiletPlayer.SetActive(true);
         ////toiletInteract.SetActive(true);
@@ -25,8 +25,8 @@ public class Lvl2DebugManager : MonoBehaviour
         ////sitDownInteract.SetActive(true);
         //leaveRestaurantTrigger.SetActive(true);
 
-        //SceneContext.CurrentLevelMode = LevelMode.LevelThree;
+        SceneContext.CurrentLevelMode = LevelMode.LevelThree;
         // Reuse level 1 scene for level 3
-        //SceneManager.LoadScene("FirstLevel_Apartment");
+        SceneManager.LoadScene("FirstLevel_Apartment");
     }
 }
