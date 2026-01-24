@@ -23,16 +23,16 @@ public class DebugManager : MonoBehaviour
         //fadeAnimator.SetTrigger("FadeInOutPostBath");
         //fadeAnimator.SetTrigger("FadeInOutPostCutscene");
         //doorInteract.SetActive(true);
-        bedPlayer.SetActive(false);
-        player.SetActive(false);
+        //bedPlayer.SetActive(false);
+        //player.SetActive(false);
         //player.SetActive(false);
         //showerPlayer.SetActive(true);
         // Start the Ink dialogue
         //dialogueManager.OnDialogueFinished = ConvoDone;
         //dialogueManager.StartStory(marcusInkJSON);
-        fader.SetActive(false);
-        npc.SetActive(true);
-        cutscenePath.SetActive(true);
-        cutsceneCamera.SetActive(true);
+        //fader.SetActive(false);
+        //npc.SetActive(true);
+        //cutscenePath.SetActive(true);
+        //cutsceneCamera.SetActive(true);
     }
 }

@@ -38,7 +38,7 @@ Hey sorry, did I call too early?
 === helloMarcus(response) ===
 {response}
     + [Yeah, I remember.]
-        -> goingLunch("Good. Same place as usual - Big Burger.")
+        -> goingLunch("Good. We will be getting some burgers.")
     + [I was thinking about skipping.]
         -> hesitantLunch("Not today. We need you there.")
 

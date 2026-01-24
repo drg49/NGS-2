@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelTwoFadePanel : MonoBehaviour
 {
@@ -160,7 +161,8 @@ public class LevelTwoFadePanel : MonoBehaviour
 
     public void GoToLevelThree()
     {
-        Debug.Log("Going to level three");
-        // SceneManager.LoadScene("Level3"); // Uncomment when ready
+        SceneContext.CurrentLevelMode = LevelMode.LevelThree;
+        // Reuse level 1 scene for level 3
+        SceneManager.LoadScene("FirstLevel_Apartment");
     }
 }

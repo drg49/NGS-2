@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +16,10 @@ public class LevelOneManager : MonoBehaviour
     [SerializeField] private PauseMenuController pauseMenu;
     public RenderTexture renderTexture;
 
+    [Header("LevelThree")]
+    [SerializeField] private List<GameObject> objectsToDestroyOnLevelThree;
+    [SerializeField] private Transform levelThreeSpawn;
+
     // one-time interaction guard to determine if player has already left the bed
     private bool hasInteracted = false;
 
@@ -26,6 +31,45 @@ public class LevelOneManager : MonoBehaviour
         RenderTexture.active = renderTexture;
         GL.Clear(true, true, Color.black);
         RenderTexture.active = activeRT;
+    }
+
+    private void Start()
+    {
+        // Scene config happens ON LOAD
+        // Level 1 shares a scene with Level 3
+        switch (SceneContext.CurrentLevelMode)
+        {
+            case LevelMode.LevelThree:
+                SetupLevelThree();
+                break;
+
+            case LevelMode.LevelOne:
+            default:
+                SetupLevelOne();
+                break;
+        }
+    }
+
+    private void SetupLevelOne()
+    {
+        Debug.Log("Level 1");
+    }
+
+    private void SetupLevelThree()
+    {
+        Debug.Log("Level 3");
+        bedPlayer.SetActive(false);
+        player.SetActive(true);
+        // Level Three Spawn Point
+        player.transform.SetPositionAndRotation(
+            levelThreeSpawn.position,
+            levelThreeSpawn.rotation
+        );
+        // Destroy Level One Events & Objects
+        foreach (GameObject obj in objectsToDestroyOnLevelThree)
+        {
+            Destroy(obj);
+        }
     }
 
     private void OnEnable()
@@ -59,8 +103,5 @@ public class LevelOneManager : MonoBehaviour
 
         if (interactionText != null)
             interactionText.text = "";
-
-        // Optional hard-disable input entirely after first use
-        // inputActions.Player.Interact.Disable();
     }
 }

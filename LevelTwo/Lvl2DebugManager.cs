@@ -7,6 +7,7 @@ public class Lvl2DebugManager : MonoBehaviour
     [SerializeField] private GameObject toiletPlayer;
     [SerializeField] private GameObject toiletInteract;
     [SerializeField] private GameObject jumpscareTrigger;
+    [SerializeField] private GameObject leaveRestaurantTrigger;
     [SerializeField] private Animator fadeAnimator;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -19,7 +20,8 @@ public class Lvl2DebugManager : MonoBehaviour
         //player.SetActive(false);
         //toiletPlayer.SetActive(true);
         //toiletInteract.SetActive(true);
-        jumpscareTrigger.SetActive(true);
+        //jumpscareTrigger.SetActive(true);
         //sitDownInteract.SetActive(true);
+        leaveRestaurantTrigger.SetActive(true);
     }
 }
