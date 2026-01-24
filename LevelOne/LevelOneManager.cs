@@ -16,6 +16,9 @@ public class LevelOneManager : MonoBehaviour
     [SerializeField] private PauseMenuController pauseMenu;
     public RenderTexture renderTexture;
 
+    [Header("LevelOne")]
+    [SerializeField] private List<GameObject> objectsToDestroyOnLevelOne;
+
     [Header("LevelThree")]
     [SerializeField] private List<GameObject> objectsToDestroyOnLevelThree;
     [SerializeField] private Transform levelThreeSpawn;
@@ -53,6 +56,10 @@ public class LevelOneManager : MonoBehaviour
     private void SetupLevelOne()
     {
         Debug.Log("Level 1");
+        foreach (GameObject obj in objectsToDestroyOnLevelOne)
+        {
+            Destroy(obj);
+        }
     }
 
     private void SetupLevelThree()
@@ -65,6 +72,7 @@ public class LevelOneManager : MonoBehaviour
             levelThreeSpawn.position,
             levelThreeSpawn.rotation
         );
+
         // Destroy Level One Events & Objects
         foreach (GameObject obj in objectsToDestroyOnLevelThree)
         {
