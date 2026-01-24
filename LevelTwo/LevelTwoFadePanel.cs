@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LevelTwoFadePanel : MonoBehaviour
@@ -20,6 +21,7 @@ public class LevelTwoFadePanel : MonoBehaviour
     [SerializeField] private GameObject npcSeven;
     [SerializeField] private GameObject toiletInteract;
     [SerializeField] private GameObject toiletPlayer;
+    [SerializeField] private TextMeshProUGUI fadeToLvlThreeTxt;
 
     // Meet Marcus & Dave at Big Burger
     public void PlayFirstInstruction()
@@ -98,5 +100,67 @@ public class LevelTwoFadePanel : MonoBehaviour
     {
         Destroy(toiletPlayer);
         player.SetActive(true);
+    }
+
+    private float fadeDuration = 1f;            // How long the fade lasts
+    private float displayTime = 3.5f;
+
+    public void DisablePlayerAndShowText()
+    {
+        // Disable player movement
+        FirstPersonController controller = player.GetComponent<FirstPersonController>();
+        if (controller != null)
+            controller.enabled = false;
+
+        // Start the coroutine
+        StartCoroutine(FadeTextSequence());
+    }
+
+    private IEnumerator FadeTextSequence()
+    {
+        // Step 1: Wait before starting fade
+        yield return new WaitForSeconds(1f);
+
+        // Step 2: Ensure text is active and fully transparent
+        fadeToLvlThreeTxt.gameObject.SetActive(true);
+        Color c = fadeToLvlThreeTxt.color;
+        fadeToLvlThreeTxt.color = new Color(c.r, c.g, c.b, 0f);
+
+        // Step 3: Fade in
+        float elapsed = 0f;
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Clamp01(elapsed / fadeDuration);
+            fadeToLvlThreeTxt.color = new Color(c.r, c.g, c.b, alpha);
+            yield return null;
+        }
+
+        fadeToLvlThreeTxt.color = new Color(c.r, c.g, c.b, 1f);
+
+        // Step 4: Keep text fully visible
+        yield return new WaitForSeconds(displayTime);
+
+        // Step 5: Fade out
+        elapsed = 0f;
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Clamp01(1f - (elapsed / fadeDuration));
+            fadeToLvlThreeTxt.color = new Color(c.r, c.g, c.b, alpha);
+            yield return null;
+        }
+
+        fadeToLvlThreeTxt.color = new Color(c.r, c.g, c.b, 0f);
+        fadeToLvlThreeTxt.gameObject.SetActive(false);
+
+        // Step 6: Call level transition
+        GoToLevelThree();
+    }
+
+    public void GoToLevelThree()
+    {
+        Debug.Log("Going to level three");
+        // SceneManager.LoadScene("Level3"); // Uncomment when ready
     }
 }

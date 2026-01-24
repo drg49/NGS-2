@@ -5,6 +5,7 @@ public class Jumpscare : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject freak;
     [SerializeField] private GameObject freakCamera;
+    [SerializeField] private GameObject leaveRestaurantTrigger;
     [SerializeField] private InkDialogueManager dialogueManager;
     [SerializeField] private TextAsset freakInkJson;
     [SerializeField] private AudioSource jumpscareAudio;
@@ -20,7 +21,6 @@ public class Jumpscare : MonoBehaviour
         freak.SetActive(true);
         freakCamera.SetActive(true);
         jumpscareAudio.Play();
-        Debug.Log("Jumpscare activated");
         dialogueManager.OnDialogueFinished = OnDialogueEnd;
         // Start the Ink dialogue
         dialogueManager.StartStory(freakInkJson);
@@ -29,6 +29,8 @@ public class Jumpscare : MonoBehaviour
 
     private void OnDialogueEnd()
     {
-        Debug.Log("ended");
+        freakCamera.SetActive(false);
+        player.SetActive(true);
+        leaveRestaurantTrigger.SetActive(true);
     }
 }
