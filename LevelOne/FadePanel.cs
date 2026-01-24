@@ -44,7 +44,6 @@ public class FadePanel : MonoBehaviour
         {
             return;
         }
-        print("hello world");
         string button = inputActions.Player.Interact.bindings[0].ToDisplayString();
         interactionText.text = $"Hold [{button}] to get out of bed";
     }

@@ -7,6 +7,8 @@ public class InstructionSequence : MonoBehaviour
     [Header("Instruction")]
     [SerializeField] private string instructionMessage = "";
     [SerializeField] private float delayBeforeShow = 4f;
+    [Tooltip("How long the instruction stays visible (-1 = infinite)")]
+    [SerializeField] private float visibleDuration = 5f;
 
     [Header("Objectives (optional)")]
     [SerializeField] private bool showObjectives = false;
@@ -17,12 +19,11 @@ public class InstructionSequence : MonoBehaviour
     [SerializeField] private PauseMenuObjectivesController objectivesController;
 
     [Header("Optional Activation")]
-    [Tooltip("Assign GameObjects to activate when the instruction shows.")]
+    [Tooltip("GameObjects to activate when the instruction shows.")]
     [SerializeField] private GameObject[] optionalGameObjectsToActivate;
 
     [Header("Play Settings")]
-    [Tooltip("If true, the sequence will automatically play on Awake.")]
-    [SerializeField] private bool playOnAwake = false; // default to false
+    [SerializeField] private bool playOnAwake = false;
 
     private bool hasPlayed = false;
 
@@ -56,7 +57,6 @@ public class InstructionSequence : MonoBehaviour
             }
         }
 
-        // Delay instruction text only
         StartCoroutine(ShowInstructionDelayed());
     }
 
@@ -64,11 +64,14 @@ public class InstructionSequence : MonoBehaviour
     {
         yield return new WaitForSeconds(delayBeforeShow);
 
-        // Show instruction text
         InstructionTextAlphaFader fader = FindFirstObjectByType<InstructionTextAlphaFader>();
         if (fader != null)
         {
-            fader.Show(instructionMessage);
+            fader.Show(instructionMessage, visibleDuration);
+        }
+        else
+        {
+            Debug.LogWarning("InstructionTextAlphaFader not found in scene.");
         }
 
         // Activate optional GameObjects
@@ -83,7 +86,7 @@ public class InstructionSequence : MonoBehaviour
     }
 
     /// <summary>
-    /// Optional: allows replaying if needed.
+    /// Allows replaying if needed.
     /// </summary>
     public void ResetSequence()
     {

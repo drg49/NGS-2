@@ -7,7 +7,7 @@ public class InstructionTextAlphaFader : MonoBehaviour
 {
     [Header("Timing")]
     [SerializeField] private float fadeInDuration = 0.5f;
-    [SerializeField] private float visibleDuration = 5f; // default duration
+    [SerializeField] private float defaultVisibleDuration = 5f;
     [SerializeField] private float fadeOutDuration = 0.5f;
 
     private TextMeshProUGUI instructionText;
@@ -20,24 +20,35 @@ public class InstructionTextAlphaFader : MonoBehaviour
     }
 
     /// <summary>
-    /// Show the instruction text. Optional visibleDuration overrides the default.
+    /// Shows instruction text.
+    /// Pass -1 for infinite duration (manual hide).
     /// </summary>
-    public void Show(string message, float? overrideVisibleDuration = null)
+    public void Show(string message, float overrideVisibleDuration = -999f)
     {
         instructionText.text = message;
 
         if (fadeRoutine != null)
             StopCoroutine(fadeRoutine);
 
-        float duration = overrideVisibleDuration ?? visibleDuration; // use override if provided
-        fadeRoutine = StartCoroutine(FadeSequence(duration));
+        float durationToUse =
+            overrideVisibleDuration >= -1f
+                ? overrideVisibleDuration
+                : defaultVisibleDuration;
+
+        fadeRoutine = StartCoroutine(FadeSequence(durationToUse));
     }
 
-    private IEnumerator FadeSequence(float visibleDurationOverride)
+    private IEnumerator FadeSequence(float visibleDuration)
     {
+        // Fade in
         yield return Fade(0f, 1f, fadeInDuration);
-        yield return new WaitForSeconds(visibleDurationOverride);
-        yield return Fade(1f, 0f, fadeOutDuration);
+
+        // Stay visible (if not infinite)
+        if (visibleDuration >= 0f)
+        {
+            yield return new WaitForSeconds(visibleDuration);
+            yield return Fade(1f, 0f, fadeOutDuration);
+        }
     }
 
     private IEnumerator Fade(float from, float to, float duration)
@@ -59,5 +70,16 @@ public class InstructionTextAlphaFader : MonoBehaviour
         Color c = instructionText.color;
         c.a = alpha;
         instructionText.color = c;
+    }
+
+    /// <summary>
+    /// Optional manual hide (useful for infinite instructions).
+    /// </summary>
+    public void Hide()
+    {
+        if (fadeRoutine != null)
+            StopCoroutine(fadeRoutine);
+
+        fadeRoutine = StartCoroutine(Fade(1f, 0f, fadeOutDuration));
     }
 }

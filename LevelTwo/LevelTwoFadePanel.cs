@@ -103,8 +103,8 @@ public class LevelTwoFadePanel : MonoBehaviour
         player.SetActive(true);
     }
 
-    private float fadeDuration = 1f;            // How long the fade lasts
-    private float displayTime = 3.5f;
+    private readonly float fadeDuration = 1f;
+    private readonly float displayTime = 4.5f;
 
     public void DisablePlayerAndShowText()
     {
