@@ -40,6 +40,11 @@ public class FadePanel : MonoBehaviour
 
     public void DisplayInstructionalText()
     {
+        if (SceneContext.CurrentLevelMode == LevelMode.LevelThree)
+        {
+            return;
+        }
+        print("hello world");
         string button = inputActions.Player.Interact.bindings[0].ToDisplayString();
         interactionText.text = $"Hold [{button}] to get out of bed";
     }

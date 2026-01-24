@@ -70,8 +70,10 @@ public class LevelOneManager : MonoBehaviour
         // Level Three Spawn Point
         player.transform.SetPositionAndRotation(
             levelThreeSpawn.position,
-            levelThreeSpawn.rotation
+            levelThreeSpawn.rotation * Quaternion.Euler(0, 90f, 0)
         );
+
+        Debug.Log(player.transform);
 
         // Destroy Level One Events & Objects
         foreach (GameObject obj in objectsToDestroyOnLevelThree)

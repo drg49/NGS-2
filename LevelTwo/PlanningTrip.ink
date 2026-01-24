@@ -45,8 +45,8 @@ Ahh... Big Burger.. My favorite spot in town. The patty is perfectly seared, jui
 
 === great(response) ===
 {response}
-    + [Okay that's fine, but book the reservation online.]
-        -> forSure("For sure. After this, go home and pack your bags. We are going to need tents, food, water, and some tools for starting a fire. We will not be happy campers if we don't get a fire started. I'll bring some skewers to cook hotdogs and marshmallows.")
+    + [Okay that's fine, I will book the reservation online.]
+        -> forSure("For sure. Let's all pack our bags tonight. We're going to need tents, food, water, and some tools for starting a fire. We will not be happy campers if we don't get a fire started. I'll bring some skewers to cook hotdogs and marshmallows.")
 
 === forSure(response) ===
 {response}
