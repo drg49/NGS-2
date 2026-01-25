@@ -22,8 +22,8 @@ public class DebugManager : MonoBehaviour
     {
         //fadeAnimator.SetTrigger("FadeInOut");
         //fadeAnimator.SetTrigger("FadeInOutPostBath");
-        //fadeAnimator.SetTrigger("FadeInOutPostCutscene");
-        Destroy(LvlOneGM);
+        fadeAnimator.SetTrigger("FadeIntoBed");
+        //Destroy(LvlOneGM);
         chestInteract.SetActive(true);
         //bedPlayer.SetActive(false);
         //player.SetActive(false);

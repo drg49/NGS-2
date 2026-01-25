@@ -71,8 +71,6 @@ public class LevelOneManager : MonoBehaviour
             levelThreeSpawn.rotation * Quaternion.Euler(0, 90f, 0)
         );
 
-        Debug.Log(player.transform);
-
         // Destroy Level One Events & Objects
         foreach (GameObject obj in objectsToDestroyOnLevelThree)
         {
