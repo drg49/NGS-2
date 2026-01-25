@@ -63,6 +63,7 @@ public class LevelOneManager : MonoBehaviour
 
     private void SetupLevelThree()
     {
+        levelThreeSpawn.gameObject.SetActive(true);
         bedPlayer.SetActive(false);
         player.SetActive(true);
         // Level Three Spawn Point

@@ -43,6 +43,9 @@ public class NPC03Dialogue : NPCDialogue
 
     public override void Interact()
     {
+        if (hasTriggeredHold)
+            return;
+
         base.Interact();
         // Prevent the NPCs capsule collider from being interactable after it is clicked
         gameObject.layer = LayerMask.NameToLayer("Default");
@@ -101,6 +104,7 @@ public class NPC03Dialogue : NPCDialogue
         reticle.SetActive(true);
         fpsTray.SetActive(true);
         instructionThree.Play();
+        Destroy(this);
     }
 
     private void DisableHoldListener()
