@@ -69,9 +69,16 @@ public class FirstPersonController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Initialize default footsteps
+        yaw = transform.eulerAngles.y;
+        pitch = playerCamera.localEulerAngles.x;
+
+        // Fix 0–360 ? -180–180 issue
+        if (pitch > 180f)
+            pitch -= 360f;
+
         currentFootsteps = defaultFootsteps;
     }
+
 
     private void Update()
     {
