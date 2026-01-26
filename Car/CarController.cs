@@ -5,8 +5,9 @@ using UnityEngine.InputSystem;
 public class CarController : MonoBehaviour
 {
     [Header("Car Settings")]
-    public float motorForce = 50f;    // forward/backward force (Acceleration mode ignores mass)
+    public float motorForce = 30f;    // acceleration force
     public float turnSpeed = 150f;    // degrees per second
+    public float maxSpeed = 20f;      // max forward/backward speed
 
     private Rigidbody rb;
     private Vector2 moveInput;
@@ -15,14 +16,13 @@ public class CarController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.mass = 1000f;
-        rb.centerOfMass = new Vector3(0, -0.5f, 0); // lower center of mass for stability
-        rb.linearDamping = 0.5f;   // slows sliding
-        rb.angularDamping = 2f;    // prevents wild spinning
+        rb.centerOfMass = new Vector3(0, -0.5f, 0);
+        rb.linearDamping = 0.5f;
+        rb.angularDamping = 2f;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
 
-    // Called automatically by PlayerInput
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
@@ -38,10 +38,15 @@ public class CarController : MonoBehaviour
         float forward = moveInput.y;
         float turn = moveInput.x;
 
-        // Apply forward/backward force (ignores mass)
-        rb.AddForce(transform.forward * forward * motorForce * Time.fixedDeltaTime, ForceMode.Acceleration);
+        // Limit speed
+        Vector3 flatVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        if (flatVelocity.magnitude < maxSpeed)
+        {
+            // Apply forward/backward acceleration
+            rb.AddForce(transform.forward * forward * motorForce, ForceMode.Acceleration);
+        }
 
-        // Rotate car only if moving forward/backward
+        // Rotate car only when moving forward/backward
         if (Mathf.Abs(forward) > 0.05f)
         {
             float rotation = turn * turnSpeed * Time.fixedDeltaTime * Mathf.Sign(forward);
