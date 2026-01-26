@@ -5,6 +5,9 @@ public class IndoorAmbienceZone : MonoBehaviour
 {
     private AmbienceController ambience;
 
+    // Track how many colliders the player is currently inside
+    private int playerInsideCount = 0;
+
     private void Awake()
     {
         ambience = FindFirstObjectByType<AmbienceController>();
@@ -15,13 +18,15 @@ public class IndoorAmbienceZone : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        // Switch ambience
-        ambience?.EnterIndoor();
+        playerInsideCount++;
+        if (playerInsideCount == 1) // First collider entered
+        {
+            ambience?.EnterIndoor();
 
-        // Switch player footsteps
-        FirstPersonController playerController = other.GetComponent<FirstPersonController>();
-        if (playerController != null)
-            playerController.SetFootsteps(true); // use secondary (indoor) footsteps
+            FirstPersonController playerController = other.GetComponent<FirstPersonController>();
+            if (playerController != null)
+                playerController.SetFootsteps(true); // use secondary (indoor) footsteps
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -29,12 +34,15 @@ public class IndoorAmbienceZone : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        // Switch ambience back
-        ambience?.ExitIndoor();
+        playerInsideCount--;
+        if (playerInsideCount <= 0) // Last collider exited
+        {
+            playerInsideCount = 0; // safety check
+            ambience?.ExitIndoor();
 
-        // Switch player footsteps back
-        FirstPersonController playerController = other.GetComponent<FirstPersonController>();
-        if (playerController != null)
-            playerController.SetFootsteps(false); // revert to default (outdoor) footsteps
+            FirstPersonController playerController = other.GetComponent<FirstPersonController>();
+            if (playerController != null)
+                playerController.SetFootsteps(false); // revert to default footsteps
+        }
     }
 }
