@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class ShoppingListManager : MonoBehaviour
 {
     public static ShoppingListManager Instance { get; private set; }
+    [SerializeField] private GameObject clerkInteract;
 
     [System.Serializable]
     public class ItemUI
@@ -42,7 +43,7 @@ public class ShoppingListManager : MonoBehaviour
 
         if (collectedItems.Count == itemTexts.Length)
         {
-            Debug.Log("All items collected!");
+            clerkInteract.SetActive(true);
         }
     }
 
