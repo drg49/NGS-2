@@ -10,6 +10,7 @@ public class ControlsDisplayFormatted : MonoBehaviour
     [Header("Actions")]
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference lookAction;
+    [SerializeField] private InputActionReference runAction;   // ? ADDED
     [SerializeField] private InputActionReference interactAction;
     [SerializeField] private InputActionReference pauseAction;
 
@@ -26,7 +27,6 @@ public class ControlsDisplayFormatted : MonoBehaviour
 
     private void OnDeviceChange(InputDevice device, InputDeviceChange change)
     {
-        // Update controls display if device changes
         UpdateControlsText();
     }
 
@@ -37,6 +37,7 @@ public class ControlsDisplayFormatted : MonoBehaviour
         controlsText.text =
             $"Move: {moveAction.action.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions)}\n\n" +
             $"Look: {lookAction.action.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions)}\n\n" +
+            $"Run: {runAction.action.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions)}\n\n" +
             $"Interact: {interactAction.action.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions)}\n\n" +
             $"Pause: {pauseAction.action.GetBindingDisplayString(InputBinding.DisplayStringOptions.DontIncludeInteractions)}";
     }

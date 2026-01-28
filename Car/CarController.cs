@@ -5,9 +5,12 @@ using UnityEngine.InputSystem;
 public class CarController : MonoBehaviour
 {
     [Header("Car Settings")]
-    public float motorForce = 30f;    // acceleration force
-    public float turnSpeed = 150f;    // degrees per second
-    public float maxSpeed = 20f;      // max forward/backward speed
+    public float motorForce = 30f;
+    public float turnSpeed = 150f;
+    public float maxSpeed = 20f;
+
+    [Header("Audio")]
+    public AudioSource engineAudio;   // assign in Inspector
 
     private Rigidbody rb;
     private Vector2 moveInput;
@@ -21,6 +24,14 @@ public class CarController : MonoBehaviour
         rb.angularDamping = 2f;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+        // Start engine idle
+        if (engineAudio != null)
+        {
+            engineAudio.loop = true;
+            engineAudio.playOnAwake = false;
+            engineAudio.Play();
+        }
     }
 
     public void OnMove(InputValue value)
@@ -38,15 +49,13 @@ public class CarController : MonoBehaviour
         float forward = moveInput.y;
         float turn = moveInput.x;
 
-        // Limit speed
         Vector3 flatVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+
         if (flatVelocity.magnitude < maxSpeed)
         {
-            // Apply forward/backward acceleration
             rb.AddForce(transform.forward * forward * motorForce, ForceMode.Acceleration);
         }
 
-        // Rotate car only when moving forward/backward
         if (Mathf.Abs(forward) > 0.05f)
         {
             float rotation = turn * turnSpeed * Time.fixedDeltaTime * Mathf.Sign(forward);

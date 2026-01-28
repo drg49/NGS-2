@@ -14,7 +14,7 @@ public class DebugManager : MonoBehaviour
     public GameObject cutscenePath;
     public GameObject npc;
     [SerializeField] private Animator fadeAnimator;
-    public GameObject chestInteract;
+    public GameObject needAShower;
     public GameObject LvlOneGM;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -22,9 +22,9 @@ public class DebugManager : MonoBehaviour
     {
         //fadeAnimator.SetTrigger("FadeInOut");
         //fadeAnimator.SetTrigger("FadeInOutPostBath");
-        fadeAnimator.SetTrigger("FadeIntoBed");
+        //fadeAnimator.SetTrigger("FadeIntoBed");
         //Destroy(LvlOneGM);
-        chestInteract.SetActive(true);
+        needAShower.SetActive(true);
         //bedPlayer.SetActive(false);
         //player.SetActive(false);
         //player.SetActive(false);
