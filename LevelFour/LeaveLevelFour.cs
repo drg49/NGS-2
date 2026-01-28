@@ -6,6 +6,7 @@ public class LeaveLevelFour : MonoBehaviour
     [SerializeField] private Animator fadeAnimator;
     [SerializeField] private AudioSource engineAudio;
     [SerializeField] private float fadeDuration = 2f;
+    [SerializeField] private CarController carController;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -27,5 +28,6 @@ public class LeaveLevelFour : MonoBehaviour
 
         audioSource.volume = 0f;
         audioSource.Stop();
+        carController.enabled = false;
     }
 }

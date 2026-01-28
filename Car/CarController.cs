@@ -11,7 +11,7 @@ public class CarController : MonoBehaviour
     public float maxSpeed = 20f;
 
     [Header("Steering Wheel")]
-    public Transform steeringWheel;
+    public Transform steeringWheel; // assign PIVOT, not mesh
     public float maxSteerWheelAngle = 60f;
     public float steeringWheelSmooth = 8f;
 
@@ -30,6 +30,8 @@ public class CarController : MonoBehaviour
 
     private float currentSteerAngle;
 
+    // -------------------- LIFECYCLE --------------------
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -39,8 +41,11 @@ public class CarController : MonoBehaviour
         rb.angularDamping = 2f;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+    }
 
-        // Idle engine
+    void OnEnable()
+    {
+        // Idle engine (constant)
         if (engineIdle != null)
         {
             engineIdle.loop = true;
@@ -49,7 +54,7 @@ public class CarController : MonoBehaviour
             engineIdle.Play();
         }
 
-        // Acceleration engine
+        // Acceleration engine (fades in/out)
         if (engineAccelerate != null)
         {
             engineAccelerate.loop = true;
@@ -59,10 +64,25 @@ public class CarController : MonoBehaviour
         }
     }
 
+    void OnDisable()
+    {
+        if (engineIdle != null)
+            engineIdle.Stop();
+
+        if (engineAccelerate != null)
+            engineAccelerate.Stop();
+
+        accelerating = false;
+    }
+
+    // -------------------- INPUT --------------------
+
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
     }
+
+    // -------------------- UPDATE --------------------
 
     void FixedUpdate()
     {
@@ -70,6 +90,8 @@ public class CarController : MonoBehaviour
         HandleEngineAudio();
         HandleSteeringWheel();
     }
+
+    // -------------------- MOVEMENT --------------------
 
     void HandleMovement()
     {
@@ -90,6 +112,8 @@ public class CarController : MonoBehaviour
         }
     }
 
+    // -------------------- STEERING WHEEL --------------------
+
     void HandleSteeringWheel()
     {
         if (steeringWheel == null) return;
@@ -104,6 +128,8 @@ public class CarController : MonoBehaviour
 
         steeringWheel.localRotation = Quaternion.Euler(0f, 0f, currentSteerAngle);
     }
+
+    // -------------------- ENGINE AUDIO --------------------
 
     void HandleEngineAudio()
     {
