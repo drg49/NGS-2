@@ -10,6 +10,7 @@ public class CarInteract : Interactable
     [SerializeField] private GameObject marcusCarPlayer;
     [SerializeField] private GameObject davidCarPlayer;
     [SerializeField] private GameObject driveInstruction;
+    [SerializeField] private BoxCollider leaveLevelCollider;
 
     public override void Interact()
     {
@@ -27,6 +28,8 @@ public class CarInteract : Interactable
         davidCarPlayer.SetActive(true);
 
         driveInstruction.SetActive(true);
+
+        leaveLevelCollider.isTrigger = true;
 
         Destroy(gameObject);
     }
