@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CarController : MonoBehaviour
@@ -10,10 +11,17 @@ public class CarController : MonoBehaviour
     public float maxSpeed = 20f;
 
     [Header("Audio")]
-    public AudioSource engineAudio;   // assign in Inspector
+    public AudioSource engineIdle;
+    public AudioSource engineAccelerate;
+    public float idleVolume = 0.01f;
+    public float accelVolume = 1f;
+    public float fadeTime = 0.4f;
 
     private Rigidbody rb;
     private Vector2 moveInput;
+
+    private Coroutine accelFadeRoutine;
+    private bool accelerating;
 
     void Awake()
     {
@@ -25,12 +33,22 @@ public class CarController : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-        // Start engine idle
-        if (engineAudio != null)
+        // Idle engine (constant, never fades)
+        if (engineIdle != null)
         {
-            engineAudio.loop = true;
-            engineAudio.playOnAwake = false;
-            engineAudio.Play();
+            engineIdle.loop = true;
+            engineIdle.playOnAwake = false;
+            engineIdle.volume = idleVolume;
+            engineIdle.Play();
+        }
+
+        // Acceleration engine (fades in/out)
+        if (engineAccelerate != null)
+        {
+            engineAccelerate.loop = true;
+            engineAccelerate.playOnAwake = false;
+            engineAccelerate.volume = 0f;
+            engineAccelerate.Play();
         }
     }
 
@@ -42,6 +60,7 @@ public class CarController : MonoBehaviour
     void FixedUpdate()
     {
         HandleMovement();
+        HandleEngineAudio();
     }
 
     void HandleMovement()
@@ -61,5 +80,41 @@ public class CarController : MonoBehaviour
             float rotation = turn * turnSpeed * Time.fixedDeltaTime * Mathf.Sign(forward);
             rb.MoveRotation(rb.rotation * Quaternion.Euler(0f, rotation, 0f));
         }
+    }
+
+    void HandleEngineAudio()
+    {
+        bool wantsAcceleration = Mathf.Abs(moveInput.y) > 0.05f;
+
+        if (wantsAcceleration != accelerating)
+        {
+            accelerating = wantsAcceleration;
+            FadeAccelTo(accelerating ? accelVolume : 0f);
+        }
+    }
+
+    void FadeAccelTo(float targetVolume)
+    {
+        if (engineAccelerate == null) return;
+
+        if (accelFadeRoutine != null)
+            StopCoroutine(accelFadeRoutine);
+
+        accelFadeRoutine = StartCoroutine(FadeAudio(engineAccelerate, targetVolume));
+    }
+
+    IEnumerator FadeAudio(AudioSource source, float targetVolume)
+    {
+        float start = source.volume;
+        float t = 0f;
+
+        while (t < fadeTime)
+        {
+            t += Time.deltaTime;
+            source.volume = Mathf.Lerp(start, targetVolume, t / fadeTime);
+            yield return null;
+        }
+
+        source.volume = targetVolume;
     }
 }
