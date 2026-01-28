@@ -10,11 +10,16 @@ public class CarController : MonoBehaviour
     public float turnSpeed = 150f;
     public float maxSpeed = 20f;
 
+    [Header("Steering Wheel")]
+    public Transform steeringWheel;
+    public float maxSteerWheelAngle = 60f;
+    public float steeringWheelSmooth = 8f;
+
     [Header("Audio")]
     public AudioSource engineIdle;
     public AudioSource engineAccelerate;
     public float idleVolume = 0.01f;
-    public float accelVolume = 1f;
+    public float accelVolume = 0.4f;
     public float fadeTime = 0.4f;
 
     private Rigidbody rb;
@@ -22,6 +27,8 @@ public class CarController : MonoBehaviour
 
     private Coroutine accelFadeRoutine;
     private bool accelerating;
+
+    private float currentSteerAngle;
 
     void Awake()
     {
@@ -33,7 +40,7 @@ public class CarController : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-        // Idle engine (constant, never fades)
+        // Idle engine
         if (engineIdle != null)
         {
             engineIdle.loop = true;
@@ -42,7 +49,7 @@ public class CarController : MonoBehaviour
             engineIdle.Play();
         }
 
-        // Acceleration engine (fades in/out)
+        // Acceleration engine
         if (engineAccelerate != null)
         {
             engineAccelerate.loop = true;
@@ -61,6 +68,7 @@ public class CarController : MonoBehaviour
     {
         HandleMovement();
         HandleEngineAudio();
+        HandleSteeringWheel();
     }
 
     void HandleMovement()
@@ -80,6 +88,21 @@ public class CarController : MonoBehaviour
             float rotation = turn * turnSpeed * Time.fixedDeltaTime * Mathf.Sign(forward);
             rb.MoveRotation(rb.rotation * Quaternion.Euler(0f, rotation, 0f));
         }
+    }
+
+    void HandleSteeringWheel()
+    {
+        if (steeringWheel == null) return;
+
+        float targetAngle = -moveInput.x * maxSteerWheelAngle;
+
+        currentSteerAngle = Mathf.Lerp(
+            currentSteerAngle,
+            targetAngle,
+            Time.fixedDeltaTime * steeringWheelSmooth
+        );
+
+        steeringWheel.localRotation = Quaternion.Euler(0f, 0f, currentSteerAngle);
     }
 
     void HandleEngineAudio()
