@@ -3,6 +3,8 @@ using UnityEngine;
 public class DavidInteract : NPCDialogue
 {
     [SerializeField] private MarcusFirstDialogue marcusFirstDialogue;
+    [SerializeField] private ClerkInteract clerkDialogue;
+
     private void OnEnable()
     {
         dialogueManager.OnDialogueFinished += DialogueEnded;
@@ -19,6 +21,10 @@ public class DavidInteract : NPCDialogue
         {
             marcusFirstDialogue.enabled = false;
         }
+        if (clerkDialogue != null)
+        {
+            clerkDialogue.enabled = false;
+        }
         base.Interact();
     }
 
@@ -29,6 +35,10 @@ public class DavidInteract : NPCDialogue
         if (marcusFirstDialogue != null)
         {
             marcusFirstDialogue.enabled = true;
+        }
+        if (clerkDialogue != null)
+        {
+            clerkDialogue.enabled = true;
         }
     }
 }

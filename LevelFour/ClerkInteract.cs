@@ -3,7 +3,7 @@ using UnityEngine;
 public class ClerkInteract : NPCDialogue
 {
     [SerializeField] private GameObject shoppingListUI;
-    [SerializeField] private GameObject carInteract;
+    [SerializeField] private GameObject carInstruction;
 
     private void OnEnable()
     {
@@ -25,7 +25,7 @@ public class ClerkInteract : NPCDialogue
     {
         cameraToActivate.gameObject.SetActive(false);
         player.SetActive(true);
-        carInteract.SetActive(true);
+        carInstruction.SetActive(true);
         Destroy(gameObject);
     }
 }
