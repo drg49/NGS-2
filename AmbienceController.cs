@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class AmbienceController : MonoBehaviour
 {
@@ -12,77 +11,47 @@ public class AmbienceController : MonoBehaviour
     [SerializeField] private float outdoorVolume = 0.7f;
     [SerializeField] private float indoorVolume = 0.5f;
 
-    [Header("Fade Settings")]
-    [SerializeField] private float fadeTime = 1.5f;
-
-    private Coroutine fadeRoutine;
     private AudioClip currentClip;
 
     private void Start()
     {
-        // Play outdoor ambience by default
-        Play(outdoorAmbience);
+        // Start with outdoor ambience
+        ambienceSource.clip = outdoorAmbience;
+        ambienceSource.volume = outdoorVolume;
+        ambienceSource.Play();
+        currentClip = outdoorAmbience;
     }
 
     /// <summary>
     /// Call when player enters an indoor area
     /// </summary>
-    public void EnterIndoor()
+    public void EnterIndoor(Transform listenerTransform)
     {
-        Play(indoorAmbience);
+        ambienceSource.transform.position = listenerTransform.position;
+        PlayImmediate(indoorAmbience, indoorVolume);
     }
 
     /// <summary>
     /// Call when player exits indoor area
     /// </summary>
-    public void ExitIndoor()
+    public void ExitIndoor(Transform listenerTransform)
     {
-        Play(outdoorAmbience);
+        ambienceSource.transform.position = listenerTransform.position;
+        PlayImmediate(outdoorAmbience, outdoorVolume);
     }
 
     /// <summary>
-    /// Handles starting a fade to a new clip
+    /// Instantly switch to a new clip
     /// </summary>
-    private void Play(AudioClip newClip)
+    private void PlayImmediate(AudioClip newClip, float targetVolume)
     {
-        if (newClip == null || currentClip == newClip)
-            return;
-
-        if (fadeRoutine != null)
-            StopCoroutine(fadeRoutine);
-
-        fadeRoutine = StartCoroutine(Fade(newClip));
-    }
-
-    /// <summary>
-    /// Smoothly fades out the current clip, switches, and fades in
-    /// </summary>
-    private IEnumerator Fade(AudioClip newClip)
-    {
-        float startVolume = ambienceSource.volume;
-
-        // Fade out
-        for (float t = 0; t < fadeTime; t += Time.deltaTime)
-        {
-            ambienceSource.volume = Mathf.Lerp(startVolume, 0f, t / fadeTime);
-            yield return null;
-        }
+        if (newClip == null || currentClip == newClip) return;
 
         ambienceSource.Stop();
         ambienceSource.clip = newClip;
+        ambienceSource.volume = targetVolume;
         ambienceSource.Play();
 
-        // Determine target volume based on clip
-        float targetVolume = (newClip == indoorAmbience) ? indoorVolume : outdoorVolume;
-
-        // Fade in
-        for (float t = 0; t < fadeTime; t += Time.deltaTime)
-        {
-            ambienceSource.volume = Mathf.Lerp(0f, targetVolume, t / fadeTime);
-            yield return null;
-        }
-
-        ambienceSource.volume = targetVolume;
         currentClip = newClip;
     }
 }
