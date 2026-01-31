@@ -17,7 +17,7 @@ public class NPC07Dialogue : NPCDialogue
     private void DialogueEnded()
     {
         cameraToActivate.gameObject.SetActive(false);
-        player.SetActive(true);
+        indoorAmbience.EnablePlayerIndoors();
         reticle.SetActive(true);
     }
 }

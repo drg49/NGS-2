@@ -100,7 +100,7 @@ public class NPC03Dialogue : NPCDialogue
         GetComponent<Animator>().SetTrigger("BackToFemaleIdle");
         Destroy(npcTray);
         Destroy(npcCamera);
-        player.SetActive(true);
+        indoorAmbience.EnablePlayerIndoors();
         reticle.SetActive(true);
         fpsTray.SetActive(true);
         instructionThree.Play();

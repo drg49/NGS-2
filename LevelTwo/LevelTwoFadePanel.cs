@@ -23,6 +23,7 @@ public class LevelTwoFadePanel : MonoBehaviour
     [SerializeField] private GameObject toiletInteract;
     [SerializeField] private GameObject toiletPlayer;
     [SerializeField] private TextMeshProUGUI fadeToLvlThreeTxt;
+    [SerializeField] protected IndoorAmbienceZone indoorAmbience;
 
     // Meet Marcus & Dave at Big Burger
     public void PlayFirstInstruction()
@@ -32,7 +33,7 @@ public class LevelTwoFadePanel : MonoBehaviour
 
     public void SitDown()
     {
-        player.SetActive(false);
+        indoorAmbience.DisablePlayerIndoors();
         reticle.SetActive(false);
         sitDownTray.SetActive(true);
         Destroy(fpsTray);
@@ -74,7 +75,7 @@ public class LevelTwoFadePanel : MonoBehaviour
         Destroy(pianoSong);
         ambienceManager.SetActive(true);
         Destroy(sitDownCamera);
-        player.SetActive(true);
+        indoorAmbience.EnablePlayerIndoors();
         reticle.SetActive(true);
         npcSeven.SetActive(true);
 
@@ -100,7 +101,7 @@ public class LevelTwoFadePanel : MonoBehaviour
     public void LeaveToilet()
     {
         Destroy(toiletPlayer);
-        player.SetActive(true);
+        indoorAmbience.EnablePlayerIndoors();
     }
 
     private readonly float fadeDuration = 1f;
@@ -108,7 +109,6 @@ public class LevelTwoFadePanel : MonoBehaviour
 
     public void DisablePlayerAndShowText()
     {
-        // Disable player movement
         FirstPersonController controller = player.GetComponent<FirstPersonController>();
         controller.enabled = false;
 

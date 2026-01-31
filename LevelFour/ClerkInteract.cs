@@ -24,7 +24,7 @@ public class ClerkInteract : NPCDialogue
     private void DialogueEnded()
     {
         cameraToActivate.gameObject.SetActive(false);
-        player.SetActive(true);
+        indoorAmbience.EnablePlayerIndoors();
         carInstruction.SetActive(true);
         Destroy(gameObject);
     }

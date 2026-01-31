@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Jumpscare : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
+    [SerializeField] protected IndoorAmbienceZone indoorAmbience;
     [SerializeField] private GameObject freak;
     [SerializeField] private GameObject freakCamera;
     [SerializeField] private GameObject leaveRestaurantTrigger;
@@ -17,7 +17,7 @@ public class Jumpscare : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        player.SetActive(false);
+        indoorAmbience.DisablePlayerIndoors();
         freak.SetActive(true);
         freakCamera.SetActive(true);
         jumpscareAudio.Play();
@@ -30,7 +30,7 @@ public class Jumpscare : MonoBehaviour
     private void OnDialogueEnd()
     {
         freakCamera.SetActive(false);
-        player.SetActive(true);
+        indoorAmbience.EnablePlayerIndoors();
         leaveRestaurantTrigger.SetActive(true);
     }
 }

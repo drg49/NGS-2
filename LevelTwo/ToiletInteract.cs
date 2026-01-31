@@ -12,10 +12,11 @@ public class ToiletInteract : Interactable
     [SerializeField] protected GameObject jumpscare;
     [SerializeField] private AudioSource sound;
     [SerializeField] private GameObject particles;
+    [SerializeField] protected IndoorAmbienceZone indoorAmbience;
 
     public override void Interact()
     {
-        player.SetActive(false);
+        indoorAmbience.DisablePlayerIndoors();
         toiletPlayer.SetActive(true);
 
         // Activate jumpscare early

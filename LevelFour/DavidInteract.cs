@@ -31,7 +31,7 @@ public class DavidInteract : NPCDialogue
     private void DialogueEnded()
     {
         cameraToActivate.gameObject.SetActive(false);
-        player.SetActive(true);
+        indoorAmbience.EnablePlayerIndoors();
         if (marcusFirstDialogue != null)
         {
             marcusFirstDialogue.enabled = true;

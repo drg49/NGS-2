@@ -4,6 +4,7 @@ public class NPCDialogue : Interactable
 {
     [Header("Player")]
     [SerializeField] protected GameObject player;
+    [SerializeField] protected IndoorAmbienceZone indoorAmbience;
 
     [Header("Dialogue Settings")]
     [SerializeField] protected InkDialogueManager dialogueManager;
@@ -16,7 +17,15 @@ public class NPCDialogue : Interactable
     {
         base.Interact();
 
-        player.SetActive(false);
+        // Indoor players need special disabling
+        if (indoorAmbience)
+        {
+            indoorAmbience.DisablePlayerIndoors();
+        } else
+        {
+            player.SetActive(false);
+        }
+
         cameraToActivate.gameObject.SetActive(true);
 
         dialogueManager.StartStory(inkJSON);        

@@ -17,7 +17,7 @@ public class MarcusFirstDialogue : NPCDialogue
     private void DialogueEnded()
     {
         cameraToActivate.gameObject.SetActive(false);
-        player.SetActive(true);
+        indoorAmbience.EnablePlayerIndoors();
         shoppingInstruction.SetActive(true);
         Destroy(this);
     }

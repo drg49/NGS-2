@@ -13,6 +13,9 @@ public class PauseMenuController : MonoBehaviour
     [Header("Player Reference")]
     [SerializeField] private FirstPersonController playerController;
 
+    [Header("Indoor Ambience (Optional)")]
+    [SerializeField] private IndoorAmbienceZone indoorZone; // can be null
+
     [Header("Settings UI")]
     [SerializeField] private Slider lookSensitivitySlider;
 
@@ -89,7 +92,13 @@ public class PauseMenuController : MonoBehaviour
         Cursor.visible = false;
 
         if (playerController != null)
-            playerController.SetPaused(false);
+        {
+            // Only re-enable player if indoor zone hasn't disabled them
+            if (indoorZone == null || !indoorZone.PlayerDisabledIndoors)
+            {
+                playerController.SetPaused(false);
+            }
+        }
     }
 
     private void ShowMainMenu()
