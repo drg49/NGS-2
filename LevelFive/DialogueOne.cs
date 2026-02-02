@@ -8,6 +8,7 @@ public class DialogueOne : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private PathWalker marcusPathWalker;
     [SerializeField] private PathWalker davidPathWalker;
+    [SerializeField] private GameObject tentObjective;
 
     void Start()
     {
@@ -17,10 +18,11 @@ public class DialogueOne : MonoBehaviour
 
     private void EndDialogue()
     {
-        Debug.Log("Dialogue Finished");
         Destroy(dialogueOneCam);
         player.SetActive(true);
         marcusPathWalker.enabled = true;
         davidPathWalker.enabled = true;
+        tentObjective.SetActive(true);
+        Destroy(gameObject);
     }
 }

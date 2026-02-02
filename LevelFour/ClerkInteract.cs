@@ -4,6 +4,7 @@ public class ClerkInteract : NPCDialogue
 {
     [SerializeField] private GameObject shoppingListUI;
     [SerializeField] private GameObject carInstruction;
+    [SerializeField] private AudioSource cashRegister;
 
     private void OnEnable()
     {
@@ -26,6 +27,7 @@ public class ClerkInteract : NPCDialogue
         cameraToActivate.gameObject.SetActive(false);
         indoorAmbience.EnablePlayerIndoors();
         carInstruction.SetActive(true);
+        cashRegister.Play();
         Destroy(gameObject);
     }
 }

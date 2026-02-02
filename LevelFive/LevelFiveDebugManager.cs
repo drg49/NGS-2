@@ -10,6 +10,7 @@ public class LevelFiveDebugManager : MonoBehaviour
     [SerializeField] private GameObject dialogueOne;
     [SerializeField] private GameObject dialogueOneCam;
     [SerializeField] private Animator fadeAnim;
+    //[SerializeField] private GameObject logObjective;
 
     void Start()
     {
@@ -21,5 +22,7 @@ public class LevelFiveDebugManager : MonoBehaviour
         //dialogueOneCam.SetActive(true);
         //dialogueOne.SetActive(true);
         fadeAnim.SetTrigger("FadeIntoCamp");
+        //fadeAnim.SetTrigger("SetUpTent");
+        //logObjective.SetActive(true);
     }
 }
