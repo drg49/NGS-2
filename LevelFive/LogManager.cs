@@ -26,7 +26,9 @@ public class LogManager : MonoBehaviour
 
         if (currentLogs >= requiredLogs)
         {
-            Debug.Log("All logs collected!");
+            // Instruct user to place logs near fire pit
+            InstructionSequence nextInstruction = GetComponent<InstructionSequence>();
+            nextInstruction.Play();
             // Disable leftover colliders
             foreach (var col in logColliders)
             {
