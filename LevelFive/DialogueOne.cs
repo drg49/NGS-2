@@ -10,9 +10,18 @@ public class DialogueOne : MonoBehaviour
     [SerializeField] private PathWalker davidPathWalker;
     [SerializeField] private GameObject tentObjective;
 
+    void OnEnable()
+    {
+        dialogueManager.OnDialogueFinished += EndDialogue;
+    }
+
+    void OnDisable()
+    {
+        dialogueManager.OnDialogueFinished -= EndDialogue;
+    }
+
     void Start()
     {
-        dialogueManager.OnDialogueFinished = EndDialogue;
         dialogueManager.StartStory(dialogueOneInkJSON);
     }
 
