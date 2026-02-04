@@ -38,11 +38,13 @@ public class LevelFiveFadePanel : MonoBehaviour
     [SerializeField] private GameObject playerTent;
     [SerializeField] private GameObject marcusBag;
     [SerializeField] private GameObject davidBag;
+    [SerializeField] private AudioSource ambience;
 
     public void EnterCampsite()
     {
         Destroy(carColliders);
         Destroy(car);
+        ambience.Play();
         parkedCar.SetActive(true);
         marcus.SetActive(true);
         david.SetActive(true);

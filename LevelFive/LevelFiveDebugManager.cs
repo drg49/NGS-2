@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class LevelFiveDebugManager : MonoBehaviour
 {
@@ -10,19 +11,17 @@ public class LevelFiveDebugManager : MonoBehaviour
     [SerializeField] private GameObject dialogueOne;
     [SerializeField] private GameObject dialogueOneCam;
     [SerializeField] private Animator fadeAnim;
-    //[SerializeField] private GameObject logObjective;
+    [SerializeField] private GameObject marcus;
 
-    void Start()
+    private IEnumerator Start()
     {
-        //Destroy(carColliders);
-        //Destroy(car);
-        //Destroy(enterCampsite);
-        ////player.SetActive(true);
-        //parkedCar.SetActive(true);
-        //dialogueOneCam.SetActive(true);
-        //dialogueOne.SetActive(true);
+        // fade in
         fadeAnim.SetTrigger("FadeIntoCamp");
-        //fadeAnim.SetTrigger("SetUpTent");
-        //logObjective.SetActive(true);
+
+        // wait 5 seconds
+        yield return new WaitForSeconds(5f);
+
+        // then next step
+        fadeAnim.SetTrigger("SetUpTent");
     }
 }
