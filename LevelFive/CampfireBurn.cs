@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
 public class CampfireBurn : ProgressFill
@@ -86,6 +87,7 @@ public class CampfireBurn : ProgressFill
 
         Vector3 target = skewerStartLocalPos;
 
+        // Only allow forward motion while cooking
         if (isHolding && !isComplete)
             target += Vector3.forward * forwardDistance;
 
@@ -105,6 +107,10 @@ public class CampfireBurn : ProgressFill
         audioSource.Play();
     }
 
+    // =========================
+    // COMPLETE
+    // =========================
+
     protected override void Complete()
     {
         base.Complete();
@@ -115,6 +121,36 @@ public class CampfireBurn : ProgressFill
             burnPlayed[i] = false;
 
         Debug.Log("It's done cooking");
+
+        StartCoroutine(ReturnAndDestroy());
+    }
+
+    private IEnumerator ReturnAndDestroy()
+    {
+        // Force no more holding input
+        isHolding = false;
+
+        float t = 0f;
+
+        // Smoothly return to original position
+        while (skewer != null &&
+               Vector3.Distance(skewer.localPosition, skewerStartLocalPos) > 0.01f)
+        {
+            skewer.localPosition = Vector3.Lerp(
+                skewer.localPosition,
+                skewerStartLocalPos,
+                moveSpeed * Time.deltaTime
+            );
+
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        // Snap exactly
+        if (skewer != null)
+            skewer.localPosition = skewerStartLocalPos;
+
+        yield return new WaitForSeconds(1f);
 
         Destroy(gameObject);
     }
