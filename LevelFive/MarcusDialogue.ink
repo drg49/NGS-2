@@ -22,9 +22,9 @@ Hey, thanks for gathering those logs. We'll definitely have a lot to burn tonigh
 === resThree(response) ===
 {response}
     + [I think something more sinister happened to them.]
-        -> resEnd("That's possible. There have been stories of a hermit living out here, stealing stuff from nearby cabins. But it's probably just a myth... Anyway, it's getting dark. Let's get that fire going.")
+        -> resEnd("That's possible. There have been stories of a hermit living out here, stealing stuff from nearby cabins. But it's probably just a myth... Anyways, it's getting dark. Let's get that fire going!")
     + [No more negativity. Let's just enjoy the trip.]
-        -> resEnd("Sure. I just keep thinking about that story. Anyways, it's getting dark. Let's get that fire going.")
+        -> resEnd("Sure. I just keep thinking about that story, but I'll try not to mention it again. Anyways, it's getting dark. Let's get that fire going!")
 
 === resEnd(response) ===
 {response}
