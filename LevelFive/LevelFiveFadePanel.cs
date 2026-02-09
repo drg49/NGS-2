@@ -55,6 +55,8 @@ public class LevelFiveFadePanel : MonoBehaviour
     [SerializeField] private Light directionalLight;
     [SerializeField] private GameObject reticle;
     [SerializeField] private GameObject flamesEffect;
+    [SerializeField] private GameObject logFromPileOne;
+    [SerializeField] private GameObject logFromPileTwo;
 
     public void EnterCampsite()
     {
@@ -125,6 +127,8 @@ public class LevelFiveFadePanel : MonoBehaviour
     {
         firepitAudio.Play();
         SetNight();
+        Destroy(logFromPileOne);
+        Destroy(logFromPileTwo);
         StartCoroutine(FadeTextSequence());
     }
 

@@ -10,6 +10,7 @@ public class CampfireBurn : ProgressFill
 
     [Header("Audio")]
     [SerializeField] private AudioClip burnClip;
+    [SerializeField] private AudioSource eatAudio;
 
     [Header("Burn Times (seconds)")]
     [SerializeField] private float[] burnTimes = new float[] { 0.1f, 3.5f, 6.6f };
@@ -21,6 +22,8 @@ public class CampfireBurn : ProgressFill
     [SerializeField] private Transform skewer;
     [SerializeField] private float forwardDistance = 0.4f;
     [SerializeField] private float moveSpeed = 6f;
+
+    [SerializeField] private GameObject wineObjective;
 
     private Vector3 skewerStartLocalPos;
 
@@ -41,8 +44,7 @@ public class CampfireBurn : ProgressFill
 
         burnPlayed = new bool[burnTimes.Length];
 
-        if (skewer != null)
-            skewerStartLocalPos = skewer.localPosition;
+        skewerStartLocalPos = skewer.localPosition;
     }
 
     protected override void OnEnable()
@@ -120,8 +122,6 @@ public class CampfireBurn : ProgressFill
         for (int i = 0; i < burnPlayed.Length; i++)
             burnPlayed[i] = false;
 
-        Debug.Log("It's done cooking");
-
         StartCoroutine(ReturnAndDestroy());
     }
 
@@ -133,8 +133,7 @@ public class CampfireBurn : ProgressFill
         float t = 0f;
 
         // Smoothly return to original position
-        while (skewer != null &&
-               Vector3.Distance(skewer.localPosition, skewerStartLocalPos) > 0.01f)
+        while (Vector3.Distance(skewer.localPosition, skewerStartLocalPos) > 0.01f)
         {
             skewer.localPosition = Vector3.Lerp(
                 skewer.localPosition,
@@ -146,11 +145,12 @@ public class CampfireBurn : ProgressFill
             yield return null;
         }
 
-        // Snap exactly
-        if (skewer != null)
-            skewer.localPosition = skewerStartLocalPos;
+        skewer.localPosition = skewerStartLocalPos;
 
         yield return new WaitForSeconds(1f);
+
+        eatAudio.Play();
+        wineObjective.SetActive(true);
 
         Destroy(gameObject);
     }

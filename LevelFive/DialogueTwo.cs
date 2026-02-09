@@ -9,6 +9,8 @@ public class DialogueTwo : MonoBehaviour
     [SerializeField] private GameObject nightCutsceneCamTwo;
     [SerializeField] private PlayerInputActions inputActions;
     [SerializeField] private TextMeshProUGUI instructionalText;
+    [SerializeField] private GameObject campfireWineBottle;
+    [SerializeField] private GameObject davidSkewer;
 
     private void Awake()
     {
@@ -41,6 +43,8 @@ public class DialogueTwo : MonoBehaviour
         Color c = instructionalText.color;
         c.a = 1f; // 1 = 255
         instructionalText.color = c;
+        campfireWineBottle.SetActive(true);
+        davidSkewer.SetActive(true);
         Destroy(gameObject);
     }
 }
