@@ -22,11 +22,6 @@ public class WineDrinkable : ProgressFill
         string button = inputActions.Player.Interact.bindings[0].ToDisplayString();
         instructionalText.text = $"Hold [{button}] to drink";
 
-        // Force alpha to visible, will need to set it back later
-        Color c = instructionalText.color;
-        c.a = 1f; // 1 = 255
-        instructionalText.color = c;
-
         audioSource = GetComponent<AudioSource>();
         audioSource.loop = false;
         audioSource.playOnAwake = false;
