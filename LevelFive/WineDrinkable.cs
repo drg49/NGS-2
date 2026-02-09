@@ -13,12 +13,24 @@ public class WineDrinkable : ProgressFill
     [Header("Sip Times (seconds)")]
     [SerializeField] private float[] sipTimes = new float[] { 0.1f, 3.5f, 6.6f };
 
+    [Header("Bottle Tilt")]
+    [SerializeField] private float tiltAngle = 45f;   // how far back
+    [SerializeField] private float tiltSpeed = 6f;    // smoothness
+
     private AudioSource audioSource;
     private bool[] sipPlayed;
 
+    private Quaternion startRotation;
+
+    // -------------------------------------------------
+    // Awake
+    // -------------------------------------------------
     protected override void Awake()
     {
         base.Awake();
+
+        startRotation = transform.localRotation;
+
         string button = inputActions.Player.Interact.bindings[0].ToDisplayString();
         instructionalText.text = $"Hold [{button}] to drink";
 
@@ -29,18 +41,25 @@ public class WineDrinkable : ProgressFill
         sipPlayed = new bool[sipTimes.Length];
     }
 
+    // -------------------------------------------------
+    // Enable
+    // -------------------------------------------------
     protected override void OnEnable()
     {
         base.OnEnable();
 
-        // Reset all sip flags
         for (int i = 0; i < sipPlayed.Length; i++)
             sipPlayed[i] = false;
     }
 
+    // -------------------------------------------------
+    // Update
+    // -------------------------------------------------
     protected override void Update()
     {
         base.Update();
+
+        HandleBottleTilt();
 
         if (!isHolding || isComplete || sipClip == null)
             return;
@@ -55,6 +74,26 @@ public class WineDrinkable : ProgressFill
         }
     }
 
+    // -------------------------------------------------
+    // Tilt logic
+    // -------------------------------------------------
+    private void HandleBottleTilt()
+    {
+        Quaternion targetRotation =
+            (isHolding && !isComplete)
+                ? startRotation * Quaternion.Euler(-tiltAngle, 0f, 0f)
+                : startRotation;
+
+        transform.localRotation = Quaternion.Lerp(
+            transform.localRotation,
+            targetRotation,
+            Time.deltaTime * tiltSpeed
+        );
+    }
+
+    // -------------------------------------------------
+    // Audio
+    // -------------------------------------------------
     private void PlaySip()
     {
         audioSource.Stop();
@@ -62,12 +101,15 @@ public class WineDrinkable : ProgressFill
         audioSource.Play();
     }
 
+    // -------------------------------------------------
+    // Complete
+    // -------------------------------------------------
     protected override void Complete()
     {
         base.Complete();
 
         instructionalText.text = "";
-        // Reset flags just in case
+
         for (int i = 0; i < sipPlayed.Length; i++)
             sipPlayed[i] = false;
 
