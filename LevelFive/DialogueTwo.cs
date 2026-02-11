@@ -11,6 +11,7 @@ public class DialogueTwo : MonoBehaviour
     [SerializeField] private TextMeshProUGUI instructionalText;
     [SerializeField] private GameObject campfireWineBottle;
     [SerializeField] private GameObject davidSkewer;
+    [SerializeField] private GameObject mainPlayerNpc;
 
     private void Awake()
     {
@@ -35,6 +36,7 @@ public class DialogueTwo : MonoBehaviour
     private void EndDialogue()
     {
         Destroy(nightCutsceneCamTwo);
+        Destroy(mainPlayerNpc);
         campfirePlayer.SetActive(true);
         string button = inputActions.Player.Interact.bindings[0].ToDisplayString();
         instructionalText.text = $"Hold [{button}] to roast";

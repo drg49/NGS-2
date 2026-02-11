@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +17,10 @@ public class WineDrinkable : ProgressFill
     [Header("Bottle Tilt")]
     [SerializeField] private float tiltAngle = 45f;   // how far back
     [SerializeField] private float tiltSpeed = 6f;    // smoothness
+    [SerializeField] DrunkCameraSway drunkCameraSway;
+
+    [SerializeField] GameObject openBottle;
+    [SerializeField] GameObject demon;
 
     private AudioSource audioSource;
     private bool[] sipPlayed;
@@ -113,7 +118,19 @@ public class WineDrinkable : ProgressFill
         for (int i = 0; i < sipPlayed.Length; i++)
             sipPlayed[i] = false;
 
-        Debug.Log("Done drinking");
+        drunkCameraSway.enabled = true;
+
+        GetComponent<MeshRenderer>().enabled = false;
+        Destroy(openBottle);
+
+        StartCoroutine(ActivateDemon());
+    }
+
+    private IEnumerator ActivateDemon()
+    {
+        yield return new WaitForSeconds(15f);
+
+        demon.SetActive(true);
 
         Destroy(gameObject);
     }
