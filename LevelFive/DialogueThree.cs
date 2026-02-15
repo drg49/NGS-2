@@ -5,7 +5,7 @@ public class DialogueThree : MonoBehaviour
 {
     [SerializeField] private InkDialogueManager dialogueManager;
     [SerializeField] private TextAsset dialogueThreeInkJSON;
-    [SerializeField] private GameObject campfirePlayer;
+    [SerializeField] private Animator fadeAnimator;
 
     void OnEnable()
     {
@@ -24,7 +24,7 @@ public class DialogueThree : MonoBehaviour
 
     private void EndDialogue()
     {
-        
+        fadeAnimator.SetTrigger("LeaveCampfire");
         Destroy(gameObject);
     }
 }

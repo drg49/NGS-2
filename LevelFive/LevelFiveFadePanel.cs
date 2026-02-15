@@ -18,6 +18,9 @@ public class LevelFiveFadePanel : MonoBehaviour
     [SerializeField] private Animator davidAnim;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject playerNPC;
+    [SerializeField] private GameObject campfirePlayer;
+    [SerializeField] private GameObject tentPlayer;
+    [SerializeField] private GameObject femaleDemon;
 
     // ===== Dialogue =====
     [Header("Dialogue")]
@@ -33,10 +36,12 @@ public class LevelFiveFadePanel : MonoBehaviour
     [SerializeField] private Transform marcusTentTarget;
     [SerializeField] private Transform davidFireTarget;
     [SerializeField] private Transform marcusFireTarget;
+    [SerializeField] private Transform femaleDemonForwardTarget;
 
     // ===== Objectives =====
     [Header("Objectives")]
     [SerializeField] private GameObject logObjective;
+    [SerializeField] private GameObject goToSleepObjective;
 
     // ===== Misc =====
     [Header("Misc")]
@@ -57,6 +62,10 @@ public class LevelFiveFadePanel : MonoBehaviour
     [SerializeField] private GameObject flamesEffect;
     [SerializeField] private GameObject logFromPileOne;
     [SerializeField] private GameObject logFromPileTwo;
+    [SerializeField] private GameObject campfireWineBottle;
+    [SerializeField] private GameObject davidSkewer;
+    [SerializeField] private AudioSource zipperAudio;
+    [SerializeField] private GameObject logs;
 
     public void EnterCampsite()
     {
@@ -200,5 +209,52 @@ public class LevelFiveFadePanel : MonoBehaviour
     public void StartDialogueTwo()
     {
         dialogueTwo.SetActive(true);
+    }
+
+    public void LeaveCampfire()
+    {
+        Destroy(campfirePlayer);
+        player.SetActive(true);
+        goToSleepObjective.SetActive(true);
+        marcusAnim.SetTrigger("IdleAfterFire");
+        davidAnim.SetTrigger("IdleAfterFire");
+        Destroy(campfireWineBottle);
+        Destroy(davidSkewer);
+        Destroy(logs);
+    }
+
+    public void EnterTent()
+    {
+        // Switch players
+        player.SetActive(false);
+        tentPlayer.SetActive(true);
+
+        // These will be activated later
+        flamesEffect.SetActive(false);
+        firepitAudio.Stop();
+
+        // Disable NPCs
+        david.SetActive(false);
+        marcus.SetActive(false);
+
+        zipperAudio.Play();
+    }
+
+    public void ShowFemaleDemon()
+    {
+        femaleDemon.SetActive(true);
+    }
+
+    public void MoveFemaleDemonForward()
+    {
+        femaleDemon.transform.SetPositionAndRotation(
+            femaleDemonForwardTarget.position,
+            femaleDemonForwardTarget.rotation
+        );
+    }
+
+    public void HideFemaleDemon()
+    {
+        femaleDemon.SetActive(false);
     }
 }

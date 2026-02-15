@@ -12,8 +12,20 @@ public class LevelFiveDebugManager : MonoBehaviour
     [SerializeField] private GameObject dialogueOneCam;
     [SerializeField] private Animator fadeAnim;
     [SerializeField] private GameObject marcus;
+    [SerializeField] private GameObject[] objectsToDestroy;
 
     private void Start()
+    {
+        SkipCarScene();
+        //StartCoroutine(FastForward());
+    }
+
+    private void SkipCarScene()
+    {
+        fadeAnim.SetTrigger("FadeIntoCamp");
+    }
+
+    private IEnumerator FastForward()
     {
 
         //Destroy(dialogueOne);
@@ -22,37 +34,26 @@ public class LevelFiveDebugManager : MonoBehaviour
         fadeAnim.SetTrigger("FadeIntoCamp");
 
         // wait 5 seconds
-        //yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(5f);
+
+        Destroy(dialogueOne);
+        Destroy(dialogueOneCam);
 
         //// then next step
-        //fadeAnim.SetTrigger("SetUpTent");
+        fadeAnim.SetTrigger("SetUpTent");
 
         //// wait 5 seconds
-        //yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(5f);
 
-        //fadeAnim.SetTrigger("FadeToNight");
+        foreach (GameObject obj in objectsToDestroy)
+        {
+            Destroy(obj);
+        }
+
+        fadeAnim.SetTrigger("FadeToNight");
+
+        yield return new WaitForSeconds(5f);
+
+        fadeAnim.SetTrigger("LeaveCampfire");
     }
-
-    //private IEnumerator Start()
-    //{
-
-    //    //Destroy(dialogueOne);
-    //    //Destroy(dialogueOneCam);
-    //    // fade in
-    //    fadeAnim.SetTrigger("FadeIntoCamp");
-
-    //    // wait 5 seconds
-    //    yield return new WaitForSeconds(5f);
-
-    //    Destroy(dialogueOne);
-    //    Destroy(dialogueOneCam);
-
-    //    //// then next step
-    //    fadeAnim.SetTrigger("SetUpTent");
-
-    //    //// wait 5 seconds
-    //    yield return new WaitForSeconds(5f);
-
-    //    fadeAnim.SetTrigger("FadeToNight");
-    //}
 }
