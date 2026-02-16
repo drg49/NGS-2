@@ -66,6 +66,7 @@ public class LevelFiveFadePanel : MonoBehaviour
     [SerializeField] private GameObject davidSkewer;
     [SerializeField] private AudioSource zipperAudio;
     [SerializeField] private GameObject logs;
+    [SerializeField] private AudioSource grudgeAudio;
 
     public void EnterCampsite()
     {
@@ -225,6 +226,7 @@ public class LevelFiveFadePanel : MonoBehaviour
 
     public void EnterTent()
     {
+        parkedCar.SetActive(false);
         // Switch players
         player.SetActive(false);
         tentPlayer.SetActive(true);
@@ -247,14 +249,24 @@ public class LevelFiveFadePanel : MonoBehaviour
 
     public void MoveFemaleDemonForward()
     {
+        femaleDemon.SetActive(false);
         femaleDemon.transform.SetPositionAndRotation(
             femaleDemonForwardTarget.position,
             femaleDemonForwardTarget.rotation
         );
+        femaleDemon.SetActive(true);
     }
 
     public void HideFemaleDemon()
     {
         femaleDemon.SetActive(false);
+    }
+
+    public void DemonCrawl()
+    {
+        femaleDemon.SetActive(true);
+        femaleDemon.GetComponent<Animator>().SetTrigger("FemaleCrawl");
+        femaleDemon.GetComponent<PathWalker>().enabled = true;
+        grudgeAudio.Play();
     }
 }

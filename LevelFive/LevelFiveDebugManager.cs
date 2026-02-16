@@ -16,8 +16,8 @@ public class LevelFiveDebugManager : MonoBehaviour
 
     private void Start()
     {
-        SkipCarScene();
-        //StartCoroutine(FastForward());
+        //SkipCarScene();
+        StartCoroutine(FastForward());
     }
 
     private void SkipCarScene()
@@ -27,9 +27,6 @@ public class LevelFiveDebugManager : MonoBehaviour
 
     private IEnumerator FastForward()
     {
-
-        //Destroy(dialogueOne);
-        //Destroy(dialogueOneCam);
         // fade in
         fadeAnim.SetTrigger("FadeIntoCamp");
 
