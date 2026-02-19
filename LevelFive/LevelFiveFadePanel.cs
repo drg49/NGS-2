@@ -329,6 +329,7 @@ public class LevelFiveFadePanel : MonoBehaviour
             playerNPCMidnightCutsceneTarget.rotation
         );
         david.SetActive(true);
+        davidAnim.SetTrigger("MidnightCutsceneIdle");
         david.transform.SetPositionAndRotation(
             davidTentTarget.position,
             davidTentTarget.rotation

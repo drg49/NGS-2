@@ -7,6 +7,8 @@ public class DialogueFive : MonoBehaviour
     [SerializeField] private GameObject midnightCutsceneCamOne;
     [SerializeField] private GameObject midnightCutsceneCamTwo;
     [SerializeField] private GameObject davidWaypointTwo;
+    [SerializeField] private PathWalker davidPathWalker;
+    [SerializeField] private Animator davidAnim;
 
     void OnEnable()
     {
@@ -29,6 +31,10 @@ public class DialogueFive : MonoBehaviour
         midnightCutsceneCamTwo.SetActive(true);
         // David walks over to look into the forest
         davidWaypointTwo.SetActive(true);
+        // Refresh David's Pathwalker
+        davidPathWalker.enabled = false;
+        davidPathWalker.enabled = true;
+        davidAnim.SetTrigger("WalkToWoods");
         Destroy(gameObject);
     }
 }

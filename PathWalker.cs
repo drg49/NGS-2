@@ -8,7 +8,7 @@ public class PathWalker : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
 
     [Header("Path Settings")]
-    [SerializeField] private Transform waypointsParent; // Assign the parent object
+    [SerializeField] private Transform waypointsParent;
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private float rotateSpeed = 5f;
     [SerializeField] private bool loopPath = false;
@@ -17,24 +17,46 @@ public class PathWalker : MonoBehaviour
     [SerializeField] private AudioClip[] footstepAudioClips;
     [SerializeField] private float footstepInterval = 0.5f;
 
-    private readonly List<Transform> waypoints = new(); // now private
-    private int currentWaypoint = 0;
-    private bool isMoving = true;
+    private readonly List<Transform> waypoints = new();
+    private int currentWaypoint;
+    private bool isMoving;
     private float footstepTimer;
 
-    void Awake()
+    void OnEnable()
     {
-        // Populate waypoints from children automatically
+        BuildWaypointList();
+        StartWalking();
+    }
+
+    // If inactive waypoint targets are enabled later on, this script will need to be refreshed.
+    private void BuildWaypointList()
+    {
         waypoints.Clear();
+
+        if (waypointsParent == null)
+            return;
+
         foreach (Transform child in waypointsParent)
         {
-            // Only active children should be added to the path
-            if (!child.gameObject.activeInHierarchy)
-                continue;
-
-            Debug.Log(child);
-            waypoints.Add(child);
+            if (child.gameObject.activeInHierarchy)
+                waypoints.Add(child);
         }
+
+        currentWaypoint = 0;
+    }
+
+    private void StartWalking()
+    {
+        if (waypoints.Count == 0)
+        {
+            isMoving = false;
+            return;
+        }
+
+        isMoving = true;
+
+        if (animator != null)
+            animator.SetBool("IsMoving", true);
     }
 
     void Update()
@@ -44,12 +66,23 @@ public class PathWalker : MonoBehaviour
 
         Transform target = waypoints[currentWaypoint];
         Vector3 targetPosition = target.position;
-        Vector3 moveDirection = (targetPosition - transform.position).normalized;
 
-        // Rotate toward target
-        if (moveDirection != Vector3.zero)
+        Move(targetPosition);
+        HandleFootsteps();
+
+        if (Vector3.Distance(transform.position, targetPosition) < 0.05f)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(moveDirection);
+            AdvanceWaypoint();
+        }
+    }
+
+    private void Move(Vector3 targetPosition)
+    {
+        Vector3 direction = (targetPosition - transform.position).normalized;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 lookRotation,
@@ -57,41 +90,36 @@ public class PathWalker : MonoBehaviour
             );
         }
 
-        // Move
         transform.position = Vector3.MoveTowards(
             transform.position,
             targetPosition,
             moveSpeed * Time.deltaTime
         );
+    }
 
-        // Footsteps (only while moving)
-        HandleFootsteps();
-
-        float distance = Vector3.Distance(transform.position, targetPosition);
-        if (distance < 0.05f)
+    private void AdvanceWaypoint()
+    {
+        if (currentWaypoint < waypoints.Count - 1)
         {
-            if (currentWaypoint < waypoints.Count - 1)
-            {
-                currentWaypoint++;
-            }
-            else
-            {
-                if (loopPath)
-                {
-                    currentWaypoint = 0;
-                }
-                else
-                {
-                    animator.SetBool("IsMoving", false);
-                    isMoving = false;
-                    footstepTimer = 0f;
-                }
-            }
+            currentWaypoint++;
+        }
+        else if (loopPath)
+        {
+            currentWaypoint = 0;
         }
         else
         {
-            animator.SetBool("IsMoving", true);
+            StopWalking();
         }
+    }
+
+    private void StopWalking()
+    {
+        isMoving = false;
+        footstepTimer = 0f;
+
+        if (animator != null)
+            animator.SetBool("IsMoving", false);
     }
 
     private void HandleFootsteps()
