@@ -13,6 +13,7 @@ public class LevelFiveDebugManager : MonoBehaviour
     [SerializeField] private Animator fadeAnim;
     [SerializeField] private GameObject marcus;
     [SerializeField] private GameObject[] objectsToDestroy;
+    [SerializeField] private GameObject levelFiveFadePanel;
 
     private void Start()
     {
@@ -52,5 +53,13 @@ public class LevelFiveDebugManager : MonoBehaviour
         yield return new WaitForSeconds(5f);
 
         fadeAnim.SetTrigger("LeaveCampfire");
+
+        yield return new WaitForSeconds(5f);
+
+        fadeAnim.SetTrigger("EnterTent");
+
+        //yield return new WaitForSeconds(5f);
+
+        //levelFiveFadePanel.GetComponent<LevelFiveFadePanel>().SwitchToMidnightCutscene();
     }
 }

@@ -28,6 +28,9 @@ public class LevelFiveFadePanel : MonoBehaviour
     [SerializeField] private GameObject dialogueOne;
     [SerializeField] private GameObject dialogueTwo;
     [SerializeField] private TextMeshProUGUI transitionText;
+    [SerializeField] private GameObject dialogueThree;
+    [SerializeField] private GameObject dialogueFour;
+    [SerializeField] private GameObject dialogueFive;
 
     // ===== Targets =====
     [Header("Targets")]
@@ -37,6 +40,7 @@ public class LevelFiveFadePanel : MonoBehaviour
     [SerializeField] private Transform davidFireTarget;
     [SerializeField] private Transform marcusFireTarget;
     [SerializeField] private Transform femaleDemonForwardTarget;
+    [SerializeField] private Transform playerNPCMidnightCutsceneTarget;
 
     // ===== Objectives =====
     [Header("Objectives")]
@@ -66,7 +70,15 @@ public class LevelFiveFadePanel : MonoBehaviour
     [SerializeField] private GameObject davidSkewer;
     [SerializeField] private AudioSource zipperAudio;
     [SerializeField] private GameObject logs;
+    [SerializeField] private AudioSource wolfCryAudio;
+    [SerializeField] private AudioSource demonicBreathAudio;
     [SerializeField] private AudioSource grudgeAudio;
+    [SerializeField] private GameObject grudgeLight;
+    [SerializeField] private AudioSource maleScaredAudio;
+    [SerializeField] private GameObject midnightCutsceneCamOne;
+    [SerializeField] private GameObject tentPartSix;
+    [SerializeField] private GameObject tentPartSeven;
+    [SerializeField] private AudioSource aftermathSong;
 
     public void EnterCampsite()
     {
@@ -240,6 +252,17 @@ public class LevelFiveFadePanel : MonoBehaviour
         marcus.SetActive(false);
 
         zipperAudio.Play();
+        reticle.SetActive(false);
+    }
+
+    public void PlayWolfCry()
+    {
+        wolfCryAudio.Play();
+    }
+
+    public void PlayDemonicBreath()
+    {
+        demonicBreathAudio.Play();
     }
 
     public void ShowFemaleDemon()
@@ -268,5 +291,52 @@ public class LevelFiveFadePanel : MonoBehaviour
         femaleDemon.GetComponent<Animator>().SetTrigger("FemaleCrawl");
         femaleDemon.GetComponent<PathWalker>().enabled = true;
         grudgeAudio.Play();
+        grudgeLight.SetActive(true);
+    }
+
+    public void DestroyDemon()
+    {
+        Destroy(grudgeAudio);
+        Destroy(grudgeLight);
+        Destroy(femaleDemon);
+        maleScaredAudio.Play();
+        dialogueThree.SetActive(true);
+    }
+
+    public void StartFireAgain()
+    {
+        flamesEffect.SetActive(true);
+        firepitAudio.Play();
+    }
+
+    public void PlayDialogueFour()
+    {
+        // "Okay, something strange is happening here."
+        dialogueFour.SetActive(true);
+    }
+
+    public void SwitchToMidnightCutscene()
+    {
+        Destroy(tentPlayer);
+        midnightCutsceneCamOne.SetActive(true);
+        Destroy(tentPartSix);
+        Destroy(tentPartSeven);
+        aftermathSong.Play();
+        playerNPC.SetActive(true);
+        playerNPC.GetComponent<Animator>().SetTrigger("MidnightCutsceneIdle");
+        playerNPC.transform.SetPositionAndRotation(
+            playerNPCMidnightCutsceneTarget.position,
+            playerNPCMidnightCutsceneTarget.rotation
+        );
+        david.SetActive(true);
+        david.transform.SetPositionAndRotation(
+            davidTentTarget.position,
+            davidTentTarget.rotation
+        );
+    }
+
+    public void PlayDialogueFive()
+    {
+        dialogueFive.SetActive(true);
     }
 }
