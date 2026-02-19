@@ -17,8 +17,8 @@ public class LevelFiveDebugManager : MonoBehaviour
 
     private void Start()
     {
-        SkipCarScene();
-        //StartCoroutine(FastForward());
+        //SkipCarScene();
+        StartCoroutine(FastForward());
     }
 
     private void SkipCarScene()
@@ -55,6 +55,9 @@ public class LevelFiveDebugManager : MonoBehaviour
         fadeAnim.SetTrigger("LeaveCampfire");
 
         yield return new WaitForSeconds(5f);
+
+        // Temporarily speed it up
+        fadeAnim.speed = 10f; // 3x faster
 
         fadeAnim.SetTrigger("EnterTent");
 

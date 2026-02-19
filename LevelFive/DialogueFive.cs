@@ -34,6 +34,7 @@ public class DialogueFive : MonoBehaviour
         // Refresh David's Pathwalker
         davidPathWalker.enabled = false;
         davidPathWalker.enabled = true;
+        davidPathWalker.SetMoveSpeed(1.5f);
         davidAnim.SetTrigger("WalkToWoods");
         Destroy(gameObject);
     }

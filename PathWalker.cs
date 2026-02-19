@@ -22,19 +22,23 @@ public class PathWalker : MonoBehaviour
     private bool isMoving;
     private float footstepTimer;
 
+    // Public method to update the move speed
+    public void SetMoveSpeed(float newSpeed)
+    {
+        moveSpeed = Mathf.Max(0f, newSpeed); // prevent negative speed
+    }
+
     void OnEnable()
     {
         BuildWaypointList();
         StartWalking();
     }
 
-    // If inactive waypoint targets are enabled later on, this script will need to be refreshed.
     private void BuildWaypointList()
     {
         waypoints.Clear();
 
-        if (waypointsParent == null)
-            return;
+        if (waypointsParent == null) return;
 
         foreach (Transform child in waypointsParent)
         {
@@ -54,29 +58,25 @@ public class PathWalker : MonoBehaviour
         }
 
         isMoving = true;
-
         if (animator != null)
             animator.SetBool("IsMoving", true);
     }
 
     void Update()
     {
-        if (!isMoving || waypoints.Count == 0)
-            return;
+        if (!isMoving || waypoints.Count == 0) return;
 
         Transform target = waypoints[currentWaypoint];
         Vector3 targetPosition = target.position;
 
-        Move(targetPosition);
+        MoveTowards(targetPosition);
         HandleFootsteps();
 
         if (Vector3.Distance(transform.position, targetPosition) < 0.05f)
-        {
             AdvanceWaypoint();
-        }
     }
 
-    private void Move(Vector3 targetPosition)
+    private void MoveTowards(Vector3 targetPosition)
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
 
@@ -117,7 +117,6 @@ public class PathWalker : MonoBehaviour
     {
         isMoving = false;
         footstepTimer = 0f;
-
         if (animator != null)
             animator.SetBool("IsMoving", false);
     }
