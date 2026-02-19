@@ -6,6 +6,7 @@ public class DialogueFive : MonoBehaviour
     [SerializeField] private TextAsset dialogueFiveInkJSON;
     [SerializeField] private GameObject midnightCutsceneCamOne;
     [SerializeField] private GameObject midnightCutsceneCamTwo;
+    [SerializeField] private GameObject davidWaypointTwo;
 
     void OnEnable()
     {
@@ -26,6 +27,8 @@ public class DialogueFive : MonoBehaviour
     {
         Destroy(midnightCutsceneCamOne);
         midnightCutsceneCamTwo.SetActive(true);
+        // David walks over to look into the forest
+        davidWaypointTwo.SetActive(true);
         Destroy(gameObject);
     }
 }

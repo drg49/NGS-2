@@ -36,7 +36,7 @@ public class DialogueTwo : MonoBehaviour
     private void EndDialogue()
     {
         Destroy(nightCutsceneCamTwo);
-        Destroy(mainPlayerNpc);
+        mainPlayerNpc.SetActive(false);
         campfirePlayer.SetActive(true);
         string button = inputActions.Player.Interact.bindings[0].ToDisplayString();
         instructionalText.text = $"Hold [{button}] to roast";

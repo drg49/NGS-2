@@ -16,7 +16,7 @@
 {response}
     + [It definitely wasn't an animal.]
         -> lastRes("[Marcus]: Okay... Well nothing is out there, so calm down. Why don't we get some sleep soon? It's getting late.")
-    + [Hmm... Nevermind.]
+    + [Okay. I thought it was something else...]
         -> lastRes("[Marcus]: Okay... Well let's get some sleep soon. It is getting late.")
 
 === lastRes(response) ===

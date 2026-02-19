@@ -17,7 +17,7 @@ public class PathWalker : MonoBehaviour
     [SerializeField] private AudioClip[] footstepAudioClips;
     [SerializeField] private float footstepInterval = 0.5f;
 
-    private List<Transform> waypoints = new List<Transform>(); // now private
+    private readonly List<Transform> waypoints = new(); // now private
     private int currentWaypoint = 0;
     private bool isMoving = true;
     private float footstepTimer;
@@ -25,13 +25,15 @@ public class PathWalker : MonoBehaviour
     void Awake()
     {
         // Populate waypoints from children automatically
-        if (waypointsParent != null)
+        waypoints.Clear();
+        foreach (Transform child in waypointsParent)
         {
-            waypoints.Clear();
-            foreach (Transform child in waypointsParent)
-            {
-                waypoints.Add(child);
-            }
+            // Only active children should be added to the path
+            if (!child.gameObject.activeInHierarchy)
+                continue;
+
+            Debug.Log(child);
+            waypoints.Add(child);
         }
     }
 
