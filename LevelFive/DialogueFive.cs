@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogueFive : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class DialogueFive : MonoBehaviour
     [SerializeField] private GameObject davidWaypointTwo;
     [SerializeField] private PathWalker davidPathWalker;
     [SerializeField] private Animator davidAnim;
+    [SerializeField] private Image reticleImage;
 
     void OnEnable()
     {
@@ -27,6 +29,9 @@ public class DialogueFive : MonoBehaviour
 
     private void EndDialogue()
     {
+        // Make reticle invisible throughout cutscenes
+        reticleImage.enabled = false;
+
         Destroy(midnightCutsceneCamOne);
         midnightCutsceneCamTwo.SetActive(true);
         // David walks over to look into the forest
@@ -34,7 +39,7 @@ public class DialogueFive : MonoBehaviour
         // Refresh David's Pathwalker
         davidPathWalker.enabled = false;
         davidPathWalker.enabled = true;
-        davidPathWalker.SetMoveSpeed(1.5f);
+        davidPathWalker.SetMoveSpeed(1.2f);
         davidAnim.SetTrigger("WalkToWoods");
         Destroy(gameObject);
     }
