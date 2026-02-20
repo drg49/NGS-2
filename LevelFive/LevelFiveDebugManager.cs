@@ -60,9 +60,5 @@ public class LevelFiveDebugManager : MonoBehaviour
         fadeAnim.speed = 10f; // 3x faster
 
         fadeAnim.SetTrigger("EnterTent");
-
-        //yield return new WaitForSeconds(5f);
-
-        //levelFiveFadePanel.GetComponent<LevelFiveFadePanel>().SwitchToMidnightCutscene();
     }
 }

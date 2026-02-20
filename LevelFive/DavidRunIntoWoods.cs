@@ -9,6 +9,11 @@ public class DavidRunIntoWoods : MonoBehaviour
     [SerializeField] private GameObject lookForDavidObjective;
     [SerializeField] private GameObject midnightCustceneCamThree;
     [SerializeField] private Image reticleImage;
+    [SerializeField] private GameObject flashlight;
+    [SerializeField] private GameObject flashlightLight;
+    [SerializeField] private AudioSource flashlightAudio;
+    [SerializeField] private GameObject forestJumpscare;
+    [SerializeField] private GameObject parkedCar;
 
     private Collider triggerCollider;
 
@@ -34,5 +39,10 @@ public class DavidRunIntoWoods : MonoBehaviour
         player.SetActive(true);
         playerNPC.SetActive(false);
         lookForDavidObjective.SetActive(true);
+        flashlight.SetActive(true);
+        flashlightLight.SetActive(true);
+        flashlightAudio.Play();
+        parkedCar.SetActive(true);
+        forestJumpscare.SetActive(true);
     }
 }
