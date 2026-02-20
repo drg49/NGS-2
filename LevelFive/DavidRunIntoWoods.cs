@@ -5,6 +5,7 @@ public class DavidRunIntoWoods : MonoBehaviour
 {
     [SerializeField] private GameObject david;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject playerNPC;
     [SerializeField] private GameObject lookForDavidObjective;
     [SerializeField] private GameObject midnightCustceneCamThree;
     [SerializeField] private Image reticleImage;
@@ -31,6 +32,7 @@ public class DavidRunIntoWoods : MonoBehaviour
         // Switch back to player
         Destroy(midnightCustceneCamThree);
         player.SetActive(true);
+        playerNPC.SetActive(false);
         lookForDavidObjective.SetActive(true);
     }
 }
