@@ -4,17 +4,17 @@ using System.Collections;
 public class ForestJumpscare : MonoBehaviour
 {
     [SerializeField] private AudioSource aftermathSong;
-    [SerializeField] private AudioSource grudgeJumpscareAudio;
-    [SerializeField] private GameObject grudgeJumpscareImage;
+    [SerializeField] private GameObject davidCreepyFPS;
+    [SerializeField] private AudioSource davidJumpscareAudio;
+    [SerializeField] private GameObject flashlight;
+    [SerializeField] private GameObject flashlightLight;
 
-    [SerializeField] private float fadeDuration = 2f; // seconds for fade out
+    [SerializeField] private float fadeDuration = 4f; // seconds for fade out
 
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player"))
             return;
-
-        Debug.Log("Call Jumpscare in Forest");
 
         // Destroy all BoxColliders
         BoxCollider[] colliders = GetComponents<BoxCollider>();
@@ -41,15 +41,11 @@ public class ForestJumpscare : MonoBehaviour
         aftermathSong.volume = 0f;
         aftermathSong.Stop();
 
-        // Wait 7 seconds
-        yield return new WaitForSeconds(7f);
-
-        // Play grudge audio
-        grudgeJumpscareAudio.Play();
-
-        // Flash grudge image
-        grudgeJumpscareImage.SetActive(true);
-        yield return new WaitForSeconds(0.6f);
-        grudgeJumpscareImage.SetActive(false);
+        // Wait 12 seconds before David jumpscare
+        yield return new WaitForSeconds(12f);
+        davidCreepyFPS.SetActive(true);
+        davidJumpscareAudio.Play();
+        flashlight.SetActive(false);
+        flashlightLight.SetActive(false);
     }
 }
