@@ -11,7 +11,9 @@ public class DialogueSix : MonoBehaviour
     [SerializeField] private Animator davidAnim;
     [SerializeField] private GameObject marcus;
     [SerializeField] private Animator marcusAnim;
+    [SerializeField] private PathWalker marcusPW;
     [SerializeField] private Transform marcusSleepTarget;
+    [SerializeField] private GameObject marcusWP;
 
     void OnEnable()
     {
@@ -40,6 +42,8 @@ public class DialogueSix : MonoBehaviour
         davidPathWalker.enabled = true;
         davidPathWalker.SetMoveSpeed(7f);
         davidAnim.SetTrigger("RunIntoWoods");
+        Destroy(marcusWP);
+        marcusPW.enabled = false;
         marcus.SetActive(true);
         // Set Marcus NPC in tent
         marcus.transform.SetPositionAndRotation(

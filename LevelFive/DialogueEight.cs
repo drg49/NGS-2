@@ -23,6 +23,7 @@ public class DialogueEight : MonoBehaviour
 
     private void EndDialogue()
     {
+        fadeAnim.SetTrigger("FadeToLevelSix");
         Destroy(gameObject);
     }
 }

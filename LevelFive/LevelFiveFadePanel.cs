@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelFiveFadePanel : MonoBehaviour
 {
@@ -339,5 +340,10 @@ public class LevelFiveFadePanel : MonoBehaviour
     public void PlayDialogueFive()
     {
         dialogueFive.SetActive(true);
+    }
+
+    public void GoToLevelSix()
+    {
+        SceneManager.LoadScene("SixthLevel_Hike");
     }
 }
