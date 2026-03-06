@@ -1,8 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NotifyDavid : NPCDialogue
 {
     [SerializeField] private Transform davidTransform;
+    [SerializeField] private GameObject notifyFriendsTrigger;
+    [SerializeField] private Animator fadeAnim;
+    [SerializeField] private Image reticleImage;
 
     private void OnEnable()
     {
@@ -17,8 +21,12 @@ public class NotifyDavid : NPCDialogue
 
     private void DialogueEnded()
     {
-        Destroy(cameraToActivate.gameObject);
-        player.SetActive(true);
+        // Make reticle invisible throughout cutscenes
+        reticleImage.enabled = false;
+
+        // Transition to cutscene - David & Player carry Marcus into the cabin
+        fadeAnim.SetTrigger("FadeInOutCarryMarcus");
+        Destroy(notifyFriendsTrigger);
         Destroy(gameObject);
     }
 }
