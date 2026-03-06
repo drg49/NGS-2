@@ -8,6 +8,7 @@ public class FirstPersonController : MonoBehaviour
     public float moveSpeed = 5f;
     public float runSpeed = 9f;
     public float gravity = -9.81f;
+    public bool canRun = true; // NEW: default true so existing instances keep working
 
     [Header("Look Settings")]
     public float lookSensitivity = 0.1f;
@@ -79,7 +80,6 @@ public class FirstPersonController : MonoBehaviour
         currentFootsteps = defaultFootsteps;
     }
 
-
     private void Update()
     {
         HandleLook();
@@ -89,7 +89,7 @@ public class FirstPersonController : MonoBehaviour
 
     private void HandleMovement()
     {
-        float speed = isSprinting ? runSpeed : moveSpeed;
+        float speed = (isSprinting && canRun) ? runSpeed : moveSpeed;
 
         Vector3 direction = transform.forward * moveInput.y + transform.right * moveInput.x;
 
@@ -125,11 +125,13 @@ public class FirstPersonController : MonoBehaviour
             return;
         }
 
-        float stepRate = isSprinting ? runStepRate : walkStepRate;
+        // Only play running footsteps if canRun is true
+        bool running = isSprinting && canRun;
+        float stepRate = running ? runStepRate : walkStepRate;
 
         if (stepTimer <= 0f)
         {
-            PlayFootstep(isSprinting);
+            PlayFootstep(running);
             stepTimer = stepRate;
         }
 

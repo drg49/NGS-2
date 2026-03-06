@@ -8,6 +8,7 @@ public class HelpMarcusInteract : Interactable
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject playerNPC;
     [SerializeField] private AudioSource aftermathSong;
+    [SerializeField] private FirstPersonController fpsController;
 
     void OnEnable()
     {
@@ -33,6 +34,9 @@ public class HelpMarcusInteract : Interactable
         Destroy(helpMarcusCam);
         playerNPC.SetActive(false);
         player.SetActive(true);
+        // Player cannot run at the start of this level
+        // When the player begins to look for help they can run
+        fpsController.canRun = true;
         Destroy(gameObject);
     }
 }
