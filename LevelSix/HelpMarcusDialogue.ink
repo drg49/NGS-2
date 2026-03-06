@@ -14,8 +14,8 @@
 
 === resTwo(response) ===
 {response}
-    + [Continue]
-        -> resThree("[Marcus]: Guys please help me. I'm not joking. Call 911...")
+    + [What do you mean "you can't move your body"? What the hell is happening?!]
+        -> resThree("[Marcus]: I don't know! I have no idea what's going on with me. Everything hurts and I can't feel my body, you guys need to help me. This is not a joke. Seriously, call 911... Please!")
 
 === resThree(response) ===
 {response}
