@@ -3,7 +3,6 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class FoundCabinTrigger : MonoBehaviour
 {
-    [Header("Trigger Settings")]
     private bool hasTriggered = false;
 
     [SerializeField] private InkDialogueManager dialogueManager;
