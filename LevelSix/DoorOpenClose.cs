@@ -1,41 +1,53 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class DoorOpenClose : Interactable
 {
     [SerializeField] private Animator doorAnimator;
+    [Header("Audio")]
+    [SerializeField] private AudioClip openClip;
+    [SerializeField] private AudioClip closeClip;
 
-    // Track door state
+    private AudioSource audioSource;
     private bool isOpen = false;
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+    }
 
     private void Start()
     {
-        // Set the initial interaction text
         interactionText = "Open Door";
     }
 
-    // Open the door
     public void OpenDoor()
     {
         doorAnimator.SetTrigger("OpenDoor");
         isOpen = true;
-        interactionText = "Close Door"; // Update text when door is open
+        interactionText = "Close Door";
+
+        audioSource.Stop();
+        audioSource.clip = openClip;
+        audioSource.Play();
     }
 
-    // Close the door
     public void CloseDoor()
     {
         doorAnimator.SetTrigger("CloseDoor");
         isOpen = false;
-        interactionText = "Open Door"; // Update text when door is closed
+        interactionText = "Open Door";
+
+        audioSource.Stop();
+        audioSource.clip = closeClip;
+        audioSource.Play();
     }
 
-    // Toggle door state
     public void ToggleDoor()
     {
-        if (isOpen)
-            CloseDoor();
-        else
-            OpenDoor();
+        if (isOpen) CloseDoor();
+        else OpenDoor();
     }
 
     public override void Interact()
