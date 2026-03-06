@@ -14,6 +14,8 @@ public class MarcusLvlSix : MonoBehaviour
     public void FallOver()
     {
         helpMarcusInteract.SetActive(true);
+        CapsuleCollider col = GetComponent<CapsuleCollider>();
+        col.enabled = false;
         malePainfulGrunt.Play();
     }
 }
