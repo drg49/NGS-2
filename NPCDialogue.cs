@@ -1,5 +1,8 @@
 using UnityEngine;
 
+// This script has caused more problems than it solves.
+// It may be a good idea to not use this script moving forward, and instead just use interactable.
+// This is because many NPC Dialogues function differently, and class for them may not be needed.
 public class NPCDialogue : Interactable
 {
     [Header("Player")]
