@@ -9,6 +9,9 @@ public class HelpMarcusInteract : Interactable
     [SerializeField] private GameObject playerNPC;
     [SerializeField] private AudioSource aftermathSong;
     [SerializeField] private FirstPersonController fpsController;
+    [SerializeField] private GameObject findHelpObjective;
+    [SerializeField] private GameObject preventCabinExploreCollider;
+    [SerializeField] private GameObject foundCabinTrigger;
 
     void OnEnable()
     {
@@ -37,6 +40,9 @@ public class HelpMarcusInteract : Interactable
         // Player cannot run at the start of this level
         // When the player begins to look for help they can run
         fpsController.canRun = true;
+        findHelpObjective.SetActive(true);
+        Destroy(preventCabinExploreCollider);
+        foundCabinTrigger.SetActive(true);
         Destroy(gameObject);
     }
 }
