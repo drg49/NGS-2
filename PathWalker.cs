@@ -25,7 +25,13 @@ public class PathWalker : MonoBehaviour
     // Public method to update the move speed
     public void SetMoveSpeed(float newSpeed)
     {
-        moveSpeed = Mathf.Max(0f, newSpeed); // prevent negative speed
+        moveSpeed = Mathf.Max(0f, newSpeed);
+    }
+
+    // Public method to update the rotate speed
+    public void SetRotateSpeed(float newSpeed)
+    {
+        rotateSpeed = Mathf.Max(0f, newSpeed);
     }
 
     void OnEnable()
@@ -58,6 +64,7 @@ public class PathWalker : MonoBehaviour
         }
 
         isMoving = true;
+
         if (animator != null)
             animator.SetBool("IsMoving", true);
     }
@@ -83,6 +90,7 @@ public class PathWalker : MonoBehaviour
         if (direction != Vector3.zero)
         {
             Quaternion lookRotation = Quaternion.LookRotation(direction);
+
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 lookRotation,
@@ -117,6 +125,7 @@ public class PathWalker : MonoBehaviour
     {
         isMoving = false;
         footstepTimer = 0f;
+
         if (animator != null)
             animator.SetBool("IsMoving", false);
     }

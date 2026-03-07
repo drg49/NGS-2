@@ -20,7 +20,7 @@
 === resThree(response) ===
 {response}
     + [Alright. David help me pick him up, we need to find a place with reception. ]
-        -> resFour("[David]: Do you realize how far out we are? It would be smarter for me to stay with him while you run down the road and find help...")
+        -> resFour("[David]: Do you realize how far out we are? It would be smarter for me to stay here with him while you run down the road and find help...")
 
 === resFour(response) ===
 {response}
