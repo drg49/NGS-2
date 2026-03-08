@@ -15,12 +15,14 @@ public class FPSGunShoot : MonoBehaviour
     [Header("Effects")]
     public AudioSource rifleAudio;
     public ParticleSystem muzzleFlash;
-    public float recoilAmount = 5f;
-    public float recoilSpeed = 10f;
+
+    [Header("Recoil")]
+    public float recoilAmount = 0.3f;
+    public float recoilSpeed = 25f;
 
     private Vector3 originalPosition;
-    private bool isRecoiling = false;
     private Vector3 recoilTarget;
+    private bool isRecoiling;
 
     private PlayerInputActions inputActions;
 
@@ -48,21 +50,19 @@ public class FPSGunShoot : MonoBehaviour
         UpdateRecoil();
     }
 
-    private void UpdateRecoil()
+    void UpdateRecoil()
     {
-        if (isRecoiling)
-        {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, recoilTarget, recoilSpeed * Time.deltaTime);
+        Vector3 target = isRecoiling ? recoilTarget : originalPosition;
 
-            if (Vector3.Distance(transform.localPosition, recoilTarget) < 0.01f)
-            {
-                isRecoiling = false;
-            }
-        }
-        else
+        transform.localPosition = Vector3.Lerp(
+            transform.localPosition,
+            target,
+            recoilSpeed * Time.deltaTime
+        );
+
+        if (Vector3.Distance(transform.localPosition, recoilTarget) < 0.001f)
         {
-            // Smoothly return to original position
-            transform.localPosition = Vector3.Lerp(transform.localPosition, originalPosition, recoilSpeed * Time.deltaTime);
+            isRecoiling = false;
         }
     }
 
@@ -89,20 +89,22 @@ public class FPSGunShoot : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, shootDistance, rabbitLayer))
         {
             if (hit.collider.TryGetComponent<RabbitAI>(out var rabbit))
+            {
                 rabbit.Kill();
+            }
         }
 
-        // Play effects
         PlayEffects();
     }
 
-    private void PlayEffects()
+    void PlayEffects()
     {
         rifleAudio.Play();
+
+        muzzleFlash.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         muzzleFlash.Play();
 
-        // Apply recoil
-        recoilTarget = originalPosition - transform.forward * recoilAmount;
+        recoilTarget = originalPosition + new Vector3(0f, 0.01f, -recoilAmount);
         isRecoiling = true;
     }
 }
