@@ -4,17 +4,30 @@ using UnityEngine.UI;
 
 public class FPSGunShoot : MonoBehaviour
 {
+    [Header("Camera & Shooting")]
     public Camera cam;
     public float shootDistance = 200f;
     public LayerMask rabbitLayer;
 
+    [Header("Reticle UI")]
     public Image reticle;
+
+    [Header("Effects")]
+    public AudioSource rifleAudio;
+    public ParticleSystem muzzleFlash;
+    public float recoilAmount = 5f;
+    public float recoilSpeed = 10f;
+
+    private Vector3 originalPosition;
+    private bool isRecoiling = false;
+    private Vector3 recoilTarget;
 
     private PlayerInputActions inputActions;
 
     void Awake()
     {
         inputActions = new PlayerInputActions();
+        originalPosition = transform.localPosition;
     }
 
     void OnEnable()
@@ -32,13 +45,31 @@ public class FPSGunShoot : MonoBehaviour
     void Update()
     {
         UpdateReticleColor();
+        UpdateRecoil();
+    }
+
+    private void UpdateRecoil()
+    {
+        if (isRecoiling)
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, recoilTarget, recoilSpeed * Time.deltaTime);
+
+            if (Vector3.Distance(transform.localPosition, recoilTarget) < 0.01f)
+            {
+                isRecoiling = false;
+            }
+        }
+        else
+        {
+            // Smoothly return to original position
+            transform.localPosition = Vector3.Lerp(transform.localPosition, originalPosition, recoilSpeed * Time.deltaTime);
+        }
     }
 
     void UpdateReticleColor()
     {
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-        // Check if the ray hits a rabbit
         if (Physics.Raycast(ray, out RaycastHit hit, shootDistance, rabbitLayer))
         {
             if (hit.collider.TryGetComponent<RabbitAI>(out _))
@@ -48,7 +79,6 @@ public class FPSGunShoot : MonoBehaviour
             }
         }
 
-        // Reset color if not aiming at a rabbit
         reticle.color = Color.white;
     }
 
@@ -58,9 +88,21 @@ public class FPSGunShoot : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, shootDistance, rabbitLayer))
         {
-            
             if (hit.collider.TryGetComponent<RabbitAI>(out var rabbit))
                 rabbit.Kill();
         }
+
+        // Play effects
+        PlayEffects();
+    }
+
+    private void PlayEffects()
+    {
+        rifleAudio.Play();
+        muzzleFlash.Play();
+
+        // Apply recoil
+        recoilTarget = originalPosition - transform.forward * recoilAmount;
+        isRecoiling = true;
     }
 }
