@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class LevelSixFadePanel : MonoBehaviour
 {
-    [Header("Audio")]
-    [SerializeField] private AudioSource aftermathSong;
-
     [Header("Cameras")]
     [SerializeField] private GameObject notifyDavidCam;
     [SerializeField] private GameObject carryMarcusCam;
+    [SerializeField] private GameObject marcusInBedCam;
+    [SerializeField] private GameObject dialogueOneCam;
 
     [Header("Characters")]
     [SerializeField] private GameObject marcus;
@@ -18,7 +16,6 @@ public class LevelSixFadePanel : MonoBehaviour
     [SerializeField] private GameObject david;
     [SerializeField] private Animator davidAnim;
     [SerializeField] private PathWalker davidPW;
-    [SerializeField] private GameObject player; //
     [SerializeField] private GameObject playerNPC;
     [SerializeField] private Animator playerNPCAnim;
     [SerializeField] private PathWalker playerNPCPW;
@@ -27,14 +24,22 @@ public class LevelSixFadePanel : MonoBehaviour
     [SerializeField] private Transform playerNPCCarryMarcusTarget;
     [SerializeField] private Transform davidCarryMarcusTarget;
     [SerializeField] private Transform marcusBeingCarriedTarget;
+    // Waypoints to disable during carry path
     [SerializeField] private List<GameObject> carryPathWaypointsToDisable;
     // Enter cabin targets
     [SerializeField] private GameObject marcusWP3;
     [SerializeField] private GameObject davidWP4;
+    [SerializeField] private Transform playerNPCInCabinTarget;
+    [SerializeField] private Transform davidInCabinTarget;
+    [SerializeField] private Transform marcusInBedTarget;
+    // Waypoints to disable when marcus is in bed
+    [SerializeField] private List<GameObject> marcusInBedWaypointsToDisable;
+
+    [Header("Misc")]
+    [SerializeField] private GameObject dialogueOne;
 
 
-
-    // David and Player NPC carry Marcus into Cabin
+    // David and Player NPC carry Marcus into cabin
     public void CarryMarcusIntoCabin()
     {
         Destroy(notifyDavidCam);
@@ -61,21 +66,16 @@ public class LevelSixFadePanel : MonoBehaviour
         davidAnim.SetTrigger("CarryMarcus");
         playerNPCAnim.SetTrigger("CarryMarcus");
         marcusAnim.SetTrigger("BeingCarried");
-
-        // Fade out aftermath song
-        StartCoroutine(FadeOutSong());
     }
-
+    
+    // Players start moving towards cabin
     public void ActivateCarryWaypoints()
     {
         // First path target for Player NPC, so just enable it's script
         playerNPCPW.enabled = true;
 
         // Disable waypoints previous to this 'Carry Walk' path
-        foreach (GameObject waypoint in carryPathWaypointsToDisable)
-        {
-            waypoint.SetActive(false);
-        }
+        DisableGameObjects(carryPathWaypointsToDisable);
 
         // Update NPC path speed and rotation
         marcusPW.SetMoveSpeed(0.8f);
@@ -89,6 +89,57 @@ public class LevelSixFadePanel : MonoBehaviour
         RefreshDavidPathWalker();
     }
 
+    // Marcus is laying in bed inside the cabin
+    public void MarcusInBed()
+    {
+        Destroy(carryMarcusCam);
+        marcusInBedCam.SetActive(true);
+
+        // Disable waypoints previous to this 'Marcus in Bed' event
+        DisableGameObjects(marcusInBedWaypointsToDisable);
+
+        // Don't need pathwalkers right now
+        // Can reactivate later (causing a pathwalker refresh)
+        davidPW.enabled = false;
+        marcusPW.enabled = false;
+        playerNPCPW.enabled = false;
+
+        // Position and rotate Player NPC
+        playerNPC.transform.SetPositionAndRotation(
+            playerNPCInCabinTarget.position,
+            playerNPCInCabinTarget.rotation
+        );
+        // Position and rotate David
+        david.transform.SetPositionAndRotation(
+            davidInCabinTarget.position,
+            davidInCabinTarget.rotation
+        );
+        // Position and rotate Marcus
+        marcus.transform.SetPositionAndRotation(
+            marcusInBedTarget.position,
+            marcusInBedTarget.rotation
+        );
+
+        marcusAnim.SetTrigger("LayingInBedSick");
+        davidAnim.SetTrigger("KneelDownInCabin");
+        playerNPCAnim.SetTrigger("IdleInCabin");
+    }
+
+    public void StartDialogueOne()
+    {
+        Destroy(marcusInBedCam);
+        dialogueOneCam.SetActive(true);
+        dialogueOne.SetActive(true);
+    }
+
+    private void DisableGameObjects(IEnumerable<GameObject> objects)
+    {
+        foreach (GameObject obj in objects)
+        {
+            obj.SetActive(false);   
+        }
+    }
+
     private void RefreshDavidPathWalker()
     {
         davidPW.enabled = false;
@@ -99,20 +150,5 @@ public class LevelSixFadePanel : MonoBehaviour
     {
         marcusPW.enabled = false;
         marcusPW.enabled = true;
-    }
-
-    private IEnumerator FadeOutSong()
-    {
-        float fadeDuration = 4f;
-        float startVolume = aftermathSong.volume;
-        float elapsed = 0f;
-        while (elapsed < fadeDuration)
-        {
-            aftermathSong.volume = Mathf.Lerp(startVolume, 0f, elapsed / fadeDuration);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        aftermathSong.volume = 0f;
-        aftermathSong.Stop();
     }
 }

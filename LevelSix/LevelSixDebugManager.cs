@@ -9,19 +9,36 @@ public class LevelSixDebugManager : MonoBehaviour
     [SerializeField] private PathWalker davidPW;
     [SerializeField] private PathWalker marcusPW;
 
-    public float debugRunSpeed = 8;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private float debugRunSpeed = 8f;
+
     void Start()
     {
-        fpsController.runSpeed = debugRunSpeed;
-        fpsController.canRun = true;
-        notifyDavid.SetActive(true);
-        SpeedUpPathwalkers();
+        ApplyDebugSpeed();
+        //notifyDavid.SetActive(true);
     }
 
-    private void SpeedUpPathwalkers()
+    void OnValidate()
     {
-        davidPW.SetMoveSpeed(debugRunSpeed);
-        marcusPW.SetMoveSpeed(debugRunSpeed);
+        // Runs whenever a value changes in the inspector
+        ApplyDebugSpeed();
+    }
+
+    private void ApplyDebugSpeed()
+    {
+        if (fpsController != null)
+        {
+            fpsController.runSpeed = debugRunSpeed;
+            fpsController.canRun = true;
+        }
+
+        if (davidPW != null)
+        {
+            davidPW.SetMoveSpeed(debugRunSpeed);
+        }
+
+        if (marcusPW != null)
+        {
+            marcusPW.SetMoveSpeed(debugRunSpeed);
+        }
     }
 }
