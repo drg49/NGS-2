@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class DialogueOneLvlSix : MonoBehaviour
@@ -14,6 +15,9 @@ public class DialogueOneLvlSix : MonoBehaviour
     [SerializeField] private Material afternoonSkybox;
     [SerializeField] private Light directionalLight;
     [SerializeField] private GameObject huntObjective;
+    [SerializeField] private GameObject huntingAreaOne;
+    [SerializeField] private GameObject huntingAreaTwo;
+    [SerializeField] private Image reticleImage;
 
     void OnEnable()
     {
@@ -37,6 +41,10 @@ public class DialogueOneLvlSix : MonoBehaviour
             playerReadyToHuntTarget.rotation
         );
         Destroy(dialogueOneCam);
+        huntingAreaOne.SetActive(true);
+        huntingAreaTwo.SetActive(true);
+        // Make reticle visible
+        reticleImage.enabled = true;
         player.SetActive(true);
         playerNPC.SetActive(false);
         // Player can now pick up the gun

@@ -7,7 +7,6 @@ public class GunPickUp : Interactable
 
     public override void Interact()
     {
-        Debug.Log("PickUpGun");
         gunCock.Play();
         fpsGun.SetActive(true);
         // Take gun off shelf, so deactivate it
