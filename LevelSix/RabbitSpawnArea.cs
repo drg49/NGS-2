@@ -6,18 +6,15 @@ public class RabbitSpawnArea : MonoBehaviour
 {
     [Header("Spawn Settings")]
     public GameObject rabbitPrefab;
-    public int rabbitCount = 5;
+    public int rabbitCount = 8;
+
+    [Header("Spawn Zones")]
+    public BoxCollider[] spawnZones; // Multiple box colliders in the scene
 
     [Header("Input System")]
-    public InputActionReference interactAction; // assign your Interact action here
+    public InputActionReference interactAction; // Assign your Interact action
 
-    private BoxCollider area;
     private readonly List<GameObject> rabbits = new();
-
-    void Awake()
-    {
-        area = GetComponent<BoxCollider>();
-    }
 
     void Start()
     {
@@ -28,11 +25,12 @@ public class RabbitSpawnArea : MonoBehaviour
     {
         for (int i = 0; i < rabbitCount; i++)
         {
-            Vector3 spawnPos = GetRandomPointInBounds();
+            BoxCollider zone = spawnZones[Random.Range(0, spawnZones.Length)];
+            Vector3 spawnPos = GetRandomPointInBounds(zone);
 
             GameObject rabbit = Instantiate(rabbitPrefab, spawnPos, Quaternion.identity);
 
-            // Assign InputAction at runtime
+            // Assign input action at runtime
             RabbitAI rabbitAI = rabbit.GetComponent<RabbitAI>();
             if (rabbitAI != null)
             {
@@ -43,10 +41,10 @@ public class RabbitSpawnArea : MonoBehaviour
         }
     }
 
-    Vector3 GetRandomPointInBounds()
+    Vector3 GetRandomPointInBounds(BoxCollider zone)
     {
-        Vector3 center = area.bounds.center;
-        Vector3 size = area.bounds.size;
+        Vector3 center = zone.bounds.center;
+        Vector3 size = zone.bounds.size;
 
         return new Vector3(
             Random.Range(center.x - size.x / 2, center.x + size.x / 2),

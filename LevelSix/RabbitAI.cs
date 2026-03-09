@@ -18,7 +18,7 @@ public class RabbitAI : MonoBehaviour
 
     [Header("Interaction")]
     public GameObject interactionSphere;
-    public TextMeshPro interactionTextWorld;
+    public TextMeshPro interactionTextWorld; // Assign in prefab
     public float interactionDistance = 3f;
 
     [HideInInspector]
@@ -67,7 +67,7 @@ public class RabbitAI : MonoBehaviour
 
     void PickNewTarget()
     {
-        Vector3 offset = new(
+        Vector3 offset = new Vector3(
             Random.Range(-wanderRadius, wanderRadius),
             0,
             Random.Range(-wanderRadius, wanderRadius)
@@ -106,8 +106,7 @@ public class RabbitAI : MonoBehaviour
 
     public void Kill()
     {
-        if (isDead)
-            return;
+        if (isDead) return;
 
         isDead = true;
 
@@ -119,8 +118,7 @@ public class RabbitAI : MonoBehaviour
 
     public void ActivateRandomBlood()
     {
-        if (bloodSplatters == null || bloodSplatters.Length == 0)
-            return;
+        if (bloodSplatters == null || bloodSplatters.Length == 0) return;
 
         foreach (var splatter in bloodSplatters)
             splatter.SetActive(false);
@@ -134,7 +132,11 @@ public class RabbitAI : MonoBehaviour
 
     private void HandleRaycastInteraction()
     {
+        if (interactionTextWorld == null || interactionSphere == null || interactAction == null || interactAction.action == null)
+            return;
+
         Camera cam = Camera.main;
+        if (cam == null) return;
 
         Ray ray = new(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance))
@@ -154,22 +156,26 @@ public class RabbitAI : MonoBehaviour
             }
         }
 
-        // Not hovering over rabbit
         if (interactionTextWorld.gameObject.activeSelf)
             interactionTextWorld.gameObject.SetActive(false);
     }
 
     private void TakeRabbit()
     {
-        if (interactionTextWorld != null)
-            interactionTextWorld.gameObject.SetActive(false);
+        interactionTextWorld.gameObject.SetActive(false);
+
+        if (RabbitManager.Instance != null)
+            RabbitManager.Instance.CollectRabbit();
 
         Destroy(gameObject);
     }
 
     private void FaceCamera()
     {
-        interactionTextWorld.transform.rotation = Quaternion.LookRotation(interactionTextWorld.transform.position - Camera.main.transform.position);
+        if (interactionTextWorld == null || Camera.main == null) return;
+
+        interactionTextWorld.transform.rotation =
+            Quaternion.LookRotation(interactionTextWorld.transform.position - Camera.main.transform.position);
     }
 
     private void SetupTextAlwaysVisible(TextMeshPro text)
