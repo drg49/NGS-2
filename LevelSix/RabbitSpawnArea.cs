@@ -1,10 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 
 public class RabbitSpawnArea : MonoBehaviour
 {
+    [Header("Spawn Settings")]
     public GameObject rabbitPrefab;
     public int rabbitCount = 5;
+
+    [Header("Input System")]
+    public InputActionReference interactAction; // assign your Interact action here
 
     private BoxCollider area;
     private readonly List<GameObject> rabbits = new();
@@ -26,6 +31,13 @@ public class RabbitSpawnArea : MonoBehaviour
             Vector3 spawnPos = GetRandomPointInBounds();
 
             GameObject rabbit = Instantiate(rabbitPrefab, spawnPos, Quaternion.identity);
+
+            // Assign InputAction at runtime
+            RabbitAI rabbitAI = rabbit.GetComponent<RabbitAI>();
+            if (rabbitAI != null)
+            {
+                rabbitAI.interactAction = interactAction;
+            }
 
             rabbits.Add(rabbit);
         }

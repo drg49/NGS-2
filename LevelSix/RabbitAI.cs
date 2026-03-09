@@ -1,4 +1,6 @@
 using UnityEngine;
+using TMPro;
+using UnityEngine.InputSystem;
 
 public class RabbitAI : MonoBehaviour
 {
@@ -11,8 +13,16 @@ public class RabbitAI : MonoBehaviour
     public float idleTimeMin = 2f;
     public float idleTimeMax = 5f;
 
-    [Header("Blood Effects (Pre-placed)")]
-    public GameObject[] bloodSplatters; // assign the 7 inactive blood splatters here
+    [Header("Blood Effects")]
+    public GameObject[] bloodSplatters;
+
+    [Header("Interaction")]
+    public GameObject interactionSphere;
+    public TextMeshPro interactionTextWorld; // assign per rabbit prefab (child)
+    public float interactionDistance = 3f;
+
+    [HideInInspector]
+    public InputActionReference interactAction;
 
     private Vector3 targetPosition;
     private bool isDead = false;
@@ -23,22 +33,36 @@ public class RabbitAI : MonoBehaviour
     {
         SetIdle();
         SetRandomIdleTimer();
+
+        if (interactionSphere != null)
+            interactionSphere.SetActive(false);
+
+        if (interactionTextWorld != null)
+        {
+            interactionTextWorld.gameObject.SetActive(false);
+            SetupTextAlwaysVisible(interactionTextWorld);
+        }
     }
 
     void Update()
     {
         if (isDead)
+        {
+            HandleRaycastInteraction();
+            FaceCamera();
             return;
+        }
 
         if (isMoving)
             MoveToTarget();
         else
         {
             idleTimer -= Time.deltaTime;
-
             if (idleTimer <= 0)
                 PickNewTarget();
         }
+
+        FaceCamera();
     }
 
     void PickNewTarget()
@@ -50,7 +74,6 @@ public class RabbitAI : MonoBehaviour
         );
 
         targetPosition = transform.position + offset;
-
         isMoving = true;
 
         rabbitAnim.SetInteger("AnimIndex", 1);
@@ -59,12 +82,7 @@ public class RabbitAI : MonoBehaviour
 
     void MoveToTarget()
     {
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            targetPosition,
-            moveSpeed * Time.deltaTime
-        );
-
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
         transform.LookAt(targetPosition);
 
         if (Vector3.Distance(transform.position, targetPosition) < 0.3f)
@@ -77,7 +95,6 @@ public class RabbitAI : MonoBehaviour
     void SetIdle()
     {
         isMoving = false;
-
         rabbitAnim.SetInteger("AnimIndex", 0);
         rabbitAnim.SetTrigger("Next");
     }
@@ -93,27 +110,76 @@ public class RabbitAI : MonoBehaviour
             return;
 
         isDead = true;
-
         rabbitAnim.SetInteger("AnimIndex", 2);
         rabbitAnim.SetTrigger("Next");
 
         GetComponent<Collider>().enabled = false;
-
-        // Blood will now be activated via animation event
     }
 
-    // Call this function from an Animation Event at the end of the death animation
     public void ActivateRandomBlood()
     {
         if (bloodSplatters == null || bloodSplatters.Length == 0)
             return;
 
-        // Disable all first, just in case
         foreach (var splatter in bloodSplatters)
             splatter.SetActive(false);
 
-        // Activate a random splatter
         int index = Random.Range(0, bloodSplatters.Length);
         bloodSplatters[index].SetActive(true);
+
+        if (interactionSphere != null)
+            interactionSphere.SetActive(true);
+    }
+
+    private void HandleRaycastInteraction()
+    {
+        if (interactionTextWorld == null || interactionSphere == null || interactAction == null || interactAction.action == null)
+            return;
+
+        Camera cam = Camera.main;
+        if (cam == null)
+            return;
+
+        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance))
+        {
+            if (hit.collider.gameObject == interactionSphere)
+            {
+                if (!interactionTextWorld.gameObject.activeSelf)
+                    interactionTextWorld.gameObject.SetActive(true);
+
+                string buttonName = interactAction.action.bindings[0].ToDisplayString();
+                interactionTextWorld.text = $"Press [{buttonName}] to take rabbit";
+
+                if (interactAction.action.WasPressedThisFrame())
+                    Destroy(gameObject);
+
+                return;
+            }
+        }
+
+        if (interactionTextWorld.gameObject.activeSelf)
+            interactionTextWorld.gameObject.SetActive(false);
+    }
+
+    private void FaceCamera()
+    {
+        if (interactionTextWorld == null || Camera.main == null)
+            return;
+
+        // Make the text face the camera
+        interactionTextWorld.transform.rotation = Quaternion.LookRotation(interactionTextWorld.transform.position - Camera.main.transform.position);
+    }
+
+    private void SetupTextAlwaysVisible(TextMeshPro text)
+    {
+        // This makes the text render on top of everything
+        var renderer = text.GetComponent<MeshRenderer>();
+        if (renderer != null)
+        {
+            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows = false;
+            renderer.material.renderQueue = 5000; // UI queue
+        }
     }
 }
