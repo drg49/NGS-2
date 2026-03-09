@@ -18,7 +18,7 @@ public class RabbitAI : MonoBehaviour
 
     [Header("Interaction")]
     public GameObject interactionSphere;
-    public TextMeshPro interactionTextWorld; // assign in rabbit prefab (child)
+    public TextMeshPro interactionTextWorld;
     public float interactionDistance = 3f;
 
     [HideInInspector]
@@ -67,7 +67,7 @@ public class RabbitAI : MonoBehaviour
 
     void PickNewTarget()
     {
-        Vector3 offset = new Vector3(
+        Vector3 offset = new(
             Random.Range(-wanderRadius, wanderRadius),
             0,
             Random.Range(-wanderRadius, wanderRadius)
@@ -134,14 +134,9 @@ public class RabbitAI : MonoBehaviour
 
     private void HandleRaycastInteraction()
     {
-        if (interactionTextWorld == null || interactionSphere == null || interactAction == null || interactAction.action == null)
-            return;
-
         Camera cam = Camera.main;
-        if (cam == null)
-            return;
 
-        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+        Ray ray = new(cam.transform.position, cam.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance))
         {
             if (hit.collider.gameObject == interactionSphere)
@@ -174,20 +169,15 @@ public class RabbitAI : MonoBehaviour
 
     private void FaceCamera()
     {
-        if (interactionTextWorld == null || Camera.main == null)
-            return;
-
         interactionTextWorld.transform.rotation = Quaternion.LookRotation(interactionTextWorld.transform.position - Camera.main.transform.position);
     }
 
     private void SetupTextAlwaysVisible(TextMeshPro text)
     {
-        var renderer = text.GetComponent<MeshRenderer>();
-        if (renderer != null)
+        if (text.TryGetComponent<MeshRenderer>(out var renderer))
         {
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             renderer.receiveShadows = false;
-            renderer.material.renderQueue = 5000;
         }
     }
 }

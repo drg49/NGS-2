@@ -20,6 +20,8 @@ public class LevelSixDebugManager : MonoBehaviour
         //ApplyDebugSpeed();
         //notifyDavid.SetActive(false);
         //notifyDavid.SetActive(true);
+        preventCabinExploreCollider.SetActive(false);
+        foundCabinTrigger.SetActive(false);
         DebugRabbits();
     }
 
