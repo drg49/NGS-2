@@ -20,6 +20,11 @@ public class FPSGunShoot : MonoBehaviour
     public float recoilAmount = 0.3f;
     public float recoilSpeed = 25f;
 
+    [Header("Fire Rate")]
+    public float fireCooldown = 0.6f;
+
+    private float nextFireTime;
+
     private Vector3 originalPosition;
     private Vector3 recoilTarget;
     private bool isRecoiling;
@@ -84,6 +89,11 @@ public class FPSGunShoot : MonoBehaviour
 
     void Shoot(InputAction.CallbackContext ctx)
     {
+        if (Time.time < nextFireTime)
+            return;
+
+        nextFireTime = Time.time + fireCooldown;
+
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if (Physics.Raycast(ray, out RaycastHit hit, shootDistance, rabbitLayer))
