@@ -150,7 +150,7 @@ public class RabbitAI : MonoBehaviour
                     interactionTextWorld.gameObject.SetActive(true);
 
                 string buttonName = interactAction.action.bindings[0].ToDisplayString();
-                interactionTextWorld.text = $"Press [{buttonName}] to take rabbit";
+                interactionTextWorld.text = $"Grab [{buttonName}]";
 
                 if (interactAction.action.WasPressedThisFrame())
                     TakeRabbit();
