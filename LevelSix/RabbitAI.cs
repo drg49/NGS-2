@@ -18,7 +18,7 @@ public class RabbitAI : MonoBehaviour
 
     [Header("Interaction")]
     public GameObject interactionSphere;
-    public TextMeshPro interactionTextWorld; // assign per rabbit prefab (child)
+    public TextMeshPro interactionTextWorld; // assign in rabbit prefab (child)
     public float interactionDistance = 3f;
 
     [HideInInspector]
@@ -110,6 +110,7 @@ public class RabbitAI : MonoBehaviour
             return;
 
         isDead = true;
+
         rabbitAnim.SetInteger("AnimIndex", 2);
         rabbitAnim.SetTrigger("Next");
 
@@ -152,14 +153,23 @@ public class RabbitAI : MonoBehaviour
                 interactionTextWorld.text = $"Press [{buttonName}] to take rabbit";
 
                 if (interactAction.action.WasPressedThisFrame())
-                    Destroy(gameObject);
+                    TakeRabbit();
 
                 return;
             }
         }
 
+        // Not hovering over rabbit
         if (interactionTextWorld.gameObject.activeSelf)
             interactionTextWorld.gameObject.SetActive(false);
+    }
+
+    private void TakeRabbit()
+    {
+        if (interactionTextWorld != null)
+            interactionTextWorld.gameObject.SetActive(false);
+
+        Destroy(gameObject);
     }
 
     private void FaceCamera()
@@ -167,19 +177,17 @@ public class RabbitAI : MonoBehaviour
         if (interactionTextWorld == null || Camera.main == null)
             return;
 
-        // Make the text face the camera
         interactionTextWorld.transform.rotation = Quaternion.LookRotation(interactionTextWorld.transform.position - Camera.main.transform.position);
     }
 
     private void SetupTextAlwaysVisible(TextMeshPro text)
     {
-        // This makes the text render on top of everything
         var renderer = text.GetComponent<MeshRenderer>();
         if (renderer != null)
         {
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             renderer.receiveShadows = false;
-            renderer.material.renderQueue = 5000; // UI queue
+            renderer.material.renderQueue = 5000;
         }
     }
 }
