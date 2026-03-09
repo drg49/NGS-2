@@ -40,6 +40,7 @@ public class HelpMarcusInteract : Interactable
         // Player cannot run at the start of this level
         // When the player begins to look for help they can run
         fpsController.canRun = true;
+        fpsController.SetMoveSpeed(1.75f);
         findHelpObjective.SetActive(true);
         Destroy(preventCabinExploreCollider);
         foundCabinTrigger.SetActive(true);

@@ -5,8 +5,10 @@ public class RabbitManager : MonoBehaviour
 {
     public static RabbitManager Instance;
 
+    [SerializeField] private GameObject prepareRabbitsObjective;
+
     [Header("UI")]
-    public TextMeshProUGUI rabbitText; // Assign your UI element
+    public TextMeshProUGUI rabbitText;
 
     [Header("Goal")]
     public int totalRabbitsToCollect = 8;
@@ -28,10 +30,11 @@ public class RabbitManager : MonoBehaviour
         collectedRabbits++;
         UpdateUI();
 
-        if (collectedRabbits >= totalRabbitsToCollect)
+        if (collectedRabbits == totalRabbitsToCollect)
         {
-            Debug.Log("All rabbits collected!");
-            // Add win logic here
+            Debug.Log("Rabbits collected!");
+            // All rabbits collected
+            prepareRabbitsObjective.SetActive(true);
         }
     }
 

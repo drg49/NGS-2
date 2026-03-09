@@ -15,6 +15,9 @@ public class LevelSixDebugManager : MonoBehaviour
 
     [SerializeField] private float debugRunSpeed = 8f;
 
+    // player run speed = 5.5
+    // player, Marcus, David walk speed = 1.5
+
     void Start()
     {
         //ApplyDebugSpeed();
@@ -31,12 +34,6 @@ public class LevelSixDebugManager : MonoBehaviour
         player.SetActive(true);
         fpsRifle.SetActive(true);
         huntingArea.SetActive(true);
-    }
-
-    void OnValidate()
-    {
-        // Runs whenever a value changes in the inspector
-        ApplyDebugSpeed();
     }
 
     private void ApplyDebugSpeed()

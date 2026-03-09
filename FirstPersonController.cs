@@ -5,10 +5,10 @@ using UnityEngine.InputSystem;
 public class FirstPersonController : MonoBehaviour
 {
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
-    public float runSpeed = 9f;
+    public float moveSpeed = 3f;
+    public float runSpeed = 5.5f;
     public float gravity = -9.81f;
-    public bool canRun = true; // NEW: default true so existing instances keep working
+    public bool canRun = true;
 
     [Header("Look Settings")]
     public float lookSensitivity = 0.1f;
@@ -22,8 +22,8 @@ public class FirstPersonController : MonoBehaviour
     public float runStepRate = 0.35f;
 
     [Header("Footstep Surfaces")]
-    [SerializeField] private AudioClip[] defaultFootsteps;   // default outdoor
-    [SerializeField] private AudioClip[] secondaryFootsteps; // indoor / alternate
+    [SerializeField] private AudioClip[] defaultFootsteps;
+    [SerializeField] private AudioClip[] secondaryFootsteps;
     private AudioClip[] currentFootsteps;
 
     private CharacterController controller;
@@ -43,18 +43,14 @@ public class FirstPersonController : MonoBehaviour
         controller = GetComponent<CharacterController>();
         inputActions = new PlayerInputActions();
 
-        // Load saved sensitivity
         lookSensitivity = PlayerPrefs.GetFloat("LookSensitivity", lookSensitivity);
 
-        // Movement input
         inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Move.canceled += _ => moveInput = Vector2.zero;
 
-        // Look input
         inputActions.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
         inputActions.Player.Look.canceled += _ => lookInput = Vector2.zero;
 
-        // Sprint input
         inputActions.Player.Sprint.performed += _ => isSprinting = true;
         inputActions.Player.Sprint.canceled += _ => isSprinting = false;
     }
@@ -73,7 +69,6 @@ public class FirstPersonController : MonoBehaviour
         yaw = transform.eulerAngles.y;
         pitch = playerCamera.localEulerAngles.x;
 
-        // Fix 0–360 ? -180–180 issue
         if (pitch > 180f)
             pitch -= 360f;
 
@@ -125,7 +120,6 @@ public class FirstPersonController : MonoBehaviour
             return;
         }
 
-        // Only play running footsteps if canRun is true
         bool running = isSprinting && canRun;
         float stepRate = running ? runStepRate : walkStepRate;
 
@@ -151,25 +145,24 @@ public class FirstPersonController : MonoBehaviour
         footstepAudio.PlayOneShot(clip);
     }
 
-    /// <summary>
-    /// Switch between default and secondary footsteps
-    /// </summary>
-    /// <param name="useSecondary">true = secondary (indoor), false = default (outdoor)</param>
     public void SetFootsteps(bool useSecondary)
     {
         currentFootsteps = useSecondary ? secondaryFootsteps : defaultFootsteps;
     }
 
-    // Public method to enable/disable player during pause
     public void SetPaused(bool paused)
     {
         enabled = !paused;
     }
 
-    // Public method to set look sensitivity from UI
     public void SetLookSensitivity(float newSensitivity)
     {
         lookSensitivity = newSensitivity;
         PlayerPrefs.SetFloat("LookSensitivity", newSensitivity);
+    }
+
+    public void SetMoveSpeed(float newSpeed)
+    {
+        moveSpeed = newSpeed;
     }
 }
