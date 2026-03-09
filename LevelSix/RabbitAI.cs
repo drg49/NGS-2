@@ -11,6 +11,9 @@ public class RabbitAI : MonoBehaviour
     public float idleTimeMin = 2f;
     public float idleTimeMax = 5f;
 
+    [Header("Blood Effects (Pre-placed)")]
+    public GameObject[] bloodSplatters; // assign the 7 inactive blood splatters here
+
     private Vector3 targetPosition;
     private bool isDead = false;
     private bool isMoving = false;
@@ -95,5 +98,22 @@ public class RabbitAI : MonoBehaviour
         rabbitAnim.SetTrigger("Next");
 
         GetComponent<Collider>().enabled = false;
+
+        // Blood will now be activated via animation event
+    }
+
+    // Call this function from an Animation Event at the end of the death animation
+    public void ActivateRandomBlood()
+    {
+        if (bloodSplatters == null || bloodSplatters.Length == 0)
+            return;
+
+        // Disable all first, just in case
+        foreach (var splatter in bloodSplatters)
+            splatter.SetActive(false);
+
+        // Activate a random splatter
+        int index = Random.Range(0, bloodSplatters.Length);
+        bloodSplatters[index].SetActive(true);
     }
 }
