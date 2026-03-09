@@ -1,20 +1,19 @@
 using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
 public class RabbitSpawnArea : MonoBehaviour
 {
-    [Header("Spawn Settings")]
     public GameObject rabbitPrefab;
     public int rabbitCount = 8;
 
-    [Header("Spawn Zones")]
-    public BoxCollider[] spawnZones; // Multiple box colliders in the scene
+    public InputActionReference interactAction;
 
-    [Header("Input System")]
-    public InputActionReference interactAction; // Assign your Interact action
+    private BoxCollider[] spawnZones;
 
-    private readonly List<GameObject> rabbits = new();
+    void Awake()
+    {
+        spawnZones = GetComponents<BoxCollider>();
+    }
 
     void Start()
     {
@@ -30,14 +29,7 @@ public class RabbitSpawnArea : MonoBehaviour
 
             GameObject rabbit = Instantiate(rabbitPrefab, spawnPos, Quaternion.identity);
 
-            // Assign input action at runtime
-            RabbitAI rabbitAI = rabbit.GetComponent<RabbitAI>();
-            if (rabbitAI != null)
-            {
-                rabbitAI.interactAction = interactAction;
-            }
-
-            rabbits.Add(rabbit);
+            rabbit.GetComponent<RabbitAI>().interactAction = interactAction;
         }
     }
 
