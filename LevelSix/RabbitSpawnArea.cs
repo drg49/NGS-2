@@ -29,19 +29,20 @@ public class RabbitSpawnArea : MonoBehaviour
 
             GameObject rabbit = Instantiate(rabbitPrefab, spawnPos, Quaternion.identity);
 
-            rabbit.GetComponent<RabbitAI>().interactAction = interactAction;
+            RabbitAI ai = rabbit.GetComponent<RabbitAI>();
+            ai.interactAction = interactAction;
+            ai.spawnZone = zone;
         }
     }
 
     Vector3 GetRandomPointInBounds(BoxCollider zone)
     {
-        Vector3 center = zone.bounds.center;
-        Vector3 size = zone.bounds.size;
+        Bounds bounds = zone.bounds;
 
         return new Vector3(
-            Random.Range(center.x - size.x / 2, center.x + size.x / 2),
-            center.y,
-            Random.Range(center.z - size.z / 2, center.z + size.z / 2)
+            Random.Range(bounds.min.x, bounds.max.x),
+            bounds.center.y,
+            Random.Range(bounds.min.z, bounds.max.z)
         );
     }
 }

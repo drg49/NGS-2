@@ -9,7 +9,6 @@ public class RabbitAI : MonoBehaviour
 
     [Header("Movement")]
     public float moveSpeed = 2f;
-    public float wanderRadius = 6f;
     public float idleTimeMin = 2f;
     public float idleTimeMax = 5f;
 
@@ -18,11 +17,14 @@ public class RabbitAI : MonoBehaviour
 
     [Header("Interaction")]
     public GameObject interactionSphere;
-    public TextMeshPro interactionTextWorld; // Assign in prefab
+    public TextMeshPro interactionTextWorld;
     public float interactionDistance = 3f;
 
     [HideInInspector]
     public InputActionReference interactAction;
+
+    [HideInInspector]
+    public BoxCollider spawnZone;
 
     private Vector3 targetPosition;
     private bool isDead = false;
@@ -67,13 +69,16 @@ public class RabbitAI : MonoBehaviour
 
     void PickNewTarget()
     {
-        Vector3 offset = new Vector3(
-            Random.Range(-wanderRadius, wanderRadius),
-            0,
-            Random.Range(-wanderRadius, wanderRadius)
+        if (spawnZone == null) return;
+
+        Bounds bounds = spawnZone.bounds;
+
+        targetPosition = new Vector3(
+            Random.Range(bounds.min.x, bounds.max.x),
+            transform.position.y,
+            Random.Range(bounds.min.z, bounds.max.z)
         );
 
-        targetPosition = transform.position + offset;
         isMoving = true;
 
         rabbitAnim.SetInteger("AnimIndex", 1);
@@ -82,8 +87,13 @@ public class RabbitAI : MonoBehaviour
 
     void MoveToTarget()
     {
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-        transform.LookAt(targetPosition);
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            targetPosition,
+            moveSpeed * Time.deltaTime
+        );
+
+        transform.LookAt(new Vector3(targetPosition.x, transform.position.y, targetPosition.z));
 
         if (Vector3.Distance(transform.position, targetPosition) < 0.3f)
         {
@@ -139,6 +149,7 @@ public class RabbitAI : MonoBehaviour
         if (cam == null) return;
 
         Ray ray = new(cam.transform.position, cam.transform.forward);
+
         if (Physics.Raycast(ray, out RaycastHit hit, interactionDistance))
         {
             if (hit.collider.gameObject == interactionSphere)
@@ -175,7 +186,9 @@ public class RabbitAI : MonoBehaviour
         if (interactionTextWorld == null || Camera.main == null) return;
 
         interactionTextWorld.transform.rotation =
-            Quaternion.LookRotation(interactionTextWorld.transform.position - Camera.main.transform.position);
+            Quaternion.LookRotation(
+                interactionTextWorld.transform.position - Camera.main.transform.position
+            );
     }
 
     private void SetupTextAlwaysVisible(TextMeshPro text)
