@@ -10,6 +10,7 @@ public class LevelSixFadePanel : MonoBehaviour
     [SerializeField] private GameObject dialogueOneCam;
 
     [Header("Characters")]
+    [SerializeField] private GameObject player;
     [SerializeField] private GameObject marcus;
     [SerializeField] private Animator marcusAnim;
     [SerializeField] private PathWalker marcusPW;
@@ -19,6 +20,7 @@ public class LevelSixFadePanel : MonoBehaviour
     [SerializeField] private GameObject playerNPC;
     [SerializeField] private Animator playerNPCAnim;
     [SerializeField] private PathWalker playerNPCPW;
+    [SerializeField] private GameObject tablePlayer;
 
     [Header("Targets")]
     [SerializeField] private Transform playerNPCCarryMarcusTarget;
@@ -34,9 +36,12 @@ public class LevelSixFadePanel : MonoBehaviour
     [SerializeField] private Transform marcusInBedTarget;
     // Waypoints to disable when marcus is in bed
     [SerializeField] private List<GameObject> marcusInBedWaypointsToDisable;
+    [SerializeField] private Transform davidCookDinnerTarget;
 
     [Header("Misc")]
     [SerializeField] private GameObject dialogueOne;
+    [SerializeField] private GameObject fpsGun;
+    [SerializeField] private GameObject kitchenObjects;
 
 
     // David and Player NPC carry Marcus into cabin
@@ -130,6 +135,19 @@ public class LevelSixFadePanel : MonoBehaviour
         Destroy(marcusInBedCam);
         dialogueOneCam.SetActive(true);
         dialogueOne.SetActive(true);
+    }
+
+    public void SwitchToTablePlayer()
+    {
+        player.SetActive(false);
+        tablePlayer.SetActive(true);
+        fpsGun.SetActive(false);
+        // Move David to kitchen
+        david.transform.SetPositionAndRotation(
+            davidCookDinnerTarget.position,
+            davidCookDinnerTarget.rotation
+        );
+        kitchenObjects.SetActive(true);
     }
 
     private void DisableGameObjects(IEnumerable<GameObject> objects)
