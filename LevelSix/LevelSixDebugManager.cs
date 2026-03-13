@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelSixDebugManager : MonoBehaviour
@@ -12,6 +13,10 @@ public class LevelSixDebugManager : MonoBehaviour
     [SerializeField] private GameObject fpsRifle;
     [SerializeField] private GameObject huntingArea;
     [SerializeField] private GameObject player;
+    [SerializeField] private GameObject eatDinnerTrigger;
+    [SerializeField] private GameObject doorKnock;
+    [SerializeField] private Animator fadeAnim;
+    [SerializeField] private List<GameObject> davidWaypointsToDisable;
 
     [SerializeField] private float debugRunSpeed = 8f;
 
@@ -20,12 +25,28 @@ public class LevelSixDebugManager : MonoBehaviour
 
     void Start()
     {
-        //ApplyDebugSpeed();
+        ApplyDebugSpeed(); 
         //notifyDavid.SetActive(false);
-        //notifyDavid.SetActive(true);
+        notifyDavid.SetActive(true);
+        //DisableGameObjects(davidWaypointsToDisable);
+        //fadeAnim.SetTrigger("FadeInOutCarryMarcus");
+        //fadeAnim.SetTrigger("FadeInOutCarryMarcusCabin");
+        //fadeAnim.SetTrigger("FadeInOutDinner");
         preventCabinExploreCollider.SetActive(false);
         foundCabinTrigger.SetActive(false);
-        DebugRabbits();
+        fpsController.canRun = true;
+        notifyFriends.SetActive(false);
+        eatDinnerTrigger.SetActive(true);
+        doorKnock.SetActive(false);
+        //DebugRabbits();
+    }
+
+    private void DisableGameObjects(IEnumerable<GameObject> objects)
+    {
+        foreach (GameObject obj in objects)
+        {
+            obj.SetActive(false);
+        }
     }
 
     void DebugRabbits()
