@@ -1,14 +1,19 @@
 ﻿using UnityEngine;
 
-public class Consumer : MonoBehaviour
+public class Consumer : Interactable
 {
     GameObject[] portions;
     int currentIndex;
 
     float lastChange;
-    readonly float interval = 1f;
+    [SerializeField] private float interval = 1f;
+
+    bool consuming;
 
     [SerializeField] private AudioSource eatSound;
+
+    // Colliders to disable while this one is consuming
+    [SerializeField] private Collider[] otherColliders;
 
     void Start()
     {
@@ -29,6 +34,9 @@ public class Consumer : MonoBehaviour
 
     void Update()
     {
+        if (!consuming)
+            return;
+
         if (Time.time - lastChange > interval)
         {
             Consume();
@@ -36,23 +44,45 @@ public class Consumer : MonoBehaviour
         }
     }
 
-    public void Consume()
+    public override void Interact()
     {
-        // Stop if all portions are eaten
-        if (currentIndex >= portions.Length)
+        if (consuming)
             return;
 
-        // Play eat sound
-        if (eatSound != null)
-            eatSound.Play();
+        consuming = true;
 
-        // Disable current portion
+        SetOtherColliders(false);
+    }
+
+    void Consume()
+    {
+        if (currentIndex >= portions.Length)
+        {
+            consuming = false;
+            SetOtherColliders(true);
+            return;
+        }
+
+        if (eatSound != null)
+            eatSound.PlayOneShot(eatSound.clip);
+
         portions[currentIndex].SetActive(false);
 
         currentIndex++;
 
-        // Enable next portion if it exists
         if (currentIndex < portions.Length)
             portions[currentIndex].SetActive(true);
+    }
+
+    void SetOtherColliders(bool state)
+    {
+        if (otherColliders == null)
+            return;
+
+        foreach (var col in otherColliders)
+        {
+            if (col != null)
+                col.enabled = state;
+        }
     }
 }
