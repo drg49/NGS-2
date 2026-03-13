@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Consumer : Interactable
 {
@@ -17,14 +19,21 @@ public class Consumer : Interactable
 
     private BoxCollider myCollider;
 
-    // Tracks whether this object has been completely consumed
     public bool IsConsumed { get; private set; } = false;
-
     public bool IsConsuming => consuming;
+
+    // Static list to track all Consumer instances
+    private static List<Consumer> allConsumers = new List<Consumer>();
 
     private void Awake()
     {
         myCollider = GetComponent<BoxCollider>();
+        allConsumers.Add(this); // register this instance
+    }
+
+    private void OnDestroy()
+    {
+        allConsumers.Remove(this); // unregister on destroy
     }
 
     private void Start()
@@ -59,11 +68,9 @@ public class Consumer : Interactable
 
         consuming = true;
 
-        // Disable own collider
         if (myCollider != null)
             myCollider.enabled = false;
 
-        // Disable other colliders while consuming
         SetOtherColliders(false);
     }
 
@@ -72,10 +79,14 @@ public class Consumer : Interactable
         if (currentIndex >= portions.Length)
         {
             consuming = false;
-            IsConsumed = true; // mark this as fully eaten
+            IsConsumed = true;
 
-            // Only re-enable other colliders that are not consumed
             SetOtherColliders(true);
+
+            // Debug log when all game objects with Consumer scripts have been interacted with
+            if (AllConsumersConsumed())
+                Debug.Log("All game objects with Consumer scripts have been interacted with!");
+
             return;
         }
 
@@ -110,5 +121,11 @@ public class Consumer : Interactable
 
             col.enabled = state;
         }
+    }
+
+    // Static method to check if all Consumers have been fully consumed
+    public static bool AllConsumersConsumed()
+    {
+        return allConsumers.All(c => c != null && c.IsConsumed);
     }
 }
