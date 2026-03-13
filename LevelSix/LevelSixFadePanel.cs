@@ -147,6 +147,7 @@ public class LevelSixFadePanel : MonoBehaviour
             davidCookDinnerTarget.position,
             davidCookDinnerTarget.rotation
         );
+        davidAnim.SetTrigger("IdleInKitchen");
         kitchenObjects.SetActive(true);
     }
 

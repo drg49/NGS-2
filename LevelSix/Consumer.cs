@@ -2,63 +2,79 @@
 
 public class Consumer : Interactable
 {
-    GameObject[] portions;
-    int currentIndex;
-
-    float lastChange;
+    [Header("Consumption Settings")]
     [SerializeField] private float interval = 1f;
-
-    bool consuming;
-
     [SerializeField] private AudioSource eatSound;
 
-    // Colliders to disable while this one is consuming
+    [Header("Other Consumers & Colliders")]
+    [SerializeField] private Consumer[] otherConsumers;
     [SerializeField] private Collider[] otherColliders;
 
-    void Start()
+    private GameObject[] portions;
+    private int currentIndex;
+    private float lastChange;
+    private bool consuming;
+
+    private BoxCollider myCollider;
+
+    // Tracks whether this object has been completely consumed
+    public bool IsConsumed { get; private set; } = false;
+
+    public bool IsConsuming => consuming;
+
+    private void Awake()
+    {
+        myCollider = GetComponent<BoxCollider>();
+    }
+
+    private void Start()
     {
         bool skipFirst = transform.childCount > 4;
+        int length = skipFirst ? transform.childCount - 1 : transform.childCount;
 
-        portions = new GameObject[
-            skipFirst ? transform.childCount - 1 : transform.childCount
-        ];
+        portions = new GameObject[length];
 
-        for (int i = 0; i < portions.Length; i++)
+        for (int i = 0; i < length; i++)
         {
             portions[i] = transform.GetChild(skipFirst ? i + 1 : i).gameObject;
-
             if (portions[i].activeInHierarchy)
                 currentIndex = i;
         }
     }
 
-    void Update()
+    private void Update()
     {
-        if (!consuming)
-            return;
+        if (!consuming) return;
 
         if (Time.time - lastChange > interval)
         {
-            Consume();
+            ConsumePortion();
             lastChange = Time.time;
         }
     }
 
     public override void Interact()
     {
-        if (consuming)
-            return;
+        if (consuming || IsConsumed) return;
 
         consuming = true;
 
+        // Disable own collider
+        if (myCollider != null)
+            myCollider.enabled = false;
+
+        // Disable other colliders while consuming
         SetOtherColliders(false);
     }
 
-    void Consume()
+    private void ConsumePortion()
     {
         if (currentIndex >= portions.Length)
         {
             consuming = false;
+            IsConsumed = true; // mark this as fully eaten
+
+            // Only re-enable other colliders that are not consumed
             SetOtherColliders(true);
             return;
         }
@@ -67,22 +83,32 @@ public class Consumer : Interactable
             eatSound.PlayOneShot(eatSound.clip);
 
         portions[currentIndex].SetActive(false);
-
         currentIndex++;
 
         if (currentIndex < portions.Length)
             portions[currentIndex].SetActive(true);
     }
 
-    void SetOtherColliders(bool state)
+    private void SetOtherColliders(bool state)
     {
-        if (otherColliders == null)
-            return;
+        if (otherColliders == null) return;
 
-        foreach (var col in otherColliders)
+        for (int i = 0; i < otherColliders.Length; i++)
         {
-            if (col != null)
-                col.enabled = state;
+            Collider col = otherColliders[i];
+            if (col == null) continue;
+
+            if (state) // Only re-enable if the corresponding consumer is not consuming AND not already consumed
+            {
+                if (otherConsumers != null && i < otherConsumers.Length)
+                {
+                    Consumer other = otherConsumers[i];
+                    if (other != null && (other.IsConsuming || other.IsConsumed))
+                        continue; // skip enabling
+                }
+            }
+
+            col.enabled = state;
         }
     }
 }
