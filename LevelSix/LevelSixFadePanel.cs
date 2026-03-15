@@ -40,8 +40,12 @@ public class LevelSixFadePanel : MonoBehaviour
 
     [Header("Misc")]
     [SerializeField] private GameObject dialogueOne;
+    [SerializeField] private GameObject dialogueTwo;
     [SerializeField] private GameObject fpsGun;
     [SerializeField] private GameObject kitchenObjects;
+    [SerializeField] private AudioSource boilingWaterAudio;
+    [SerializeField] private Material nightSkybox;
+    [SerializeField] private Light directionalLight;
 
 
     // David and Player NPC carry Marcus into cabin
@@ -149,6 +153,24 @@ public class LevelSixFadePanel : MonoBehaviour
         );
         davidAnim.SetTrigger("IdleInKitchen");
         kitchenObjects.SetActive(true);
+        boilingWaterAudio.Play();
+        SetNight();
+    }
+
+    // Change skybox to night
+    private void SetNight()
+    {
+        RenderSettings.skybox = nightSkybox;
+
+        directionalLight.intensity = 0.5f;
+        directionalLight.color = new Color(0.6f, 0.7f, 1f); // soft blue moonlight
+
+        DynamicGI.UpdateEnvironment();
+    }
+
+    public void StartDialogueTwo()
+    {
+        dialogueTwo.SetActive(true);
     }
 
     private void DisableGameObjects(IEnumerable<GameObject> objects)

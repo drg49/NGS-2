@@ -45,9 +45,9 @@ public class DialogueOneLvlSix : MonoBehaviour
         playerNPC.SetActive(false);
         // Player can now pick up the gun
         gunCollider.enabled = true;
+        huntObjective.SetActive(true);
         SetAfternoon();
         StartCoroutine(FadeOutSong());
-        huntObjective.SetActive(true);
     }
 
     // Fade out aftermath song

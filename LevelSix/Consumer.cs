@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 public class Consumer : Interactable
 {
@@ -11,6 +12,10 @@ public class Consumer : Interactable
     [Header("Other Consumers & Colliders")]
     [SerializeField] private Consumer[] otherConsumers;
     [SerializeField] private Collider[] otherColliders;
+
+    [SerializeField] private List<GameObject> davidWalkOutsideWaypoints;
+    [SerializeField] private PathWalker davidPW;
+    [SerializeField] private Animator davidAnim;
 
     private GameObject[] portions;
     private int currentIndex;
@@ -85,7 +90,9 @@ public class Consumer : Interactable
 
             // Debug log when all game objects with Consumer scripts have been interacted with
             if (AllConsumersConsumed())
-                Debug.Log("All game objects with Consumer scripts have been interacted with!");
+            {
+                StartCoroutine(WaitAndMoveDavid());
+            }
 
             return;
         }
@@ -127,5 +134,21 @@ public class Consumer : Interactable
     public static bool AllConsumersConsumed()
     {
         return allConsumers.All(c => c != null && c.IsConsumed);
+    }
+
+    private IEnumerator WaitAndMoveDavid()
+    {
+        yield return new WaitForSeconds(8f);
+
+        // David begins to walk outside from the kitchen
+        foreach (GameObject obj in davidWalkOutsideWaypoints)
+        {
+            obj.SetActive(true);
+        }
+
+        // David's pathwalker should already be disabled at this point
+        // So to refresh it we just need to turn it back on
+        davidPW.enabled = true;
+        davidAnim.SetTrigger("WalkOutside");
     }
 }

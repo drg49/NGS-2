@@ -7,6 +7,8 @@ public class RabbitManager : MonoBehaviour
 
     [SerializeField] private GameObject prepareRabbitsObjective;
 
+    [SerializeField] private AudioSource grabAudio;
+
     [Header("UI")]
     public TextMeshProUGUI rabbitText;
 
@@ -27,6 +29,7 @@ public class RabbitManager : MonoBehaviour
 
     public void CollectRabbit()
     {
+        grabAudio.Play();
         collectedRabbits++;
         UpdateUI();
 

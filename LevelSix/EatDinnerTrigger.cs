@@ -10,7 +10,6 @@ public class EatDinnerTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Destroy hunting area, rabbit manager, and then the trigger itself");
         fadeAnim.SetTrigger("FadeInOutDinner");
         Destroy(huntingArea);
         Destroy(rabbitManager);
