@@ -53,8 +53,6 @@ public class DavidStareInWindow : MonoBehaviour
         powerShutOff.Play();
         digitalBarkSong.Play();
 
-        // Wait 5 more seconds after the song starts to start dialogue 3
-        yield return new WaitForSeconds(5f);
         dialogueThree.SetActive(true);
     }
 }
