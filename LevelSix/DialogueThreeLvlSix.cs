@@ -86,6 +86,9 @@ public class DialogueThreeLvlSix : MonoBehaviour
         canGetUp = false;
         isHolding = false;
 
+        // Clear instructional text
+        instructionalText.text = "";
+
         Destroy(tablePlayer);
         player.SetActive(true);
 

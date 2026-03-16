@@ -15,11 +15,16 @@ What? Did you call my name? It looks like the power went out. We'll need to use 
 === resTwo(response) ===
 {response}
     + [But... I just.. saw you...]
-        -> lastRes("You saw something outside? Should we go check?")
+        -> resThree("You saw something outside? Should we go check?")
     + [Uh no. I definitely saw you outside.]
-        -> lastRes("You saw something outside? Should we go check?")
+        -> resThree("You saw something outside? Should we go check?")
+
+=== resThree(response) ===
+{response}
+    + [I'll go, you stay here.]
+        -> lastRes("Alright, take a flashlight with you.")
 
 === lastRes(response) ===
-{response}  
+{response}
 
 -> END

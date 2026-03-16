@@ -11,6 +11,7 @@ public class DavidJumpscareTrigger : MonoBehaviour
     [SerializeField] private TextAsset dialogueFourInkJSON;
     [SerializeField] private GameObject digitalBarkSong;
     [SerializeField] private AudioSource jumpscareAudio;
+    [SerializeField] private GameObject investigateObjective;
 
     private Collider triggerCollider;
 
@@ -59,6 +60,7 @@ public class DavidJumpscareTrigger : MonoBehaviour
     {
         Destroy(davidJumpscareCam);
         player.SetActive(true);
+        investigateObjective.SetActive(true);
         Destroy(gameObject);
     }
 }
