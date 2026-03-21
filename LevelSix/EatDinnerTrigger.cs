@@ -8,7 +8,7 @@ public class EatDinnerTrigger : MonoBehaviour
     [SerializeField] private GameObject rabbitText;
 
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter()
     {
         fadeAnim.SetTrigger("FadeInOutDinner");
         Destroy(huntingArea);
