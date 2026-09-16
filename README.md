@@ -1,1 +1,1 @@
-View More Games: neptune-game-studios.vercel.app/
+[View More Games](https://vercel.app)
